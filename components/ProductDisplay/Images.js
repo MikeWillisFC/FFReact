@@ -1,0 +1,270 @@
+import {Fragment,useState} from "react";
+import axios from "axios";
+import {
+   Box,
+   Modal,
+   ModalOverlay,
+   ModalContent,
+   ModalHeader,
+   ModalBody,
+   ModalCloseButton,
+   Stack,
+   Badge,
+   Tabs,
+   TabList,
+   TabPanels,
+   Tab,
+   TabPanel,
+   Center,
+
+   useDisclosure
+} from "@chakra-ui/react";
+
+const Images = props => {
+   const [state_imageModalContent,setState_imageModalContent] = useState( false );
+   const [state_imageZoomedIn,setState_imageZoomedIn] = useState("false"); // this is a string on purpose
+
+   const modalDisclosure = useDisclosure();
+
+   let getLargeImageLink = () => {
+      let image = props.hasLargeImage === "1" ? props.prodCode : props.hasLargeImage;
+      return `https://${props.domain}/includes/largeImage/?image=${image}`;
+   };
+
+   let handleImageClick = async (event, imageURL) => {
+      event.preventDefault();
+      setState_imageModalContent( false );
+      props.modalDisclosure.onOpen();
+
+      let response = await axios.get(imageURL);
+      if ( response.status ) {
+         console.log("img 2",response.data);
+         setState_imageModalContent( response.data );
+      }
+   }; // handleImageClick
+
+   let handleImageZoom = event => {
+      if ( event.target.dataset && event.target.dataset.enlargedimage && event.target.dataset.enlargedimage === "true" ) {
+         // this is a string on purpose
+         setState_imageZoomedIn( prevState=>{
+            return prevState === "true" ? "false" : "true"
+         });
+      }
+   }; // handleImageZoom
+
+   let fixImagePath = path => {
+      let newPath = path.substr(0,8) === "graphics" ? `/mm5/${path}` : path;
+      if ( newPath.substr(0,3) === "../" ) {
+         newPath = `/${newPath}`;
+      }
+      return newPath;
+   };
+
+   let fixImageSrc = image => {
+      return `https://${props.domain}${fixImagePath(image)}`;
+   }; // fixImageSrc
+
+   let renderImage = (image, width, height, alt) => {
+      // because I don't like repeating code
+      return (
+         <img src={fixImageSrc(image)} width={width} height={height} alt={alt} />
+      )
+   }; // renderImage
+
+   let handleModalImageListClick = event => {
+      event.preventDefault();
+      setState_imageZoomedIn( "false" );
+      let target = document.querySelectorAll("img[data-enlargedimage='true']")[0];
+      target.src = fixImageSrc(event.currentTarget.getAttribute("href"));
+   }; // handleModalImageListClick
+
+   let handleAdditionalImageListClick = event => {
+      event.preventDefault();
+      setState_imageZoomedIn( "false" );
+      props.modalDisclosure.onOpen();
+      // console.log("href",fixImageSrc(event.currentTarget.getAttribute("href")));
+      // console.log("rendered image",renderImage(event.currentTarget.getAttribute("href"), "", "", ""));
+      let img = <img src={fixImageSrc(event.currentTarget.getAttribute("href"))} data-enlargedimage='true' />;
+      console.log("img",img);
+      setState_imageModalContent( img );
+   }; // handleAdditionalImageListClick
+
+   return (
+      <Fragment>
+         {
+            props.hasLargeImage ?
+               <a
+                  href={getLargeImageLink()}
+                  onClick={event=>{handleImageClick(event,getLargeImageLink())}}
+               >
+                  {renderImage(props.images.main, 315, null, props.strippedName)}
+                  <span>
+                     Enlarge <img src={`https://${props.domain}/images/misc/enlarge2.png`} width="27" height="15" alt="enlarge" />
+                  </span>
+               </a>
+            : renderImage(props.images.main, 315, null, props.strippedName)
+         }
+
+         {
+            (props.images.additionalImages && props.images.additionalImages.length) ||
+            (props.images.reviewImages && props.images.reviewImages.length) ?
+               <Tabs variant="enclosed">
+                  <TabList mb="1em" className="blueHeader">
+                     {
+                        props.images.reviewImages && props.images.reviewImages.length ?
+                           <Tab>Customer Images</Tab>
+                        : ""
+                     }
+                     {
+                        props.images.additionalImages && props.images.additionalImages.length ?
+                           <Tab>Alternate Images</Tab>
+                        : ""
+                     }
+                  </TabList>
+                  <TabPanels>
+                     {
+                        props.images.reviewImages && props.images.reviewImages.length ?
+                           <TabPanel className={props.styles.additionalImages}>
+                              {
+                                 props.images.reviewImages.map(image=>{
+                                    return (
+                                       <a
+                                          key={image.thumb}
+                                          onClick={handleAdditionalImageListClick}
+                                          href={image.main}
+                                       >
+                                          {renderImage(image.thumb, 100, "", "")}
+                                       </a>
+                                    );
+                                 })
+                              }
+                           </TabPanel>
+                        : ""
+                     }
+                     {
+                        props.images.additionalImages && props.images.additionalImages.length ?
+                           <TabPanel className={props.styles.additionalImages}>
+                              {
+                                 props.images.additionalImages.map(image=>{
+                                    return (
+                                       <a
+                                          key={image.thumbnail}
+                                          onClick={handleAdditionalImageListClick}
+                                          href={image.image}
+                                       >
+                                          {renderImage(image.thumbnail, 100, "", "")}
+                                       </a>
+                                    );
+                                 })
+                              }
+                           </TabPanel>
+                        : ""
+                     }
+                  </TabPanels>
+               </Tabs>
+            : ""
+         }
+
+         <Modal
+            isOpen={props.modalDisclosure.isOpen}
+            onClose={props.modalDisclosure.onClose}
+            size="full"
+         >
+            <ModalOverlay />
+            <ModalContent
+               className={props.styles.imageModal}
+            >
+               <ModalHeader className="blueHeader">
+                  Product Images
+                  <ModalCloseButton />
+               </ModalHeader>
+               <Box className={props.styles.realModalContent}>
+                  <ModalBody>
+                     <Stack direction="row" spacing="5px">
+                        <Box
+                           className={props.styles.modalImageList}
+                        >
+                           {
+                              props.images.large !== "" ?
+                                 <Fragment>
+                                    <Badge colorScheme="blue">Main Image</Badge>
+                                    <a
+                                       key={props.images.thumb}
+                                       onClick={handleModalImageListClick}
+                                       href={fixImagePath(props.images.large)}
+                                    >
+                                       {renderImage(props.images.thumb, 100, null, props.strippedName)}
+                                    </a>
+                                 </Fragment>
+                              : ""
+                           }
+
+                           {
+                              props.images.additionalImages && props.images.additionalImages.length ?
+                                 <Fragment>
+                                    <Badge colorScheme="blue">Alternate Images</Badge>
+                                    {
+                                       props.images.additionalImages.map( image=>{
+                                          return (
+                                             <a
+                                                key={image.thumbnail}
+                                                onClick={handleModalImageListClick}
+                                                href={fixImagePath(image.image)}
+                                             >
+                                                {renderImage(image.thumbnail, 100, null, image.descr || image.name || "")}
+                                             </a>
+                                          );
+                                       })
+                                    }
+                                 </Fragment>
+                              : ""
+                           }
+
+                           {
+                              props.images.reviewImages && props.images.reviewImages.length ?
+                                 <Fragment>
+                                    <Badge colorScheme="blue">Customer Images</Badge>
+                                    {
+                                       props.images.reviewImages.map( image=>{
+                                          return (
+                                             <a
+                                                key={image.thumb}
+                                                onClick={handleModalImageListClick}
+                                                href={fixImagePath(image.main)}
+                                             >
+                                                {renderImage(image.thumb, 100, null, "")}
+                                             </a>
+                                          );
+                                       })
+                                    }
+                                 </Fragment>
+                              : ""
+                           }
+                        </Box>
+
+                        <Box
+                           flex="1"
+                           className={props.styles.focusedImage}
+                           data-imagezoomedin={state_imageZoomedIn}
+                           onClick={handleImageZoom}
+                        >
+                           {
+                              !state_imageModalContent ?
+                                 props.renderSpinner()
+                              :
+                              typeof( state_imageModalContent ) === "string" ?
+                                 <Center dangerouslySetInnerHTML={{__html: state_imageModalContent}}></Center>
+                              : <Center>{state_imageModalContent}</Center>
+                           }
+                        </Box>
+                     </Stack>
+
+                  </ModalBody>
+               </Box>
+            </ModalContent>
+         </Modal>
+      </Fragment>
+   );
+};
+
+export default Images;

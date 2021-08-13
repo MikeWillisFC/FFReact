@@ -1,0 +1,23 @@
+.h1 {
+   font-size: 1em;
+   width: 100%;
+   margin: 2px 0;
+   padding: 5px 0 2px 3px;
+   background-color: #fcebf1;
+   border: 1px solid #fbddea;
+   border-radius: 5px;
+   font-weight: bold;
+}
+
+.featuredItems {
+   /* 2021-07-26: this gradient is the same as on the pagination bar, it would be good to find a way to share the style */
+   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+0,dbeefb+15,dbeefb+85,dbeefb+85,ffffff+100 */
+   background: #ffffff; /* Old browsers */
+   background: -moz-linear-gradient(top,  #ffffff 0%, #dbeefb 15%, #dbeefb 85%, #dbeefb 85%, #ffffff 100%); /* FF3.6-15 */
+   background: -webkit-linear-gradient(top,  #ffffff 0%,#dbeefb 15%,#dbeefb 85%,#dbeefb 85%,#ffffff 100%); /* Chrome10-25,Safari5.1-6 */
+   background: linear-gradient(to bottom,  #ffffff 0%,#dbeefb 15%,#dbeefb 85%,#dbeefb 85%,#ffffff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+   padding: 5px;
+
+   font-weight: bold;
+   color: #156fa3;
+}

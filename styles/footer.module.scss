@@ -1,0 +1,97 @@
+.footer {
+   background-color: #fff;
+   margin: 0px 0px 20px 0px !important;
+
+   .horizontalLineA {
+      border-top: 1px solid #999;
+      border-bottom: 1px solid #999;
+      height: 5px;
+      background: rgb(166,213,233);
+      background: linear-gradient(90deg, rgba(166,213,233,1) 0%, rgba(255,255,255,1) 50%, rgba(166,213,233,1) 100%);
+   }
+   .horizontalLineB {
+      background-color: #DAEDD1;
+      height: 7px;
+   }
+
+   .infoContainer {
+      margin: 0px;
+      background-color: #ECF6E7;
+
+      .info {
+         padding-top: 10px;
+         padding-bottom: 10px;
+         border-bottom-right-radius: 15px;
+         border-bottom: 1px solid #ccc;
+         margin: 5px;
+
+         /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#e4e0dd+0,ffffff+50,ffffff+86,ecf6e7+92 */
+         background: #e4e0dd; /* Old browsers */
+         background: -moz-linear-gradient(top,  #e4e0dd 0%, #ffffff 50%, #ffffff 86%, #ecf6e7 92%); /* FF3.6-15 */
+         background: -webkit-linear-gradient(top,  #e4e0dd 0%,#ffffff 50%,#ffffff 86%,#ecf6e7 92%); /* Chrome10-25,Safari5.1-6 */
+         background: linear-gradient(to bottom,  #e4e0dd 0%,#ffffff 50%,#ffffff 86%,#ecf6e7 92%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
+         -webkit-box-shadow: 5px 10px 7px -5px #666666;
+         box-shadow: 5px 10px 7px -5px #666666;
+
+         .testimonials {
+            h3 {
+               margin-left: 50px;
+               font-weight: bold;
+               font-size: 1.1em;
+            }
+
+            > div {
+               border: 1px solid #dcdcdc;
+               /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#eaeaea+0,ffffff+20,ffffff+80,ffffff+80,eaeaea+100 */
+               background: #eaeaea; /* Old browsers */
+               background: -moz-linear-gradient(left,  #eaeaea 0%, #ffffff 20%, #ffffff 80%, #ffffff 80%, #eaeaea 100%); /* FF3.6-15 */
+               background: -webkit-linear-gradient(left,  #eaeaea 0%,#ffffff 20%,#ffffff 80%,#ffffff 80%,#eaeaea 100%); /* Chrome10-25,Safari5.1-6 */
+               background: linear-gradient(to right,  #eaeaea 0%,#ffffff 20%,#ffffff 80%,#ffffff 80%,#eaeaea 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
+               padding: 15px;
+               margin: 15px;
+               border-radius: 10px;
+
+               > div {
+                  background-image: url('https://www.favorfavor.com/images/misc/textBubbleGreen.png');
+                  background-repeat: no-repeat;
+                  padding: 5px 13px 5px 5px;
+                  width: 209px;
+                  height: 141px;
+                  font-family: Verdana, Geneva, sans-serif;
+                  font-size: .7em;
+               }
+            }
+         }
+      }
+   }
+
+   .nav {
+      margin-left: 20px;
+      margin-top: 10px;
+      font-size: .8em;
+
+      a {
+         display: inline-block;
+         margin-left: 5px;
+         margin-right: 5px;
+      }
+
+      a:hover,a:active {
+         text-decoration: underline;
+      }
+   }
+
+   .logoBox {
+      background-image: url("https://www.favorfavor.com/images/misc/lightBlueBG.png");
+      height: 94px;
+      background-size: cover;
+      border-top: 2px solid #BCE6F8;
+      border-bottom: 2px solid #BCE6F8;
+   }
+   .copyright {
+      font-size: .8em;
+      padding: 5px;
+   }
+}

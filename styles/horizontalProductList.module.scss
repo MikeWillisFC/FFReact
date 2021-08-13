@@ -1,0 +1,37 @@
+@import "mixins";
+
+.list {
+   margin: 0px;
+   padding: 0px;
+
+   h2 {
+      font-weight: bold;
+      font-size: 1.2em;
+
+      a:link, a:visited {
+         text-decoration: none;
+      }
+      a:hover, a:active {
+         text-decoration: underline;
+      }
+   }
+
+   .itemsContainer {
+      @include scrollbars(10px, #bfbfbf, #fff );
+
+      width: 100%;
+      padding: 0px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      border-bottom: 1px dotted #553066;
+
+      ::-webkit-scrollbar-thumb {
+         background-color: #bfbfbf;
+         border-radius: 10px;
+      }
+
+      .items {
+         width: 4650px;
+      }
+   }
+}

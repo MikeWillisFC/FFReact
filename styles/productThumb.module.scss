@@ -1,0 +1,19 @@
+@import "mixins";
+
+.thumbLarge {
+   @include productThumb();
+
+   width: 164px;
+   height: 240px;
+
+   a img {
+      border: 2px solid #e8f7fd;
+   }
+}
+
+.thumbMedium {
+   @include productThumb();
+
+   width: 143px;
+   height: 210px;
+}

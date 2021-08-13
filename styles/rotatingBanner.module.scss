@@ -1,0 +1,17 @@
+.container {
+   position: relative;
+   margin: 5px auto;
+   width: 99%;
+   height: 209px;
+
+   img {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      display: block;
+      height: 100%;
+      width: 100%;
+      min-height: 209px;
+      transition: opacity 1s ease;
+   }
+}

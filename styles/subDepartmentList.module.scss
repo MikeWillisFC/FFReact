@@ -1,0 +1,122 @@
+.slideControls {
+   .tallies {
+      float: right;
+      font-weight: bold;
+      color: #666;
+      margin-right: 20px;
+      font-size: 1.05em;
+      margin-top: 2px;
+   }
+   .pagination {
+      float: right;
+
+      img {
+         display: inline-block;
+         border: 1px solid transparent;
+
+         &[alt="Back Arrow"] {
+            border-top-left-radius: 7px;
+            border-bottom-left-radius: 7px;
+         }
+         &[alt="Forward Arrow"] {
+            border-top-right-radius: 7px;
+            border-bottom-right-radius: 7px;
+         }
+
+         &.active:hover {
+            border-color: #aa285e;
+            cursor: pointer;
+         }
+      }
+   }
+}
+
+.slideContainer {
+   width: 100%;
+   border: 1px solid #ccc;
+   overflow: hidden;
+   padding: 2px 0px;
+   margin-bottom: 10px;
+
+   legend {
+      color: #999;
+      margin-left: 10px;
+      margin-right: 10px;
+      padding-left: 3px;
+      padding-right: 3px;
+   }
+   .slider {
+      margin: 0;
+      padding: 0;
+      position: relative;
+      list-style: none;
+      width: 100%;
+      display: flex;
+      transition: all .35s ease-in-out;
+
+      .slide {
+         // border: 1px solid #0f0;
+         min-width: 100%;
+         position: relative;
+         flex-direction: column;
+         flex-flow: column;
+         list-style: none;
+
+         .subCat {
+            margin: 3px 7px;
+
+            a {
+               display: inline-block;
+               border-radius: 8px;
+               border: 1px solid transparent;
+               margin: 0px;
+               padding: 0px;
+               overflow: hidden;
+               position: relative;
+
+               &:hover {
+                  border-color: #aa285e;
+
+                  span {
+                     color: #aa285e;
+                  }
+               }
+
+               span {
+                  display: inline-block;
+                  width: 100%;
+                  position: absolute;
+                  bottom: 0px;
+                  background-color: #fcdceb;
+                  color: #878183;
+                  font-weight: bold;
+                  text-align: center;
+                  text-transform: uppercase;
+                  letter-spacing: .1rem;
+                  line-height: 100%;
+
+                  /* 2021-07-26: this is the stupid way to make the text be centered horizontally and vertically
+                  see: https://stackoverflow.com/a/13515693/1042398
+                  */
+                  display: flex;
+                  justify-content: center;
+                  align-content: center;
+                  flex-direction: column;
+               }
+            }
+         }
+
+         &[data-size='2|5'] {
+            .subCat {
+               width: 18%;
+               height: 50%;
+               font-size: .8em;
+
+               a span {
+                  height: 33px;
+               }
+            }
+         }
+      }
+   }
+}

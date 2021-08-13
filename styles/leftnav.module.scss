@@ -1,0 +1,309 @@
+.leftnav {
+   background-color: #fff;
+   color: #575656;
+
+   h3 {
+      font-size: .8em;
+      padding: 3px 2px 3px 30px;
+      height: 21px;
+      font-weight: bold;
+   }
+
+   ul {
+      list-style-type: none;
+      padding-left: 0;
+      font-size: .9em;
+      margin-top: 1px;
+      margin-left: 0px;
+
+      li:hover a {
+         border-top: 1px solid #969696;
+         border-bottom: 1px solid #969696;
+      }
+
+      li a {
+         padding-left: 10px;
+         display: block;
+         border-top: 1px solid transparent;
+         border-bottom: 1px solid transparent;
+         margin: 1px 0px;
+      }
+
+      li ul {
+         // overflow: hidden;
+         // height: 0px;
+         // transition: height 0.2s linear;
+      }
+
+      li ul li a, li:hover ul li a {
+         border: none;
+         display: inline-block;
+         padding: 1px 5px 0px 25px;
+         width: 100%;
+      }
+   }
+}
+
+.parentList {
+   position: relative;
+
+   >a > svg {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+   }
+
+   .deptPreview {
+      display: block;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0.1s, opacity 0.2s linear;
+
+      position: absolute;
+      left: 98%;
+      top: 0;
+      border: 1px solid #969696;
+      background-color: #faf3f8;
+      z-index: 5;
+      width: 520px;
+      height: 400px;
+      height: 350px;
+
+      a {
+         border: none !important;
+      }
+
+      .borderCover {
+         display: block;
+         height: 21px;
+         width: 1px;
+         background-color: #faf3f8;
+         position: absolute;
+         left: -1px;
+         top: 0px;
+      }
+   }
+}
+
+.pinkSection {
+   margin: 0px;
+
+   .featuredProducts {
+      background-color: #F8ECF1;
+
+      div:last-child {
+         border-bottom: 1px dotted #ccc;
+      }
+   }
+
+   .borderCover {
+      background-color: #faf3f8;
+   }
+
+   li:hover > a {
+      background-color: #faf3f8;
+   }
+
+   h3 {
+      background-color: #faf3f8;
+      color: #492d44;
+      background-image: url('https://www.favorfavor.com/images/misc/leftnav/hearts/heart-pink.png');
+      background-repeat: no-repeat;
+      background-position: 5px 2px;
+   }
+
+   .deptPreview {
+      ul {
+         float: left;
+         width: 40%;
+
+         li a {
+            white-space: nowrap;
+            border-bottom: 1px dashed #f00 !important;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
+   }
+}
+
+.greenSection {
+   margin: 0px;
+
+   .featuredProducts {
+      background-color: #94EBEB;
+
+      div:last-child {
+         border-bottom: 1px dotted #ccc;
+      }
+   }
+
+   .borderCover {
+      background-color: #e9fbfb;
+   }
+
+   li:hover > a {
+      background-color: #e9fbfb;
+   }
+
+   h3 {
+      background-color: #e9fbfb;
+      color: #492d44;
+      background-image: url('https://www.favorfavor.com/images/misc/leftnav/hearts/heart-green.png');
+      background-repeat: no-repeat;
+      background-position: 5px 2px;
+   }
+
+   .deptPreview {
+      background-color: #e9fbfb;
+      ul {
+         float: left;
+         width: 40%;
+
+         li a {
+            white-space: nowrap;
+            border-bottom: 1px dashed #f00 !important;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
+   }
+}
+
+.blueSection {
+   margin: 0px;
+
+   .featuredProducts {
+      background-color: #D0E9F4;
+
+      div:last-child {
+         border-bottom: 1px dotted #ccc;
+      }
+   }
+
+   .borderCover {
+      background-color: #E8F4FA;
+   }
+
+   li:hover > a {
+      background-color: #E8F4FA;
+   }
+
+   h3 {
+      background-color: #E8F4FA;
+      color: #492d44;
+      background-image: url('https://www.favorfavor.com/images/misc/leftnav/hearts/heart-blue.png');
+      background-repeat: no-repeat;
+      background-position: 5px 2px;
+   }
+
+   .deptPreview {
+      background-color: #E8F4FA;
+      ul {
+         float: left;
+         width: 40%;
+
+         li a {
+            white-space: nowrap;
+            border-bottom: 1px dashed #f00 !important;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
+   }
+}
+
+.orangeSection {
+   margin: 0px;
+
+   .featuredProducts {
+      background-color: #FED8CB;
+
+      div:last-child {
+         border-bottom: 1px dotted #ccc;
+      }
+   }
+
+   .borderCover {
+      background-color: #fee4db;
+   }
+
+   li:hover > a {
+      background-color: #fee4db;
+   }
+
+   h3 {
+      background-color: #fee4db;
+      color: #492d44;
+      background-image: url('https://www.favorfavor.com/images/misc/leftnav/hearts/heart-orange.png');
+      background-repeat: no-repeat;
+      background-position: 5px 2px;
+   }
+
+   .deptPreview {
+      ul {
+         float: left;
+         width: 40%;
+
+         li a {
+            border-bottom: 1px dashed #f00 !important;
+            white-space: nowrap;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
+   }
+}
+
+.featuredProducts {
+   float: right;
+   width: 250px;
+   border: 1px solid #8e8c8c;
+   border-radius: 7px;
+   border-top-left-radius: 0px;
+   position: relative;
+   top: 40px;
+   margin-right: 5px;
+   padding: 5px;
+   font-weight: bold;
+   color: #575656 !important;
+
+   .featuredName {
+      text-align: center;
+   }
+
+   .bestOfferText {
+      position: absolute;
+      top: -28px;
+      left: -1px;
+      border-top-right-radius: 7px;
+      border-top-left-radius: 7px;
+      padding: 3px;
+      background-color: #A6A6A6;
+      color: #fff;
+      font-weight: bold;
+   }
+
+   .bestOfferThumb {
+      display: inline-block;
+      height: 92px;
+      width: 92px;
+      background-image: url('https://www.favorfavor.com/images/misc/leftnav/bestOffers/sprite.jpg');
+   }
+}

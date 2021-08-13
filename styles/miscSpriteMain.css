@@ -1,0 +1,154 @@
+.miscSpriteMain3 {
+   background-image: url("https://www.favorfavor.com/images/misc/miscSpriteMain.3.png");
+   background-repeat: no-repeat;
+}
+
+.miscSpriteMain3.downArrow {
+   width: 20px;
+   height: 18px;
+   background-position: -31px -92px;
+   margin-left: 5px;
+}
+
+.miscSpriteMain3.x-blue {
+   width: 25px;
+   height: 21px;
+   background-position: -52px -92px;
+}
+
+/* NOT IN USE? */
+/* NOT IN USE? */
+.miscSpriteMain3.buynowv2.spriteROClicked {
+   background-position: -55px -46px !important;
+}
+
+/* NOT IN USE? */
+.miscSpriteMain3.buynowv2 {
+   width: 65px;
+   height: 12px;
+   background-position: 0px -121px;
+   margin-top: 6px;
+   margin-right: 3px;
+}
+
+/* NOT IN USE? */
+.miscSpriteMain3.grey-heart {
+   width: 13px;
+   height: 11px;
+   background-position: 0px -92px;
+}
+
+/* NOT IN USE? */
+.miscSpriteMain3.pink-heart {
+   width: 13px;
+   height: 11px;
+   background-position: -15px -92px;
+}
+
+.miscSpriteMain3.brCurve {
+   width: 14px;
+   height: 28px;
+   background-position: -67px -121px;
+}
+
+.miscSpriteMain3.headerMiscLinksBGL {
+   width: 4px;
+   /*height: 22px;*/
+   background-position: -109px -92px;
+}
+
+.miscSpriteMain3.headerMiscLinksBGR {
+   width: 4px;
+   /*height: 22px;*/
+   background-position: -114px -92px;
+}
+
+.miscSpriteMain3.phone {
+   width: 10px;
+   height: 21px;
+   background-position: -119px -92px;
+}
+
+.miscSpriteMain3.pink-arrow {
+   width: 5px;
+   height: 6px;
+   background-position: -971px -97px;
+}
+
+/* NOT IN USE? */
+.miscSpriteMain3.search-button {
+   width: 30px;
+   height: 28px;
+   background-position: -78px -92px;
+   border: none;
+   cursor: pointer;
+}
+
+.miscSpriteMain3.shopping-cart {
+   width: 19px;
+   height: 14px;
+   background-position: 0px -104px;
+}
+
+/*.miscSpriteMain3.shoppingCartWhite { width: 43px; height: 23px; background-position: -84px -216px; }*/
+.miscSpriteMain3.pink {
+   width: 5px;
+   height: 7px;
+   background-position: 0px -219px;
+}
+
+/* NOT IN USE? */
+.miscSpriteMain3.pink-on {
+   width: 5px;
+   height: 7px;
+   background-position: 0px -229px;
+}
+
+/* NOT IN USE? */
+.miscSpriteMain3.heart-blue {
+   /*width: 18px; height: 16px;*/
+   background-position: -955px -175px !important;
+}
+
+.miscSpriteMain3.heart-green {
+   /*width: 18px; height: 16px;*/
+   background-position: -955px -153px !important;
+}
+
+.miscSpriteMain3.heart-orange {
+   /*width: 18px; height: 16px;*/
+   background-position: -955px -131px !important;
+}
+
+.miscSpriteMain3.heart-pink {
+   /*width: 18px; height: 16px;*/
+   background-position: -955px -109px !important;
+}
+
+.miscSpriteMain3.nextag {
+   width: 113px;
+   height: 35px;
+   background-position: -23px -153px;
+   margin-left: 3px;
+   margin-top: 9px;
+}
+
+.miscSpriteMain3.quickssl_static {
+   margin-left: 3px;
+   /* geotrust */
+   /*width: 115px;
+   height: 55px;
+   background-position: 0px -118px;*/
+   /* rapidSSL */
+   width: 90px;
+   height: 50px;
+   background-position: 0px -335px;
+}
+
+.miscSpriteMain3.fashioncraftPremier {
+   width: 110px;
+   height: 32px;
+   background-position: -26px -189px;
+   margin-left: 3px;
+   margin-top: 11px;
+}

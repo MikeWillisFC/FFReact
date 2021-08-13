@@ -1,0 +1,39 @@
+left nav:
+- close all flydowns when one opens
+- open flydown if one of it's categories is the one being viewed
+
+departments:
+- 2x5 is good but others need review
+
+category:
+- don't show pagination / view all if there are less than 1 page worth of products
+- check responsiveness
+- show out of stock notice on items that need it: <i>(OUT OF STOCK, Available 5/21)</i>
+
+product:
+- set link in shipping / production to point to terms / conditions when that page is ready
+- add schema.org stuff
+- remove red border around large product images, image box, etc
+
+ATTRIBUTES NEEDING REVIEW:
+PRODUCTS:
+1303CC
+HBH86712
+CC4919
+EB2381
+EB2121P
+EB2077FW
+CCS2340
+CC2326
+CC2327
+CCWD-3922W-7
+CC1830RG
+CC1780RG
+CC1009G
+CC1625
+CC2546GY
+
+TEMPLATES:
+- all with scripts or hidden settings
+EB2047Z
+4603
