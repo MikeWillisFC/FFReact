@@ -147,9 +147,15 @@ const Product = (props) => {
 
       //console.log("bodyFormData",bodyFormData);
 
-      const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
+      // const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
+      //    headers: headers,
+      //    withCredentials: true
+      // });
+
+      const response = await fetch( globalConfig.apiEndpoint, {
+         method: 'post',
          headers: headers,
-         withCredentials: true
+         withCredentials: 'include'
       });
       //console.log("response",response);
    }; // handleSubmit
