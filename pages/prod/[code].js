@@ -155,7 +155,8 @@ const Product = (props) => {
       const response = await fetch( globalConfig.apiEndpoint, {
          method: 'post',
          headers: headers,
-         withCredentials: 'include'
+         withCredentials: 'include',
+         body: bodyFormData
       });
       //console.log("response",response);
    }; // handleSubmit
