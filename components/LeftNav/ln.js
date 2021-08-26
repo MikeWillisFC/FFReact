@@ -72,7 +72,7 @@
                   { target: "/page/FF/CTGY/Bottle_Stoppers", text: "Wine Stopper Favors" },
                   { target: "/page/FF/CTGY/WineBar_Coasters", text: "Coasters" },
                   { target: "/page/FF/CTGY/Wine_Charms", text: "Wine Charms" },
-                  { target: "/page/FF/CTGY/OtherBarware", text: "Unique Wine Favors" }
+                  { target: "/page/FF/CTGY/OtherBarware", text: "Unique Wine Favors" },
                   { target: "/page/FF/CTGY/WineBar?SortBy=best-desc", text: "View All Wine Favors" }
                ],
                featured: [
@@ -290,7 +290,7 @@
          },
          {
             target: "/page/FF/CTGY/BathSoapFavors",
-            text: "Bath & Soap"
+            text: "Bath & Soap",
             flyout: {
                links: [
                   { target: "/page/FF/CTGY/BathSoapFavors", text: "View All Bath & Soap" }
@@ -379,7 +379,7 @@
                   { code: "1015ECC", price: "asdf", thumbnail: "asdf", bgPosition: "-276px -552px", text: "Elegance Aisle Runner" }
                ]
             }
-         }
+         },
          { target: "/page/FF/CTGY/accessories-sets", text: "Full Sets" },
          { target: "/page/FF/CTGY/cakeToppers", text: "Cake Toppers" },
          { target: "/page/FF/CTGY/centerpieces", text: "Centerpieces" },

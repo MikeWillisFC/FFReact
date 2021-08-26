@@ -1,7 +1,8 @@
-import {useEffect,useState,cloneElement,Fragment} from "react";
-import { ListItem,Icon,useDisclosure } from "@chakra-ui/react";
+import {useEffect,useState,useRef,useImperativeHandle,cloneElement,Fragment} from "react";
+import { ListItem,Icon } from "@chakra-ui/react";
 import { FaCaretRight } from 'react-icons/fa';
 import Link from "next/link";
+import { useHoverIntent } from 'react-use-hoverintent';
 
 import Department from "./departments/Department";
 
@@ -11,6 +12,9 @@ const FlyoutListItem = (props) =>  {
    //console.log("FlyoutListItem props",props);
 
    const [ state_arrowColor, setState_arrowColor ] = useState(props.caretColors.off);
+   const [isHovering, ref] = useHoverIntent({
+      timeout: 50
+   });
 
    let handleMouseEnter = () => {
       setState_arrowColor( props.caretColors.on );
@@ -19,12 +23,18 @@ const FlyoutListItem = (props) =>  {
       setState_arrowColor( props.caretColors.off );
    }
 
+   useEffect(()=>{
+      //console.log(`${props.linkText} isHovering:`,isHovering);
+      props.setFlyout(isHovering);
+   },[isHovering]);
+
    return (
       <ListItem
          className={styles.parentList}
          onClick={props.toggleFlydowns}
-         onMouseLeave={()=>{props.setFlyout(false);}}
-         onMouseEnter={()=>{props.setFlyout(true);}}
+         //onMouseLeave={()=>{props.setFlyout(false);}}
+         //onMouseEnter={()=>{props.setFlyout(true);}}
+         ref={ref}
       >
          <Link
             shallow
@@ -32,7 +42,8 @@ const FlyoutListItem = (props) =>  {
             href={props.linkTarget}
          >
             <a
-               onMouseEnter={()=>{props.setFlyout(true);}}
+               //onMouseEnter={()=>{props.setFlyout(true);}}
+               onClick={()=>{props.setFlyout(false);}}
             >
                {props.linkText}
                <Icon as={FaCaretRight} color={state_arrowColor} />
@@ -44,14 +55,18 @@ const FlyoutListItem = (props) =>  {
 }; // FlyoutListItem
 
 const FlyoutContainer = (props) => {
-   const [state_flydownsVisible, setState_flydownsVisible] = useState( false );
+   const [state_flydownsVisible, setState_flydownsVisible] = useState( props.openedFlydown === props.linkTarget );
    const [state_flyoutVisible, setState_flyoutVisible] = useState( false );
-   const { isOpen, onToggle } = useDisclosure();
 
-   console.log("isOpen",isOpen);
+   //console.log("FlyoutContainer rendering, props:",props);
+   useEffect(()=>{
+      setState_flydownsVisible( props.openedFlydown === props.linkTarget );
+   }, [props.openedFlydown,props.linkTarget]);
 
    let toggleFlydowns = () => {
-      setState_flydownsVisible( prevState=>!prevState );
+      //setState_flydownsVisible( prevState=>!prevState );
+      //console.log("toggleFlydowns",props.linkTarget);
+      props.openFlydown(props.linkTarget);
    };
    let toggleFlyout = () => {
       //console.log("toggling flyout");
@@ -67,7 +82,7 @@ const FlyoutContainer = (props) => {
          linkTarget={props.linkTarget}
          linkText={props.linkText}
          caretColors={props.caretColors}
-         toggleFlydowns={onToggle}
+         toggleFlydowns={toggleFlydowns}
          toggleFlyout={toggleFlyout}
          setFlyout={setFlyout}
       >
@@ -75,7 +90,7 @@ const FlyoutContainer = (props) => {
             basePrices={props.basePrices}
             caretColors={props.caretColors}
             flydowns={props.flydowns}
-            flydownsVisible={isOpen}
+            flydownsVisible={state_flydownsVisible}
             flyoutVisible={state_flyoutVisible}
             flyout={props.flyout}
             toggleFlyout={toggleFlyout}

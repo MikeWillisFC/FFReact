@@ -1,5 +1,6 @@
-import {useState,useEffect,useRef} from "react";
+import {useState,useEffect,useRef,useCallback} from "react";
 import Link from "next/link";
+import Image from 'next/image';
 import { Container } from "@chakra-ui/react"
 
 import styles from "../styles/rotatingBanner.module.scss";
@@ -21,9 +22,9 @@ let useReferredState = (initialValue) => {
 }; // useReferredState
 
 const RotatingBanner = (props) => {
-   const [state_slides, setState_slides] = useReferredState( [] );
+   const [state_slides, setState_slides] = useState( [] );
    const [state_targetURL, setState_targetURL] = useState( "" );
-   const [state_interval, setState_interval] = useReferredState( false );
+   const [state_interval, setState_interval] = useState( false );
 
    useEffect(()=>{
       setState_slides(props.slides.map((slide,index)=>{
@@ -40,51 +41,58 @@ const RotatingBanner = (props) => {
    },[props.slides]);
 
    useEffect(()=>{
-      if ( state_slides.current.length ) {
-         startInterval();
-         return ()=>{clearInterval(state_interval.current);}
-      }
-   },[state_slides.current]);
+      let rotateIntervalIndex = null;
 
-   let startInterval = () => {
-      let rotateIntervalIndex = setInterval(()=>{
-         // get the currently visible slide, defaulting with the first one
-         let currentVisible = 0;
-         let nextVisible = 0;
-         state_slides.current.forEach((slide,index)=>{
-            //console.log("slide",slide);
-            if ( slide.opacity === 1 ) {
-               currentVisible = index;
-               nextVisible = currentVisible + 1;
-               if ( currentVisible === state_slides.current.length - 1 ) {
-                  nextVisible = 0;
+      let startInterval = () => {
+         //console.log("starting inverval");
+         rotateIntervalIndex = setInterval(()=>{
+            //console.log("interval running");
+            // get the currently visible slide, defaulting with the first one
+            let currentVisible = 0;
+            let nextVisible = 0;
+            state_slides.forEach((slide,index)=>{
+               //console.log("slide",slide);
+               if ( slide.opacity === 1 ) {
+                  currentVisible = index;
+                  nextVisible = currentVisible + 1;
+                  if ( currentVisible === state_slides.length - 1 ) {
+                     nextVisible = 0;
+                  }
                }
-            }
-         });
+            });
 
-         //console.log("currentVisible",currentVisible);
-         //console.log("nextVisible",nextVisible);
-         // ok now fade out current, fade in next, and set the new target URL
-         setState_slides(state_slides.current.map((slide,index)=>{
-            if ( index === currentVisible ) {
-               return { ...slide, opacity: 0 };
-            } else if ( index === nextVisible ) {
-               setState_targetURL( slide.target );
-               return { ...slide, opacity: 1 };
-            } else {
-               return slide;
-            }
-         }))
-      }, props.duration);
+            //console.log("currentVisible",currentVisible);
+            //console.log("nextVisible",nextVisible);
+            // ok now fade out current, fade in next, and set the new target URL
+            setState_slides( prevState=>{
+               let newState = prevState.map((slide,index)=>{
+                  if ( index === currentVisible ) {
+                     return { ...slide, opacity: 0 };
+                  } else if ( index === nextVisible ) {
+                     setState_targetURL( slide.target );
+                     return { ...slide, opacity: 1 };
+                  } else {
+                     return slide;
+                  }
+               })
 
-      setState_interval( rotateIntervalIndex );
-   };
+               //console.log("returning newState",newState);
+               return newState;
+            });
+         }, props.duration);
+      };
+
+      if ( state_slides.length ) {
+         startInterval();
+         return ()=>{clearInterval(rotateIntervalIndex);}
+      }
+   },[state_slides,props.duration]);
 
    let handleMouseOver = ()=>{
-      clearInterval( state_interval.current );
+      //clearInterval( state_slides );
    };
    let handleMouseOut = ()=>{
-      startInterval();
+      //startInterval();
    }
 
    return (
@@ -96,9 +104,11 @@ const RotatingBanner = (props) => {
                onMouseOut={handleMouseOut}
             >
                {
-                  state_slides.current.length ? state_slides.current.map(slide=>{
+                  state_slides.length ? state_slides.map(slide=>{
                      return (
-                        <img style={{opacity: slide.opacity}} key={slide.src} src={slide.src} alt={slide.title} height="100%" width="100%" />
+                        <div key={slide.src} style={{opacity: slide.opacity}} className={styles.banner}>
+                           <Image key={slide.src} src={slide.src} alt={slide.title} layout="fill" />
+                        </div>
                      );
                   }) : ""
                }

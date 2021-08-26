@@ -34,7 +34,16 @@ import Stats from "../../components/ProductDisplay/Stats";
 import Attributes from "../../components/ProductDisplay/Attributes";
 import AddToCart from "../../components/ProductDisplay/AddToCart";
 
+import { createMD5 } from "../../utilities/";
+
 import styles from "../../styles/product.module.scss";
+
+const fetchProduct = async (endpoint, code) => {
+   let request = `&cAction=getPROD&prodCode=${code}`;
+   let hash = createMD5( request );
+
+   return await axios.get(`${endpoint}${request}&h=${hash}`);
+}; // fetchProduct
 
 const Product = (props) => {
    let globalConfig = useSelector((state)=>{
@@ -51,7 +60,7 @@ const Product = (props) => {
    const generalModalDisclosure = useDisclosure();
 
    useEffect(()=>{
-      console.log("product",props.product.product);
+      //console.log("product",props.product.product);
       setState_product( props.product.product );
       setState_productIsSet( true );
    },[props.product.product]);
@@ -62,7 +71,7 @@ const Product = (props) => {
    * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
    */
    let receiveAttributeValue = (value, code, templateCode) => {
-      console.log("receiveAttributeValue",value,code,templateCode);
+      //console.log("receiveAttributeValue",value,code,templateCode);
       setState_attributeValues(
          prevState=>{
             let attValue = { value:value, code:code, templateCode:templateCode };
@@ -112,7 +121,7 @@ const Product = (props) => {
 
    let handleSubmit = async (event) => {
       event.preventDefault();
-      console.log("form submitted, state_attributeValues:",state_attributeValues);
+      //console.log("form submitted, state_attributeValues:",state_attributeValues);
 
       const headers = { 'Content-Type': 'multipart/form-data' };
       let bodyFormData = new FormData();
@@ -136,13 +145,13 @@ const Product = (props) => {
          });
       }
 
-      console.log("bodyFormData",bodyFormData);
+      //console.log("bodyFormData",bodyFormData);
 
       const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
          headers: headers,
          withCredentials: true
       });
-      console.log("response",response);
+      //console.log("response",response);
    }; // handleSubmit
 
    let formID = "basketAdd";
@@ -270,9 +279,8 @@ Product.getInitialProps = async (context) => {
 
    let config = await import("../../config/config");
    //console.log("config",config);
-
-   let response = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.query.code}`);
-   //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=3423S`);
+   let response = await fetchProduct(config.default.apiEndpoint_static, context.query.code);
+   //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.query.code}`);
 
    //console.log("response.data",response.data);
    //console.log("context.params.code",context.params.code);

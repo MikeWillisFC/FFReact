@@ -17,7 +17,7 @@ const AttributeRow = props => {
          controls.start("collapsed");
          setState_rowClass(props.styles.hiddenAtt);
       }
-   },[props.isOpen]);
+   },[props.isOpen,controls,props.styles.hiddenAtt]);
 
    return (
       <motion.div

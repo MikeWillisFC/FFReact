@@ -10,12 +10,21 @@ import { FaCaretRight,FaCaretLeft } from 'react-icons/fa';
 import { Icon,Wrap,WrapItem,SimpleGrid,Box,Input,Spinner } from "@chakra-ui/react";
 
 import ProductThumb from "../../components/ProductThumb";
-import ProductListC from "../../components/ProductListC";
+import ProductList from "../../components/ProductList";
 import SubDepartmentList from "../../components/SubDepartmentList";
 
 import config from "../../config/config";
 
+import { createMD5 } from "../../utilities/";
+
 import catStyles from "../../styles/category.module.scss";
+
+const fetchCategory = async (endpoint, code) => {
+   let request = `&cAction=getCTGY&ctgyCode=${code}`;
+   let hash = createMD5( request );
+
+   return await axios.get(`${endpoint}${request}&h=${hash}`);
+}; // fetchCategory
 
 const Category = (props) => {
    let globalConfig = useSelector((state)=>{
@@ -36,8 +45,8 @@ const Category = (props) => {
    },[props.categoryCode]);
 
    useEffect(()=>{
-      console.log("router.query.code",router.query.code);
-      console.log("props.categoryCode",props.categoryCode);
+      // console.log("router.query.code",router.query.code);
+      // console.log("props.categoryCode",props.categoryCode);
 
       /* state_categoryCode is set on initial page load, passed in from getInitialProps.
       * Since we're doing shallow routing on our category pages, later clicks
@@ -50,16 +59,16 @@ const Category = (props) => {
          if ( window ) {
             window.scrollTo(0, 0);
          }
-         let fetchCategory = async () => {
-            let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getCTGY&ctgyCode=${router.query.code}`);
+         let getCategory = async () => {
+            let response = await fetchCategory(globalConfig.apiEndpoint_static, router.query.code);
             if ( response.status ) {
                setState_categoryCode( router.query.code );
                setState_category( response.data );
             }
          };
-         fetchCategory();
+         getCategory();
       }
-   },[router.query.code,state_categoryCode]);
+   },[router.query.code,state_categoryCode,globalConfig.apiEndpoint_static]);
 
    //console.log("router.query",router.query);
 
@@ -102,7 +111,7 @@ const Category = (props) => {
                }
                {
                   state_category.products.length ?
-                     <ProductListC
+                     <ProductList
                         queryString={props.queryString}
                         products={state_category.products}
                         categoryCode={state_category.code}
@@ -117,11 +126,12 @@ const Category = (props) => {
 
 Category.getInitialProps = async (context) => {
    //console.log("context",context);
-
+   console.log("Category.getInitialProps");
    let config = await import("../../config/config");
    //console.log("config",config);
 
-   let response = await axios.get(`${config.default.apiEndpoint}&cAction=getCTGY&ctgyCode=${context.query.code}`);
+   let response = await fetchCategory(config.default.apiEndpoint_static, context.query.code);
+   //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getCTGY&ctgyCode=${context.query.code}asdf&hash=${hash}`);
 
    //console.log("window.location.pathname",window.location.pathname);
    //console.log("context",context);

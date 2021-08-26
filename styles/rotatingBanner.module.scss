@@ -4,14 +4,30 @@
    width: 99%;
    height: 209px;
 
-   img {
-      position: absolute;
-      top: 0px;
-      left: 0px;
+   a {
       display: block;
       height: 100%;
       width: 100%;
-      min-height: 209px;
-      transition: opacity 1s ease;
+      margin: 0px;
+      padding: 0px;
+
+      .banner {
+         height: 100%;
+         width: 100%;
+         margin: 0px;
+         padding: 0px;
+         transition: opacity 1s ease;
+         position: absolute;
+         top: 0px;
+         left: 0px;
+
+         img {
+            display: block;
+            height: 100%;
+            width: 100%;
+            min-height: 209px;
+            min-width: 100%;
+         }
+      }
    }
 }

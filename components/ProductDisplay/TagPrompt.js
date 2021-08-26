@@ -2,6 +2,7 @@ import {Fragment,useState,useEffect,useRef} from "react";
 import { Box,Button,Select,Icon,HStack,Input,Checkbox,List,ListItem,ListIcon } from "@chakra-ui/react";
 import { FaCircle } from 'react-icons/fa';
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
+import Image from 'next/image';
 
 const TagPrompt = props => {
    const [state_detailsVisible,setState_detailsVisible] = useState( false );
@@ -74,7 +75,7 @@ const TagPrompt = props => {
                href={props.attribute.promptTarget}
                style={{display:"block",width:"90%",margin:"5px auto"}}
             >
-               <img src={`https://${props.globalConfig.domain}/images/buttons/designYourLabels.png`} width="329" height="64" alt="Design Your Labels" />
+               <Image src={`https://${props.globalConfig.domain}/images/buttons/designYourLabels.png`} width="329" height="64" alt="Design Your Labels" />
             </a>
          </motion.div>
       </Fragment>

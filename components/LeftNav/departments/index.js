@@ -7,7 +7,7 @@ const departments = {
          { productCode: "5863s", linkText: "Personalized Votive Candle Favors" },
          { productCode: "3421s", linkText: "Personalized Stemless Wine Glass Favors" }
          //{ productCode: "asdf", linkText: "asdf" }
-      ]
+      ],
       flydown: [
          { linkTarget: "/page/FF/CTGY/Glassware", linkText: "Glasses: Shot, Wine, Flutes etc" },
          { linkTarget: "/page/FF/CTGY/Pers_Candles", linkText: "Candles" },

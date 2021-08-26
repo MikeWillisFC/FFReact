@@ -8,7 +8,15 @@ import Link from "next/link";
 import RotatingBanner from "../components/RotatingBanner";
 import HorizontalProductList from "../components/HorizontalProductList";
 
+import { createMD5 } from "../utilities/";
+
 import styles from "../styles/home.module.scss";
+
+let fetchHome = async (endpoint) => {
+   let request = "&cAction=getHome";
+   let hash = createMD5( request );
+   return await axios.get(`${endpoint}${request}&h=${hash}`);
+}; // fetchHome
 
 const Home = (props) => {
    //console.log("Home props", props);
@@ -25,13 +33,13 @@ const Home = (props) => {
    );
 };
 
-Home.getInitialProps = async(context) => {
+Home.getInitialProps = async (context) => {
    //console.log("context",context);
 
    let config = await import("../config/config");
    //console.log("config",config);
 
-   let response = await axios.get( `${config.default.apiEndpoint}&cAction=getHome` );
+   let response = await fetchHome(config.default.apiEndpoint_static);
    //console.log("response",response);
    if ( response ) {
       return response.data.home;

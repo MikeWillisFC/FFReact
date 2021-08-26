@@ -65,23 +65,24 @@ const IframeModal = props => {
       return ()=>{
          window.closeFashioncraftDesignToolModal = null;
       }
-   },[]);
+   },[modalDisclosure]);
 
+   let {setSource} = props;
    useEffect(()=>{
       if ( state_animate && Object.keys(state_animate).length === 0 && state_animate.constructor === Object ) {
          // do nothing, it's empty
       } else {
          let dt = new Date();
-         console.log("starting timeout",dt.getTime());
+         //console.log("starting timeout",dt.getTime());
          setTimeout(()=>{
             let dtB = new Date();
-            console.log("firing timeout",dtB.getTime());
+            //console.log("firing timeout",dtB.getTime());
             modalDisclosure.onClose();
-            props.setSource(false);
+            setSource(false);
          },state_animationDuration * 1000);
       }
 
-   },[state_animate]);
+   },[state_animate,modalDisclosure,setSource,state_animationDuration]);
 
    return (
       <Modal

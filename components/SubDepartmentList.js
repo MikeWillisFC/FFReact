@@ -1,5 +1,6 @@
 import { Fragment,useState,useEffect } from "react";
 import Link from "next/link";
+import Image from 'next/image';
 import { Stack, HStack, VStack, Box, Wrap, WrapItem } from "@chakra-ui/react";
 
 import styles from "../styles/subDepartmentList.module.scss";
@@ -58,7 +59,7 @@ const SubDepartmentList = (props) => {
       }
       setState_itemStart( start );
       setState_itemEnd( end );
-   },[state_slideViewing,state_slideTotals.slidesRequired]);
+   },[state_slideViewing,state_slideTotals.slidesRequired,state_slideTotals.tilesPerSlide,state_tiles.length]);
 
    let goBack = (event) => {
       setState_slideViewing( prevState=>{
@@ -124,7 +125,7 @@ const SubDepartmentList = (props) => {
             >
                <Link shallow={shallow} href={link}>
                   <a>
-                     <img src={`https://www.favorfavor.com${tile.image}`} />
+                     <Image alt={tile.text} src={`https://www.favorfavor.com${tile.image.path}`} width={tile.image.width} height={tile.image.height} />
                      <span>{tile.text}</span>
                   </a>
                </Link>
@@ -149,7 +150,7 @@ const SubDepartmentList = (props) => {
             {
                state_backActive || state_forwardActive ?
                   <div className={styles.pagination}>
-                     <img
+                     <Image
                         className={state_backActive ? styles.active : ""}
                         src={state_backActive ? backArrow.enabled : backArrow.disabled}
                         alt="Back Arrow"
@@ -157,7 +158,7 @@ const SubDepartmentList = (props) => {
                         height="30"
                         onClick={goBack}
                      />
-                     <img
+                     <Image
                         className={state_forwardActive ? styles.active : ""}
                         src={state_forwardActive ? forwardArrow.enabled : forwardArrow.disabled}
                         alt="Forward Arrow"

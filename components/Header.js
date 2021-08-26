@@ -1,6 +1,7 @@
 // import { Fragment } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
+import Image from 'next/image';
 import { FaCaretRight,FaShoppingCart,FaThumbsUp,FaBars } from 'react-icons/fa';
 import {
    Icon,
@@ -103,7 +104,7 @@ const Header = (props) => {
                      display={["none","none","block","block"]}
                      className={`${headerStyles.phoneNumber} darkBlue`}
                   >
-                     <img src="https://www.favorfavor.com/images/misc/header/phone.png" height="21" width="10" alt="phone number" />
+                     <Image src="https://www.favorfavor.com/images/misc/header/phone.png" height="21" width="10" alt="phone number" />
                      {globalConfig.phoneNumber}
                   </Box>
                }
@@ -166,7 +167,7 @@ const Header = (props) => {
                   <input type="hidden" name="Screen" value="searchAZ" />
                   <input type="hidden" name="viewType" value="grid" />
 
-                  { false && <p className="nomarg fLeft"><img src="/images/misc/header/mag-glass.png" height="35" width="38" alt="magnifying glass" /></p> }
+                  { false && <p className="nomarg fLeft"><Image src="/images/misc/header/mag-glass.png" height="35" width="38" alt="magnifying glass" /></p> }
 
                   <Input
                      style={{backgroundColor:"#fff",zIndex:"1"}}
@@ -209,7 +210,7 @@ const Header = (props) => {
                <Link shallow href="/page/FF/CTGY/ThemeFavors">Theme Favors</Link>
             </Box>
             <Box flex="1">
-               <Link shallow href="/page/FF/CTGY/Specials"><span className="darkPink">Specials / Clearance</span></Link>
+               <Link shallow href="/page/FF/CTGY/Specials"><a><span className="darkPink">Specials / Clearance</span></a></Link>
             </Box>
             <Box flex="1">
                <div

@@ -1,4 +1,5 @@
 import {Fragment} from "react";
+import Image from 'next/image';
 import {
    Table,
    Tr,
@@ -77,7 +78,7 @@ const ShippingProduction = props => {
          <p className="nomarg">
             This product will be shipped from {mfrMap.location || ""}. See below for transit time (in business days) for Ground Service.
             <span style={{color: "#f00"}}>Transit times do not include order processing time.</span> See <a href="/terms_etc.php#shipping">shipping info</a> for details.
-            <img src={`https://${props.globalConfig.domain}${mfrMap.mapPath}`} alt="Ground Transit Times" height="353" width="546" />
+            <Image src={`https://${props.globalConfig.domain}${mfrMap.mapPath}`} alt="Ground Transit Times" height="353" width="546" />
          </p>
       </Box>
    );

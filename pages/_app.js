@@ -111,36 +111,42 @@ function MyApp(props) {
    )
 }
 
-MyApp.getInitialProps = async (context) => {
-   const pageProps = await App.getInitialProps(context); // Retrieves page's `getInitialProps`
+/* 2021-08-24: since we're not importing the leftnav, this block ends up doing nothing.
+* see https://nextjs.org/docs/messages/opt-out-auto-static-optimization
+*/
+if ( false ) {
+   MyApp.getInitialProps = async (context) => {
+      console.log("MyApp.getInitialProps",MyApp.getInitialProps);
+      const pageProps = await App.getInitialProps(context); // Retrieves page's `getInitialProps`
 
-   /* 2021-07-27: it would be nice to import the left nav, but unfortunately
-   * the call happens on every single route change, which sucks. So for now
-   * it's hardcoded in a separate file
-   */
-   if ( true ) {
-      return {
-         ...pageProps
-      };
-   } else {
-      let config = await import("../config/config");
-      //console.log("config",config);
-      let response = await axios.get(`${config.default.apiEndpoint}&cAction=getLeftNav`);
-
-      //console.log("response",response);
-      if ( response ) {
+      /* 2021-07-27: it would be nice to import the left nav, but unfortunately
+      * the call happens on every single route change, which sucks. So for now
+      * it's hardcoded in a separate file
+      */
+      if ( true ) {
          return {
-            ...pageProps,
-            leftnav: response.data.leftNav
+            ...pageProps
          };
       } else {
-         return {
-            ...pageProps,
-            leftnav: null
-         };
-      }
-   }
+         let config = await import("../config/config");
+         //console.log("config",config);
+         let response = await axios.get(`${config.default.apiEndpoint}&cAction=getLeftNav`);
 
-};
+         //console.log("response",response);
+         if ( response ) {
+            return {
+               ...pageProps,
+               leftnav: response.data.leftNav
+            };
+         } else {
+            return {
+               ...pageProps,
+               leftnav: null
+            };
+         }
+      }
+   };
+}
+
 
 export default MyApp;

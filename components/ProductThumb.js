@@ -1,5 +1,5 @@
-import LazyImage from "./LazyImage";
 import Link from "next/link";
+import Image from 'next/image';
 
 import styles from "../styles/productThumb.module.scss";
 
@@ -29,21 +29,21 @@ const ProductThumb = (props) => {
    }
 
    return (
-      <p className={className}>
+      <div className={className}>
          <Link href={`/page/FF/PROD/${props.code}`}>
             <a>
-               <LazyImage
+               <Image
                   src={`https://www.favorfavor.com${thumbnail}`}
-                  height={imageHeight}
                   width={imageWidth}
-                  alt={props.name}
+                  height={imageHeight}
+                  alt={props.alt}
                />
                <span dangerouslySetInnerHTML={{__html: props.name}}></span>
                <br />
                <span className="darkBlue"><b>${props.basePrice}</b></span>
             </a>
          </Link>
-      </p>
+      </div>
    );
 }
 

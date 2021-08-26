@@ -1,4 +1,5 @@
 import {Fragment,useState,useEffect,useRef} from "react";
+import Image from 'next/image';
 import {
    Modal,
    ModalOverlay,
@@ -23,7 +24,7 @@ import { motion } from "framer-motion";
 const MotionModalContent = motion(ModalContent);
 
 const OptionModal = props => {
-   console.log("Modal props",props);
+   //console.log("Modal props",props);
    const modalDisclosure = useDisclosure();
    const [state_animate,setState_animate] = useState( {} );
    const [state_animationDuration,setState_animationDuration] = useState( 0.4 );
@@ -31,7 +32,7 @@ const OptionModal = props => {
 
    useEffect(()=>{
       modalDisclosure.onOpen();
-   },[]);
+   },[modalDisclosure]);
 
    let closeModal = () => {
       /* the modal wants to be centered. If we just change the x value (left), it
@@ -100,7 +101,7 @@ const OptionModal = props => {
                      props.modal.options.diagram && <Fragment>
                         <Box>
                            <Heading className="subHeader yellow">Diagram</Heading>
-                           <img
+                           <Image
                               alt="diagram"
                               src={`https://${props.globalConfig.domain}${props.modal.options.diagram.img}`}
                               width={props.modal.options.diagram.width}
@@ -114,7 +115,7 @@ const OptionModal = props => {
                   }
                   <SimpleGrid className={props.styles.grid} minChildWidth={`${props.modal.options.gridWidth}px`} spacing={6}>
                      {
-                        props.modal.options.options.map(option=>{
+                        props.modal.options.options.map((option,index)=>{
                            let style = {};
                            if ( option.bgimg ) {
                               style = {
@@ -128,10 +129,11 @@ const OptionModal = props => {
                            }
                            return (
                               <Box
+                                 key={`options|${index}|${option.text}`}
                                  onClick={(event)=>handleClick(option)}
                               >
                                  {
-                                    option.img && <img src={`https://${props.globalConfig.domain}${option.img}`} />
+                                    option.img && <Image alt={option.text} src={`https://${props.globalConfig.domain}${option.img}`} />
                                  }
                                  {
                                     option.bgimg && <Box style={style}></Box>

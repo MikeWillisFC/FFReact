@@ -12,7 +12,11 @@ const LeftNav = (props) => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
-   
+
+   console.log("LeftNav rendering");
+
+   const [state_openedFlydown,setState_openedFlydown] = useState(false);
+
    const [state_leftnav,setState_leftnav] = useState( props.leftnav );
    const [state_basePrices,setState_basePrices] = useState( [] );
 
@@ -34,8 +38,7 @@ const LeftNav = (props) => {
       }; // getBasePrices
 
       getBasePrices();
-
-   },[props.bestOfferItems]);
+   },[props.bestOfferItems,globalConfig.apiEndpoint]);
 
    return (
       <Box className={styles.leftnav}>
@@ -75,9 +78,11 @@ const LeftNav = (props) => {
                                           caretColors={navBlock.caretColors}
 
                                           basePrices={state_basePrices}
-                                          caretColors={navBlock.caretColors}
                                           flydowns={link.flydowns}
                                           flyout={link.flyout}
+
+                                          openFlydown={setState_openedFlydown}
+                                          openedFlydown={state_openedFlydown}
                                        />
                                     )
                                  } else {

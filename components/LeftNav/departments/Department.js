@@ -18,15 +18,16 @@ const Department = (props) => {
    const [state_flydownStyle,setState_flydownStyle] = useState( {} );
    const [state_flydownHover,setState_flydownHover] = useState( false );
 
+   let {setFlyout} = props;
    useEffect(()=>{
       let justWait = setTimeout(()=>{
          if ( state_flydownHover ) {
-            props.setFlyout(false);
+            setFlyout(false);
          }
       }, 250);
 
       return ()=>{ clearTimeout( justWait ); };
-   },[state_flydownHover]);
+   },[state_flydownHover,setFlyout]);
 
    useEffect(()=>{
       //console.log("useEffect running, props.flydownsVisible:",props.flydownsVisible);
@@ -76,7 +77,11 @@ const Department = (props) => {
                         //console.log("flydown",flydown);
                         return (
                            <li key={flydown.target}>
-                              <Link shallow href={flydown.target}>
+                              <Link
+                                 shallow
+                                 href={flydown.target}
+                                 onClick={()=>{props.setFlyout(false);}}
+                              >
                                  {flydown.text}
                               </Link>
                            </li>
@@ -96,8 +101,12 @@ const Department = (props) => {
                         props.flyout.links.map(link=>{
                            return (
                               <ListItem key={link.target}>
-                                 <Link shallow href={link.target}>
-                                    <a>
+                                 <Link
+                                    shallow
+                                    href={link.target}
+                                 >
+                                    <a
+                                       onClick={()=>{props.setFlyout(false);}}>
                                        <ListIcon as={FaCaretRight} color={props.caretColors.off} />
                                        {link.text}
                                     </a>
@@ -120,8 +129,11 @@ const Department = (props) => {
                                        return "";
                                     } else {
                                        return (
-                                          <Link key={featured.code} href={`https://www.favorfavor.com/page/FF/PROD/${featured.code}`}>
-                                             <a>
+                                          <Link
+                                             key={featured.code}
+                                             href={`/page/FF/PROD/${featured.code}`}
+                                          >
+                                             <a onClick={()=>{props.setFlyout(false);}}>
                                                 <HStack>
                                                    <Box className={styles.featuredName}>
                                                       {featured.text}

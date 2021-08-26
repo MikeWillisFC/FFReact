@@ -2,6 +2,7 @@ import {Fragment,useState,useEffect,useRef} from "react";
 import { Box,Button,Select,Icon,HStack,Input } from "@chakra-ui/react";
 import { FaRegCheckCircle,FaAngleDown } from 'react-icons/fa';
 import axios from "axios";
+import Image from 'next/image';
 
 import OptionModal from "./OptionModal";
 import IframeModal from "./IframeModal";
@@ -17,21 +18,26 @@ const Attribute = props => {
    const elRef = useRef();
    const buttonRef = useRef();
 
+   let {domain} = props.globalConfig;
    useEffect(()=>{
       let icon;
       if ( state_value ) {
-         icon = <img src={`https://${props.globalConfig.domain}/images/misc/greencheck.gif`} />;
+         icon = <Image src={`https://${domain}/images/misc/greencheck.gif`} alt="check" />;
       }
       setState_selectIcon( icon );
-   },[state_value]);
+   },[state_value,domain]);
 
+   let {attribute,receiveAttributeValue,onChange} = props;
    useEffect(()=>{
-      props.receiveAttributeValue( state_value, props.attribute.code, props.attribute.templateCode );
-      if ( props.attribute.onChange ) {
-         props.onChange( state_value, props.attribute.onChange, props.attribute.code, props.attribute.templateCode );
+      /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
+      * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
+      */
+      receiveAttributeValue( state_value, attribute.code, attribute.templateCode );
+      if ( attribute.onChange ) {
+         onChange( state_value, attribute.onChange, attribute.code, attribute.templateCode );
       }
 
-   },[state_value,props.attribute,props.attribute.code,props.attribute.templateCode]);
+   },[state_value,receiveAttributeValue,attribute,onChange]);
 
    useEffect(()=>{
       if ( typeof( props.attribute.disabled ) === "string" ) {
@@ -78,11 +84,9 @@ const Attribute = props => {
       return ()=>{
          window.openFashioncraftDesignToolModal = null;
       }
-   },[]);
+   },[props.product.customFields.MANUFACTURER]);
 
    let style = {};
-
-   let { attribute } = props;
 
    console.log("attribute props",attribute);
 

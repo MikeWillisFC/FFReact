@@ -1,4 +1,4 @@
-import { Fragment,useState,useEffect,useRef } from "react";
+import { Fragment,useState,useEffect,useRef,useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -10,105 +10,138 @@ import config from "../config/config";
 
 import prodListStyles from "../styles/productList.module.scss";
 
-/* 2021-03-02: In a functional component, an event handler can get the state that
-* existed at the moment the handler was defined, NOT the current state. That's ridiculous.
-* So, we have to use useRef and .current to get the real state. Fucking unbelievable.
-* see https://stackoverflow.com/a/62015336/1042398 for where this function came from.
-* Also see https://reactjs.org/docs/hooks-faq.html#why-am-i-seeing-stale-props-or-state-inside-my-function
-*/
-let useReferredState = (initialValue) => {
-   const [state, setState] = useState(initialValue);
-   const reference = useRef(state);
-   const setReferredState = value => {
-      reference.current = value;
-      setState(value);
-   };
-   return [reference, setReferredState];
-}; // useReferredState
+let getParameterByName = (name, url = window.location.href ) => {
+   name = name.replace(/[\[\]]/g, '\\$&');
+   var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+   results = regex.exec(url);
+   if (!results) return null;
+   if (!results[2]) return '';
+   return decodeURIComponent(results[2].replace(/\+/g, ' '));
+};
 
 const ProductList = (props) => {
+   //console.log("ProductList props",props);
    let defaults = {
-      paginateAt: 32
+      paginateAt: 32,
+      perPage: null, // 2021-08-20: why is this set to null? Because anything other than null can show up in the address bar, it's not a mistake
+      pageNumber: 1,
+      Offset: 0,
+      totalPages: 1,
+      sortBy: ""
    };
 
-   defaults.pageNumber = props.queryString.Offset ? (parseInt(props.queryString.Offset) / defaults.paginateAt) + 1 : 1;
-
-   console.log("defaults.pageNumber",defaults.pageNumber);
-
-   const [state_pageNumber,setState_pageNumber] = useState( defaults.pageNumber );
+   const [state_totalPages,setState_totalPages] = useState( defaults.totalPages );
    const [state_paginateAt,setState_paginateAt] = useState( defaults.paginateAt );
-   const [state_perPage,setState_perPage] = useState( defaults.paginateAt );
-   const [state_totalPages,setState_totalPages] = useState( null );
-   const [state_upLink,setState_upLink] = useState( "" );
-   const [state_downLink,setState_downLink] = useState( "" );
-   const [state_viewAllLink,setState_viewAllLink] = useState( "" );
-   const [state_sortBy,setState_sortBy] = useState( "" );
-   const [state_products,setState_products] = useState( props.products );
-   const [state_sortedProducts,setState_sortedProducts] = useState( props.products );
-   const [state_focusedProducts,setState_focusedProducts] = useState( [] );
-   const [state_url,setState_url] = useReferredState("");
+   const [state_products,setState_products] = useState( [] );
+   const [state_sortedProducts,setState_sortedProducts] = useState( [] );
+   const [state_focusedProducts,setState_focusedProducts] = useState( state_products.slice(0,defaults.paginateAt) );
+   const [state_pageNumber,setState_pageNumber] = useState( defaults.pageNumber );
+   const [state_Offset,setState_Offset] = useState( defaults.Offset );
+   const [state_perPage,setState_perPage] = useState( defaults.perPage );
+   const [state_sortBy,setState_sortBy] = useState( defaults.sortBy );
+   const [state_addressBar,setState_addressBar] = useState({
+      Offset: defaults.Offset,
+      Per_Page: defaults.perPage,
+      Sort_By: defaults.sortBy
+   });
+
+   const [state_paginationLinks,setState_paginationLinks] = useState({
+      up: `${props.pathname}?Offset=${defaults.Offset + defaults.paginateAt}`,
+      down: "",
+      viewAll: ""
+   });
 
    const router = useRouter();
 
    useEffect(()=>{
-      // browser back/forward click
-      // TODO: what if user clicks back and exits this path entirely? I think we must manually unmount / mount new?
-      //console.log("router.query",router.query);
-      console.log("browser back/forward clicked, router.query",router.query);
-      let path = window.location.pathname;
+      console.log("useEffect 7");
+      // called on pagination, sort, or view all
+      let url = window.location.pathname;
       let separator = "?";
 
-      if ( router.query.Sort_By ) {
-         path = `${path}${separator}Sort_By=${router.query.Sort_By}`;
+      if ( state_addressBar.Sort_By ) {
+         url = `${url}${separator}Sort_By=${state_addressBar.Sort_By}`;
          separator = "&";
-      } else {
-         setState_sortBy( "" );
+      }
+      if ( state_addressBar.Per_Page ) {
+         url = `${url}${separator}Per_Page=${state_addressBar.Per_Page}`;
+         separator = "&";
+      } else if ( state_addressBar.Offset ) {
+         url = `${url}${separator}Offset=${state_addressBar.Offset}`;
+         separator = "&";
       }
 
-      let perPage;
-      let paginateAt;
-      let pageNumber;
+      setTimeout( ()=>{
+         router.push( url, url, { shallow: true });
+      }, 1000 );
 
-      if ( router.query.Per_Page ) {
-         paginateAt = parseInt(router.query.Per_Page);
-      } else {
-         paginateAt = defaults.paginateAt;
-      }
-      perPage = paginateAt;
-
-      if ( router.query.Offset ) {
-         pageNumber = (router.query.Offset / paginateAt) + 1;
-      } else {
-         pageNumber = 1;
-      }
-
-      if ( state_pageNumber !== pageNumber ) {
-         setState_pageNumber( pageNumber );
-      }
-      if ( paginateAt && state_paginateAt !== paginateAt ) {
-         setState_paginateAt( paginateAt );
-         setState_perPage( paginateAte );
-      }
-   },[router.query]);
+      /* 2021-08-23: React would complain about not having router in the
+      * dependency list here. But if you put router in the list, and then
+      * the above code *changes* router, you get an infinite loop calling
+      * this useEffect over and over again.
+      */
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   },[state_addressBar]);
 
    useEffect(()=>{
-      console.log("useEffect state_sortBy",state_sortBy);
-      setState_pageNumber( 1 );
-   },[state_sortBy]);
+      console.log("router has changed");
+   }, [router]);
 
    useEffect(()=>{
-      /* if paginated at all, send them back to page 1
-      */
+      console.log("useEffect 6");
+      //console.log("useEffect products",props.products);
+      setState_products(props.products);
+      setState_sortedProducts(props.products);
+   }, [props.products]);
 
-      /*
-      <option value="price_asc">Price - Low to High</option>
-      <option value="price_desc">Price - High to Low</option>
-      <option value="BestSelling">Best Selling</option>
-      <option value="Newest">Newest</option>
-      */
+   useEffect(()=>{
+      console.log("useEffect 5");
+      // handles back/forward browser button clicks
+      let popListener = event => {
+         // console.log("popstate detected");
+         // console.log(event);
+         // console.log(event.state.as);
 
-      console.log("useEffect state_sortBy state_products",state_sortBy);
+         let Offset = parseInt(getParameterByName( "Offset", event.state.as ));
+         let Per_Page = parseInt(getParameterByName( "Per_Page", event.state.as ));
+         let Sort_By = getParameterByName( "Sort_By", event.state.as );
 
+         // console.log("Offset",Offset);
+         // console.log("Per_Page",Per_Page);
+         // console.log("Sort_By",Sort_By);
+         //
+         // console.log("state_Offset",state_Offset);
+         // console.log("state_perPage",state_perPage);
+         // console.log("state_sortBy",state_sortBy);
+
+         setState_Offset( Offset );
+         if ( Per_Page ) {
+            setState_perPage( Per_Page );
+         } else {
+            setState_perPage( defaults.perPage );
+         }
+         if ( Sort_By ) {
+            setState_sortBy( Sort_By );
+         } else {
+            setState_sortBy( defaults.sortBy );
+         }
+      }
+      window.addEventListener('popstate', popListener, false);
+
+      return () => {
+         window.removeEventListener('popstate', popListener);
+      }
+   },[defaults.perPage,defaults.sortBy]);
+
+   useEffect(()=>{
+      console.log("useEffect 4");
+      setState_totalPages( Math.ceil( state_products.length / state_paginateAt ) );
+   },[state_paginateAt,state_products]);
+
+   useEffect(()=>{
+      console.log("useEffect 3");
+      // handles sortBy change
+      //console.log("state_sortBy useEffect called:",state_sortBy);
       let sortedProducts = [...state_products];
       if ( state_sortBy !== "" ) {
          //console.log("sorting...");
@@ -121,159 +154,260 @@ const ProductList = (props) => {
             case "price_desc":
                return parseFloat(prodA.basePrice) > parseFloat(prodB.basePrice) ? -1 : 1;
                break;
+            case "newest":
+               return parseInt(prodA.id) > parseInt(prodB.id) ? -1 : 1;
+               break;
+            case "bestsellers":
+               return parseInt(prodA.sr) < parseInt(prodB.sr) ? -1 : 1;
+               break;
+            default:
+               return parseInt(prodA.ds) > parseInt(prodB.ds) ? -1 : 1;
+               break;
             }
          });
       } else {
          //console.log("not sorting, no need");
       }
+
+      let end = defaults.paginateAt;
+      if ( state_perPage !== defaults.perPage ) {
+         // the only way this changes is if they click view all.
+         end = state_perPage;
+      }
       setState_sortedProducts( sortedProducts );
+      setState_focusedProducts( sortedProducts.slice( 0, end ) );
+      setState_Offset( 0 );
 
-      // also update URL and view all link. Per_Page and Offset always go before Sort_By
-      let viewAllLink = `${window.location.pathname}?Per_Page=${state_products.length}`;
-      let url = `${window.location.pathname}`;
-      let separator = "?";
-      if ( state_perPage !== defaults.paginateAt ) {
-         url = `${url}${separator}Per_Page=${state_perPage}`;
-         separator = "&";
-      }
-      if ( state_sortBy !== "" ) {
-         url = `${url}${separator}Sort_By=${state_sortBy}`;
-         viewAllLink = `${viewAllLink}&Sort_By=${state_sortBy}`;
-      }
-
-      //console.log("new url = '" + url + "'");
-      //console.log("new viewAllLink = '" + viewAllLink + "'");
-      setRoute( {url:url} );
-      setState_viewAllLink( viewAllLink );
-   },[state_sortBy,state_products]);
-
-   useEffect(()=>{
-      //console.log("state_url.current",state_url.current);
-      if ( state_url.current !== "" ) {
-         router.push( state_url.current, undefined, { shallow: true });
-      }
-   },[state_url.current]);
-
-   useEffect(()=>{
-      setState_products( props.products );
-   },[props.products]);
-
-   useEffect(()=>{
-      //console.log("setting focused products");
-      setState_focusedProducts( state_sortedProducts.slice( 0, state_paginateAt ) );
-   },[state_sortedProducts,state_paginateAt]);
-
-   useEffect(()=>{
-      /* pagination stuff: choose the slice of products to display, and set the up/down page links
+      /* we need the REAL value of state_perPage and state_sortBy, and
+      * we don't want to use refs. How can we do it? this stupid setState thing, that's
+      * how.
       */
-      //console.log("useEffect state_pageNumber = '" + state_pageNumber + "'");
-      let start = 0;
-      let end = state_paginateAt;
+      setState_perPage( prevPerPage=>{
+         setState_sortBy( prevSortBy=>{
+            // console.log("useEffect E setState_addressBar:",{
+            //    Offset: 0,
+            //    Per_Page: prevPerPage,
+            //    Sort_By: prevSortBy
+            // });
+            setState_addressBar({
+               Offset: 0,
+               Per_Page: prevPerPage,
+               Sort_By: prevSortBy
+            });
 
-      let upLink = `${window.location.pathname}`;
-      let downLink = `${window.location.pathname}`;
-      let downSeparator = "?";
+            return prevSortBy;
+         });
 
-      if ( state_pageNumber === 1 ) {
-         upLink = `${window.location.pathname}?Offset=${state_paginateAt}`;
-      } else if ( state_pageNumber > 1 ) {
-         start = (state_pageNumber - 1) * state_paginateAt;
-         end = state_paginateAt * state_pageNumber;
+         return prevPerPage;
+      });
 
-         upLink = `${window.location.pathname}?Offset=${end}`;
+   },[state_products,defaults.paginateAt,defaults.perPage,state_perPage,state_sortBy]);
 
-         if ( state_pageNumber > 2 ) {
-            downLink = `${downLink}${downSeparator}Offset=${(state_pageNumber - 2) * state_paginateAt}`;
-            downSeparator = "&";
+
+   useEffect(()=>{
+      console.log("useEffect 2");
+      // handles query string changes
+      let links = {
+         up: window.location.pathname,
+         down: window.location.pathname,
+         viewAll: window.location.pathname
+      };
+      let separators = {
+         up: "?",
+         down: "?",
+         viewAll: "?"
+      };
+
+      if ( props.queryString.Sort_By ) {
+         links.up = `${links.up}${separators.up}Sort_By=${props.queryString.Sort_By}`;
+         links.down = `${links.down}${separators.down}Sort_By=${props.queryString.Sort_By}`;
+         links.viewAll = `${links.viewAll}${separators.viewAll}Sort_By=${props.queryString.Sort_By}`;
+         separators.up = "&";
+         separators.down = "&";
+         separators.viewAll = "&";
+         setState_sortBy( props.queryString.Sort_By );
+      }
+
+      if ( props.queryString.Per_Page ) {
+         // console.log("per page detected",props.queryString.Per_Page);
+         // this is only used for view all
+         setState_pageNumber( 1 );
+         setState_Offset( 0 );
+         setState_perPage( parseInt(props.queryString.Per_Page) );
+      } else {
+         links.viewAll = `${links.viewAll}${separators.viewAll}Per_Page=${state_products.length}`;
+         separators.viewAll = "&";
+         links.up = `${links.up}${separators.up}Offset=${state_Offset + 32}`;
+
+         if ( props.queryString.Offset && props.queryString.Offset !== state_Offset ) {
+            setState_Offset( parseInt(props.queryString.Offset) );
          }
       }
 
-      if ( state_sortBy !== "" ) {
-         upLink = `${upLink}&Sort_By=${state_sortBy}`;
-         downLink = `${downLink}${downSeparator}Sort_By=${state_sortBy}`;
-      }
-
-      setState_upLink( upLink );
-      setState_downLink( downLink );
-      setState_focusedProducts( state_sortedProducts.slice(start,end) );
-   },[state_pageNumber,state_paginateAt,state_products,state_sortBy]);
+      setState_paginationLinks( links );
+   },[props.queryString.Offset,props.queryString.Per_Page,props.queryString.Sort_By,state_Offset,state_products.length]);
 
    useEffect(()=>{
-      setState_totalPages( Math.ceil( state_products.length / state_paginateAt ) );
-   },[state_paginateAt,state_products]);
-
-   useEffect(()=>{
-      setState_viewAllLink( `${window.location.pathname}?Per_Page=${state_products.length}` );
-   },[state_products]);
-
-   let setRoute = ( opts ) => {
-      //console.log("setRoute opts",opts);
-      if ( opts.url ) {
-         setState_url( opts.url );
+      console.log("useEffect 1");
+      if ( state_perPage ) {
+         setState_focusedProducts(state_sortedProducts.slice(0,state_perPage));
       }
-   };
+   },[state_perPage,state_sortedProducts]);
+
+   let depsA = [state_Offset,defaults.perPage,state_paginateAt,state_perPage,state_sortBy,state_sortedProducts];
+   let depsB = [state_Offset];
+   useEffect(()=>{
+      // called when the offset changes
+      console.log("offset useEffect running");
+
+      setState_Offset( prevOffset=>{
+         setState_paginateAt( prevPaginateAt=>{
+            setState_perPage( prevPerPage=>{
+               setState_sortedProducts( prevSortedProducts=>{
+                  let start = prevOffset;
+                  let end = prevOffset + prevPaginateAt;
+                  let pageNumber = prevOffset > 0 ? prevOffset / prevPaginateAt + 1 : 1;
+                  if ( prevPerPage !== defaults.perPage ) {
+                     // the only way this changes is if they click view all.
+                     start = 0;
+                     end = prevPerPage;
+                     pageNumber = 1;
+                  }
+                  setState_focusedProducts( prevSortedProducts.slice(start,end) );
+                  setState_pageNumber( pageNumber );
+                  return prevSortedProducts;
+               });
+               return prevPerPage;
+            });
+            return prevPaginateAt;
+         });
+         return prevOffset;
+      });
+
+      setState_sortBy( prevSortBy=>{
+         setState_paginateAt( prevPaginateAt=>{
+            let links = {
+               up: window.location.pathname,
+               down: window.location.pathname
+            };
+            let separators = {
+               up: "?",
+               down: "?"
+            };
+
+            if ( prevSortBy ) {
+               links.up = `${links.up}${separators.up}Sort_By=${prevSortBy}`;
+               links.down = `${links.down}${separators.down}Sort_By=${prevSortBy}`;
+               separators.up = "&";
+               separators.down = "&";
+            }
+
+            links.up = `${links.up}${separators.up}Offset=${state_Offset + prevPaginateAt}`;
+            if ( state_Offset >= prevPaginateAt * 2 ) {
+               links.down = `${links.down}${separators.down}Offset=${state_Offset - prevPaginateAt}`;
+            }
+
+            setState_paginationLinks( prevState=>{
+               return {
+                  ...prevState,
+                  ...links
+               }
+            });
+            return prevPaginateAt;
+         });
+         return prevSortBy;
+      });
+
+   },[state_Offset,defaults.perPage]);
+
+   let viewAll = (event) => {
+      event.preventDefault();
+      if ( event.currentTarget.getAttribute('href') ) {
+         setState_pageNumber( 1 );
+         setState_Offset( 0 );
+         setState_perPage( state_products.length );
+
+         let newAddressBar = {
+            Offset: 0,
+            Per_Page: state_products.length,
+            Sort_By: state_sortBy
+         };
+         setState_addressBar(newAddressBar);
+      }
+   }; // viewAll
+
+   let pageClick = (direction,event) => {
+      event.preventDefault();
+      if ( event.currentTarget.getAttribute('href') ) {
+         setState_Offset(prevState=>{
+            let offset = null;
+            switch( direction ) {
+            case "up":
+               offset = prevState + state_paginateAt;
+               break;
+            case "down":
+               offset = prevState - state_paginateAt;
+               break;
+            }
+            let newAddressBar = {
+               Offset: offset,
+               Per_Page: state_perPage,
+               Sort_By: state_sortBy
+            };
+            setState_addressBar(newAddressBar);
+            return offset;
+         });
+      }
+   }; // pageClick
 
    let pageChange = ( pageNumber ) => {
+      // called when user manually changes the input field
       if ( pageNumber < 1 ) {
          pageNumber = 1;
       } else if ( pageNumber > state_totalPages ) {
          pageNumber = state_totalPages;
       }
-      let newURL;
-      if ( pageNumber > 1 ) {
-         let offset = (pageNumber - 1) * state_paginateAt;
-         newURL = `${window.location.pathname}?Offset=${offset}`;
-      } else {
-         newURL = `${window.location.pathname}`;
-      }
-      setRoute( {url: newURL} );
-      setState_pageNumber( pageNumber );
-   };
 
-   let pageClick = ( direction, event ) => {
-      // console.log("pageClick '" + direction + "', event:",event);
-      // console.log("state_pageNumber",state_pageNumber);
-      // console.log("state_totalPages",state_totalPages);
-      // console.log("event.currentTarget",event.currentTarget);
-      // console.log("event.currentTarget.getAttribute('href')",event.currentTarget.getAttribute('href'));
+      /* we need the REAL value of state_perPage and state_sortBy, and
+      * we don't want to use refs. How can we do it? this stupid setState thing, that's
+      * how. If the setState function returns the same value, the re-render is skipped. So
+      * we can use that to get the real value of that piece of state, then return the previous
+      * value so there are no unneeded re-renders.
+      */
+      setState_perPage( prevPerPage=>{
+         setState_sortBy( prevSortBy=>{
+            setState_Offset( prevOffset=>{
+               let offset = null;
+               if ( pageNumber > 1 ) {
+                  offset = (pageNumber - 1) * state_paginateAt;
+               } else {
+                  offset = 0;
+               }
+               let addressBar = {
+                  Offset: offset,
+                  Per_Page: prevPerPage,
+                  Sort_By: prevSortBy
+               };
+               //console.log("pageChange new addressBar:",addressBar);
+               setState_addressBar(addressBar);
+               return offset;
+            });
 
-      event.preventDefault();
-      // next comment tells eslint to ignore the default case rule
-      // eslint-disable-next-line
-      if ( event.currentTarget.getAttribute('href') ) {
-         switch( direction ) {
-         case "up":
-            if ( (state_pageNumber + 1) <= state_totalPages ) {
-               setRoute( {url: event.currentTarget.getAttribute('href')} );
-               setState_pageNumber( prevState=>{
-                  let newState = prevState + 1;
-                  return newState;
-               });
-            }
-            break;
-         case "down":
-            if ( state_pageNumber - 1 > 0 ) {
-               setRoute( {url: event.currentTarget.getAttribute('href')} );
-               setState_pageNumber( prevState=>{
-                  let newState = prevState - 1;
-                  return newState;
-               });
-            }
-            break;
-         }
-      }
-   }; // pageClick
+            return prevSortBy;
+         });
 
-   let viewAll = ( event ) => {
-      event.preventDefault();
-      setState_paginateAt(state_products.length);
-      setState_pageNumber(1);
-      setRoute( {url: event.currentTarget.getAttribute('href')} );
-   };
+         return prevPerPage;
+      });
+   }; // pageChange
 
    let renderPagination = () => {
       let downLinkActive = state_pageNumber > 1;
       let upLinkActive = state_pageNumber < state_totalPages;
+
+      // console.log("upLinkActive",upLinkActive);
+      // console.log("downLinkActive",downLinkActive);
+      // console.log("state_pageNumber",state_pageNumber);
+      // console.log("state_totalPages",state_totalPages);
 
       let downStyle = {};
       let upStyle = {};
@@ -298,7 +432,7 @@ const ProductList = (props) => {
          <div>
             <p className={prodListStyles.viewAll}>
                <a
-                  href={state_viewAllLink}
+                  href={state_paginationLinks.viewAll}
                   onClick={(event)=>{viewAll(event);}}
                >
                   View All ({state_products.length})
@@ -307,7 +441,7 @@ const ProductList = (props) => {
             Page:
             <p style={downStyle}>
                <a
-                  href={ downLinkActive ? state_downLink : null }
+                  href={ downLinkActive ? state_paginationLinks.down : null }
                   onClick={(event)=>{pageClick("down",event)}}
                >
                   <Icon as={FaCaretLeft} />
@@ -323,7 +457,7 @@ const ProductList = (props) => {
             />
             <p style={upStyle}>
                <a
-                  href={ upLinkActive ? state_upLink : null }
+                  href={ upLinkActive ? state_paginationLinks.up : null }
                   onClick={(event)=>{pageClick("up",event)}}
                >
                   <Icon as={FaCaretRight} />
@@ -350,15 +484,15 @@ const ProductList = (props) => {
                   >
                      <option value="price_asc">Price - Low to High</option>
                      <option value="price_desc">Price - High to Low</option>
-                     <option value="BestSelling">Best Selling</option>
-                     <option value="Newest">Newest</option>
+                     <option value="bestsellers">Best Selling</option>
+                     <option value="newest">Newest</option>
                   </Select>
                </label>
 
             </Box>
             <Box className={prodListStyles.paginate}>
                {
-                  state_totalPages > 1 ?
+                  !state_perPage ?
                      renderPagination()
                   : ""
                }

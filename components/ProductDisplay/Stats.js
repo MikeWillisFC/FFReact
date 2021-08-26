@@ -1,5 +1,6 @@
 import {Fragment} from "react";
 import axios from "axios";
+import Image from 'next/image';
 import {
   Table,
   Thead,
@@ -66,7 +67,7 @@ const Stats = props => {
                         props.product.customFields.personalizationType !== 'Fashioncraft - Glassware' ?
                            <Fragment>{props.product.customFields.AVAILABILITY}</Fragment>
                         : <Fragment>
-                           <span class="prodAvailability">Ships<a style={{cursor:"pointer"}} onClick={handleShipsOnOrAboutClick} title={shipsOnOrAboutDisclaimer}>*</a> on or about {props.product.customFields.shipsOnOrAbout}</span>
+                           <span className="prodAvailability">Ships<a style={{cursor:"pointer"}} onClick={handleShipsOnOrAboutClick} title={shipsOnOrAboutDisclaimer}>*</a> on or about {props.product.customFields.shipsOnOrAbout}</span>
                         </Fragment>
                      }
                      <a style={{fontSize:".7em"}} onClick={showShippingInfo}>more shipping info</a>
@@ -155,9 +156,9 @@ const Stats = props => {
                               Array.from({length:5}).map((noOneCares,index)=>{
                                     let onStar = index + 1;
                                  if ( props.product.customFields.reviewAverage >= onStar ) {
-                                    return <img key={onStar} src={`https://${props.globalConfig.domain}/images/misc/heartSolid.png`} width="18" height="16" />
+                                    return <Image alt="solid heart" key={onStar} src={`https://${props.globalConfig.domain}/images/misc/heartSolid.png`} width="18" height="16" />
                                  } else {
-                                    return <img key={onStar} src={`https://${props.globalConfig.domain}/images/misc/heartEmpty.png`} width="17" height="16" />
+                                    return <Image alt="empty heart" key={onStar} src={`https://${props.globalConfig.domain}/images/misc/heartEmpty.png`} width="17" height="16" />
                                  }
                               })
                            }
@@ -184,7 +185,7 @@ const Stats = props => {
                            onClick={handleFRShipping}
                            style={{display:"inline-block",width:"100%"}}
                           >
-                           <img style={{display:"inline-block"}} src={`https://${props.globalConfig.domain}/images/misc/redX.png`} width="14" height="11" alt="X" />
+                           <Image style={{display:"inline-block"}} src={`https://${props.globalConfig.domain}/images/misc/redX.png`} width="14" height="11" alt="X" />
                            {" "} unavailable
                         </a>
                      }

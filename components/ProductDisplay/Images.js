@@ -1,5 +1,6 @@
 import {Fragment,useState} from "react";
 import axios from "axios";
+import Image from 'next/image';
 import {
    Box,
    Modal,
@@ -38,7 +39,7 @@ const Images = props => {
 
       let response = await axios.get(imageURL);
       if ( response.status ) {
-         console.log("img 2",response.data);
+         //console.log("img 2",response.data);
          setState_imageModalContent( response.data );
       }
    }; // handleImageClick
@@ -52,40 +53,46 @@ const Images = props => {
       }
    }; // handleImageZoom
 
-   let fixImagePath = path => {
-      let newPath = path.substr(0,8) === "graphics" ? `/mm5/${path}` : path;
-      if ( newPath.substr(0,3) === "../" ) {
-         newPath = `/${newPath}`;
-      }
-      return newPath;
-   };
-
-   let fixImageSrc = image => {
-      return `https://${props.domain}${fixImagePath(image)}`;
+   let fixImageSrc = path => {
+      return `https://${props.domain}${path}`;
    }; // fixImageSrc
 
-   let renderImage = (image, width, height, alt) => {
+   let renderImage = (path, width, height, alt, blur=false) => {
       // because I don't like repeating code
-      return (
-         <img src={fixImageSrc(image)} width={width} height={height} alt={alt} />
-      )
+      if ( blur ) {
+         return <Image src={fixImageSrc(path)} width={width} height={height} alt={alt} placeholder="blur" blurDataURL={blur} />
+      } else {
+         return <Image src={fixImageSrc(path)} width={width} height={height} alt={alt} />
+      }
    }; // renderImage
 
    let handleModalImageListClick = event => {
       event.preventDefault();
       setState_imageZoomedIn( "false" );
       let target = document.querySelectorAll("img[data-enlargedimage='true']")[0];
-      target.src = fixImageSrc(event.currentTarget.getAttribute("href"));
+      target.src = event.currentTarget.getAttribute("href");
+      target.srcset = event.currentTarget.getAttribute("href");
+      target.style.height = "";
+      target.style.minHeight = "";
+      target.style.maxHeight = "";
+      target.style.width = "";
+      target.style.minWidth = "";
+      target.style.maxWidth = "";
    }; // handleModalImageListClick
 
-   let handleAdditionalImageListClick = event => {
-      event.preventDefault();
+   let handleAdditionalImageListClick = options => {
+      options.event.preventDefault();
       setState_imageZoomedIn( "false" );
       props.modalDisclosure.onOpen();
       // console.log("href",fixImageSrc(event.currentTarget.getAttribute("href")));
       // console.log("rendered image",renderImage(event.currentTarget.getAttribute("href"), "", "", ""));
-      let img = <img src={fixImageSrc(event.currentTarget.getAttribute("href"))} data-enlargedimage='true' />;
-      console.log("img",img);
+      let img = null;
+      if ( options.blur ) {
+         img = <Image src={fixImageSrc(options.path)} width={options.width} height={options.height} alt="" placeholder="blur" blurDataURL={options.blur} data-enlargedimage='true' />;
+      } else {
+         img = <Image src={fixImageSrc(options.path)} width={options.width} height={options.height} alt="" data-enlargedimage='true' />;
+      }
+      //console.log("img",img);
       setState_imageModalContent( img );
    }; // handleAdditionalImageListClick
 
@@ -97,12 +104,12 @@ const Images = props => {
                   href={getLargeImageLink()}
                   onClick={event=>{handleImageClick(event,getLargeImageLink())}}
                >
-                  {renderImage(props.images.main, 315, null, props.strippedName)}
+                  {renderImage(props.images.main.path, props.images.main.width, props.images.main.height, props.strippedName, props.images.main.blur)}
                   <span>
-                     Enlarge <img src={`https://${props.domain}/images/misc/enlarge2.png`} width="27" height="15" alt="enlarge" />
+                     Enlarge <Image src={`https://${props.domain}/images/misc/enlarge2.png`} width="27" height="15" alt="enlarge" />
                   </span>
                </a>
-            : renderImage(props.images.main, 315, null, props.strippedName)
+            : renderImage(props.images.main.path, props.images.main.width, props.images.main.height, props.strippedName, props.images.main.blur)
          }
 
          {
@@ -129,11 +136,19 @@ const Images = props => {
                                  props.images.reviewImages.map(image=>{
                                     return (
                                        <a
-                                          key={image.thumb}
-                                          onClick={handleAdditionalImageListClick}
-                                          href={image.main}
+                                          key={image.thumb.path}
+                                          onClick={(event)=>{
+                                             handleAdditionalImageListClick({
+                                                event: event,
+                                                path: image.main.path,
+                                                width: image.main.width,
+                                                height: image.main.height,
+                                                blur: image.main.blur
+                                             })
+                                          }}
+                                          href={image.main.path}
                                        >
-                                          {renderImage(image.thumb, 100, "", "")}
+                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur)}
                                        </a>
                                     );
                                  })
@@ -148,11 +163,19 @@ const Images = props => {
                                  props.images.additionalImages.map(image=>{
                                     return (
                                        <a
-                                          key={image.thumbnail}
-                                          onClick={handleAdditionalImageListClick}
-                                          href={image.image}
+                                          key={image.thumb.path}
+                                          onClick={(event)=>{
+                                             handleAdditionalImageListClick({
+                                                event: event,
+                                                path: image.main.path,
+                                                width: image.main.width,
+                                                height: image.main.height,
+                                                blur: image.main.blur
+                                             })
+                                          }}
+                                          href={image.main.path}
                                        >
-                                          {renderImage(image.thumbnail, 100, "", "")}
+                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur)}
                                        </a>
                                     );
                                  })
@@ -189,11 +212,11 @@ const Images = props => {
                                  <Fragment>
                                     <Badge colorScheme="blue">Main Image</Badge>
                                     <a
-                                       key={props.images.thumb}
+                                       key={props.images.thumb.path}
                                        onClick={handleModalImageListClick}
-                                       href={fixImagePath(props.images.large)}
+                                       href={fixImageSrc(props.images.large.path)}
                                     >
-                                       {renderImage(props.images.thumb, 100, null, props.strippedName)}
+                                       {renderImage(props.images.thumb.path, props.images.thumb.width, props.images.thumb.height, props.strippedName, props.images.thumb.blur)}
                                     </a>
                                  </Fragment>
                               : ""
@@ -207,11 +230,11 @@ const Images = props => {
                                        props.images.additionalImages.map( image=>{
                                           return (
                                              <a
-                                                key={image.thumbnail}
+                                                key={image.thumb.path}
                                                 onClick={handleModalImageListClick}
-                                                href={fixImagePath(image.image)}
+                                                href={fixImageSrc(image.main.path)}
                                              >
-                                                {renderImage(image.thumbnail, 100, null, image.descr || image.name || "")}
+                                                {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, image.descr || image.name || "", image.thumb.blur)}
                                              </a>
                                           );
                                        })
@@ -228,11 +251,11 @@ const Images = props => {
                                        props.images.reviewImages.map( image=>{
                                           return (
                                              <a
-                                                key={image.thumb}
+                                                key={image.thumb.path}
                                                 onClick={handleModalImageListClick}
-                                                href={fixImagePath(image.main)}
+                                                href={fixImageSrc(image.main.path)}
                                              >
-                                                {renderImage(image.thumb, 100, null, "")}
+                                                {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur)}
                                              </a>
                                           );
                                        })
