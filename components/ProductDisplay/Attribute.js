@@ -22,7 +22,7 @@ const Attribute = props => {
    useEffect(()=>{
       let icon;
       if ( state_value ) {
-         icon = <Image src={`https://${domain}/images/misc/greencheck.gif`} alt="check" />;
+         icon = <Image src={`https://${domain}/images/misc/greencheck.gif`} alt="check" width="18" height="18" />;
       }
       setState_selectIcon( icon );
    },[state_value,domain]);

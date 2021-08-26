@@ -147,7 +147,7 @@ const Product = (props) => {
       }
       //console.log("bodyFormData",bodyFormData);
 
-      if ( true ) {
+      if ( false ) {
          // 2021-08-26: this method doesn't want to send the cookies
 
          const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
@@ -177,7 +177,8 @@ const Product = (props) => {
 
          const response = await fetch( globalConfig.apiEndpoint, {
             method: 'post',
-            withCredentials: 'include',
+            credentials: 'include',
+            mode: 'cors',
             body: bodyFormData
          });
       }
