@@ -124,40 +124,69 @@ const Product = (props) => {
       //console.log("form submitted, state_attributeValues:",state_attributeValues);
 
       const headers = { 'Content-Type': 'multipart/form-data' };
-      let bodyFormData = new FormData();
 
-      bodyFormData.set( "Action", "ADPR" );
-      bodyFormData.set( "Store_Code", "FF" );
-      bodyFormData.set( "Product_Code", state_product.code );
-      bodyFormData.set( "Quantity", state_quantity );
+      if ( false ) {
+         // 2021-08-26: this method doesn't want to send the cookies
 
-      if ( state_attributeValues.length ) {
-         state_attributeValues.forEach((attribute,index)=>{
-            index++; // Miva doesn't start at 0
-            let attKey = `Product_Attributes[${index}]`;
+         let bodyFormData = new FormData();
 
-            /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
-            * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
-            */
-            bodyFormData.set( `${attKey}:value`, attribute.value );
-            bodyFormData.set( `${attKey}:code`, attribute.templateCode );
-            bodyFormData.set( `${attKey}:template_code`, attribute.code );
+         bodyFormData.set( "Action", "ADPR" );
+         bodyFormData.set( "Store_Code", "FF" );
+         bodyFormData.set( "Product_Code", state_product.code );
+         bodyFormData.set( "Quantity", state_quantity );
+
+         if ( state_attributeValues.length ) {
+            state_attributeValues.forEach((attribute,index)=>{
+               index++; // Miva doesn't start at 0
+               let attKey = `Product_Attributes[${index}]`;
+
+               /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
+               * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
+               */
+               bodyFormData.set( `${attKey}:value`, attribute.value );
+               bodyFormData.set( `${attKey}:code`, attribute.templateCode );
+               bodyFormData.set( `${attKey}:template_code`, attribute.code );
+            });
+         }
+
+         //console.log("bodyFormData",bodyFormData);
+
+         const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
+            headers: headers,
+            withCredentials: true
+         });
+      } else {
+         let postBody = {
+            Action: "ADPR",
+            Store_Code: "FF",
+            Product_Code: state_product.code,
+            Quantity: state_quantity
+         };
+
+         if ( state_attributeValues.length ) {
+            state_attributeValues.forEach((attribute,index)=>{
+               index++; // Miva doesn't start at 0
+               let attKey = `Product_Attributes[${index}]`;
+               /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
+               * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
+               */
+               postBody[`${attKey}:value`] = attribute.value;
+               postBody[`${attKey}:code`] = attribute.templateCode;
+               postBody[`${attKey}:template_code`] = attribute.code;
+            });
+         }
+
+         const response = await fetch( globalConfig.apiEndpoint, {
+            method: 'post',
+            headers: headers,
+            withCredentials: 'include',
+            body: JSON.stringify( postBody )
          });
       }
 
-      //console.log("bodyFormData",bodyFormData);
 
-      // const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
-      //    headers: headers,
-      //    withCredentials: true
-      // });
 
-      const response = await fetch( globalConfig.apiEndpoint, {
-         method: 'post',
-         headers: headers,
-         withCredentials: 'include',
-         body: bodyFormData
-      });
+
       //console.log("response",response);
    }; // handleSubmit
 
