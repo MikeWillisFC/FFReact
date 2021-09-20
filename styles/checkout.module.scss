@@ -1,0 +1,239 @@
+.fieldset {
+   border: 1px solid #666;
+   border-radius: 7px;
+   padding: 8px;
+   padding-top: 0px;
+   margin-top: 15px;
+
+   legend {
+      font-weight: bold;
+      margin-left: 5px;
+      padding-left: 5px;
+      padding-right: 5px;
+      color: #26afe8;
+      font-size: 1.4em;
+   }
+
+   .requiredIndicator {
+      font-weight: bold;
+      color: #999;
+      margin: 0px;
+      margin-bottom: 5px;
+      border-bottom: 1px solid #ccc;
+      padding-left: 20px;
+   }
+
+   .radioContainer {
+      padding: 0px;
+      margin: 0px;
+      width: 100%;
+
+      > label {
+         width: 100%;
+         display: inline-block;
+         color: #2e6e9e;
+         cursor: pointer;
+         padding: 4px;
+         font-size: 1.1em;
+         border: 1px solid transparent;
+         border-radius: 5px;
+
+         &:hover {
+            border-color: #ccc;
+         }
+
+         span {
+            border-color: rgb(226, 232, 240);
+         }
+      }
+
+      &.radioSelected {
+         > label {
+            color: #090;
+            border-color: #090;
+            &::after { content: " \2713"; }
+            font-weight: bold;
+         }
+      }
+   }
+
+   &.placeOrder {
+      font-weight: bold;
+      text-align: center;
+      font-size: 1em;
+   }
+}
+
+.editableAddress,.additionalInfo {
+   margin-bottom: 10px;
+
+   .fieldGroup {
+      position: relative;
+
+      label {
+         position: absolute;
+         top: 15px;
+         left: 5px;
+         font-weight: bold;
+         color: #666;
+         pointer-events: none;
+
+         z-index: 2; // to get above the background color that chrome's autofill adds
+
+         transition: all .5s ease;
+
+         &.invalid {
+            color: #f00;
+            &::after { content: " (required)"; }
+         }
+         &.valid {
+            color: #090;
+            &::after { content: "\2713"; }
+         }
+      }
+
+      /* 2021-09-03:
+      * the input and select need different settings to arrive at the same sizing. Why? I dunno.
+      */
+      input {
+         padding-top: 35px;
+         padding-bottom: 15px;
+      }
+      select {
+         // padding-top: 35px;
+         // padding-bottom: 15px;
+         height: 100%;
+         padding-top: 25px;
+         padding-bottom: 4px;
+      }
+      textarea {
+         padding-top: 20px;
+      }
+
+      &.focused {
+         label {
+            top: 2px;
+            left: 2px;
+            font-size: 15px;
+            color: #999;
+
+            &.invalid {
+               color: #f00;
+               &::after {
+                  content: " (required)";
+               }
+            }
+            &.valid {
+               color: #090;
+               &::after { content: "\2713"; }
+            }
+         }
+      }
+   }
+}
+
+.disabledButton {
+   cursor: not-allowed;
+}
+
+.shippingInformation {
+   header {
+      border-bottom: 1px solid #ccc;
+   }
+
+   form {
+      // the date picker is inside a form and has no margin, so give it space
+      margin-top: 10px;
+   }
+   .message {
+      border-bottom: 1px solid #ccc;
+
+      p {
+         margin: 10px;
+      }
+
+      label {
+         border: 1px solid #ccc !important;
+         border-radius: 5px;
+         padding: 5px;
+
+         &.invalid {
+            border-color: #f00 !important;
+            color: #f00;
+         }
+      }
+   }
+
+   .invalid,&.invalid {
+      border-color: #f00 !important;
+      color: #f00;
+   }
+}
+
+.addressSummary {
+   font-size: .9em;
+   line-height: 1em;
+   margin-left: 20px;
+   font-family: Verdana, Geneva, sans-serif;
+}
+
+.orderSummary {
+
+   &.collapsed {
+
+      .expand {
+         height: 80px;
+         width: 98%;
+         cursor: pointer;
+         display: flex;
+         position: sticky;
+         bottom: -3px;
+
+         /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffffff+33,ffffff+100&0+0,1+66 */
+         background: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 33%, rgba(255,255,255,1) 66%, rgba(255,255,255,1) 100%); /* FF3.6-15 */
+         background: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 33%,rgba(255,255,255,1) 66%,rgba(255,255,255,1) 100%); /* Chrome10-25,Safari5.1-6 */
+         background: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.5) 33%,rgba(255,255,255,1) 66%,rgba(255,255,255,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+
+         &:hover {
+            text-decoration: underline;
+         }
+
+         span {
+            align-self: flex-end;
+            display: inline-block;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 3px;
+            font-weight: bold;
+
+            svg {
+               display: inline-block;
+            }
+
+         }
+      }
+   }
+}
+
+.orderTotals {
+   div {
+      color: #2e6e9e;
+      border: 1px solid #ccc;
+      padding: 3px;
+      font-weight: bold;
+      text-align: right;
+
+      &.chargeDescrip {
+         background-color: #f4f2f1;
+      }
+   }
+}
+
+.cardIcon {
+   font-size: 2.5em;
+   color: #090;
+   position: relative;
+   top: 5px;
+   left: -5px;
+   pointer-events: none;
+}

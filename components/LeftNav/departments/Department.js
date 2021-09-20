@@ -5,6 +5,8 @@ import { Collapse } from "@chakra-ui/react"
 import { FaCaretRight } from 'react-icons/fa';
 import Link from "next/link";
 
+import {formatPrice} from "../../../utilities";
+
 import styles from "../../../styles/leftnav.module.scss";
 
 const Department = (props) => {
@@ -14,7 +16,7 @@ const Department = (props) => {
    //console.log("Department running, props",props);
    const [state_flyoutStyle,setState_flyoutStyle] = useState( {} );
    const [state_bestOffers,setState_bestOffers] = useState( [] );
-   const [state_basePrices,setState_basePrices] = useState( [] );
+   const [state_basePrices,setState_basePrices] = useState( props.basePrices );
    const [state_flydownStyle,setState_flydownStyle] = useState( {} );
    const [state_flydownHover,setState_flydownHover] = useState( false );
 
@@ -55,7 +57,8 @@ const Department = (props) => {
       let result = state_basePrices.filter(price=>price.item.toString() === code.toString());
       // console.log("result",result);
       if ( result.length ) {
-         result = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(result[0].basePrice));
+         result = formatPrice( parseInt(result[0].basePrice) );
+         //result = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(parseFloat(result[0].basePrice));
       } else {
          result = "";
       }

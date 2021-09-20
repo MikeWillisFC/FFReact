@@ -9,7 +9,6 @@ import _ from "lodash";
 import { FaCaretRight,FaCaretLeft } from 'react-icons/fa';
 import { Icon,Wrap,WrapItem,SimpleGrid,Box,Input,Spinner } from "@chakra-ui/react";
 
-import ProductThumb from "../../components/ProductThumb";
 import ProductList from "../../components/ProductList";
 import SubDepartmentList from "../../components/SubDepartmentList";
 
@@ -19,12 +18,12 @@ import { createMD5 } from "../../utilities/";
 
 import catStyles from "../../styles/category.module.scss";
 
-const fetchCategory = async (endpoint, code) => {
+const _fetchCategory = _.memoize( async (code,endpoint) => {
    let request = `&cAction=getCTGY&ctgyCode=${code}`;
    let hash = createMD5( request );
 
    return await axios.get(`${endpoint}${request}&h=${hash}`);
-}; // fetchCategory
+});
 
 const Category = (props) => {
    let globalConfig = useSelector((state)=>{
@@ -35,6 +34,10 @@ const Category = (props) => {
 
    const [state_category,setState_category] = useState( props.category );
    const [state_categoryCode,setState_categoryCode] = useState( props.categoryCode );
+
+   useEffect(()=>{
+      props.setNavVisibility(true);
+   },[]);
 
    useEffect(()=>{
       setState_category( props.category );
@@ -60,7 +63,7 @@ const Category = (props) => {
             window.scrollTo(0, 0);
          }
          let getCategory = async () => {
-            let response = await fetchCategory(globalConfig.apiEndpoint_static, router.query.code);
+            let response = await _fetchCategory(router.query.code,globalConfig.apiEndpoint_static);
             if ( response.status ) {
                setState_categoryCode( router.query.code );
                setState_category( response.data );
@@ -126,11 +129,11 @@ const Category = (props) => {
 
 Category.getInitialProps = async (context) => {
    //console.log("context",context);
-   console.log("Category.getInitialProps");
+   //console.log("Category.getInitialProps");
    let config = await import("../../config/config");
    //console.log("config",config);
 
-   let response = await fetchCategory(config.default.apiEndpoint_static, context.query.code);
+   let response = await _fetchCategory(context.query.code,config.default.apiEndpoint_static);
    //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getCTGY&ctgyCode=${context.query.code}asdf&hash=${hash}`);
 
    //console.log("window.location.pathname",window.location.pathname);

@@ -10,22 +10,25 @@ import {
    Menu,
    MenuButton,
    MenuList,
-   MenuItem
+   MenuItem,
+   Box
 } from "@chakra-ui/react";
 import headerStyles from "../styles/header.module.css";
 const HeaderSiteAssistanceMenu = (props) => {
    return (
-      <Menu>
-         <MenuButton><Icon as={FaCaretRight} color="#F167A8" />Site Assistance</MenuButton>
-         <MenuList className={headerStyles.siteAssistanceNavDropdown}>
-            <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/aboutus.html">About Us</a></MenuItem>
-            <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/contact_us.php">Contact Us</a></MenuItem>
-            <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/order-favor-samples.php">Samples</a></MenuItem>
-            <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php">Terms & Conditions</a></MenuItem>
-            <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#shipping">Shipping</a></MenuItem>
-            <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#PrivacyPolicy">Privacy</a></MenuItem>
-         </MenuList>
-      </Menu>
+      <Box>
+         <Menu>
+            <MenuButton><Icon as={FaCaretRight} color="#F167A8" />Site Assistance</MenuButton>
+            <MenuList className={headerStyles.siteAssistanceNavDropdown}>
+               <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/aboutus.html">About Us</a></MenuItem>
+               <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/contact_us.php">Contact Us</a></MenuItem>
+               <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/order-favor-samples.php">Samples</a></MenuItem>
+               <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php">Terms & Conditions</a></MenuItem>
+               <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#shipping">Shipping</a></MenuItem>
+               <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#PrivacyPolicy">Privacy</a></MenuItem>
+            </MenuList>
+         </Menu>
+      </Box>
    );
 };
 

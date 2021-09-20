@@ -26,6 +26,7 @@
    .green { color: #657B00 !important; }
    .red { color: #f00 !important; }
    .darkBlue, .darkBlue a, a.darkBlue { color: #1874ab !important; } /* #pOrder input color must match this!!! */
+   .darkerBlue, .darkerBlue a, a.darkerBlue { color: #2e6e9e !important; }
    .darkPink { color: #d80d4c !important; }
    .mediumPink { color: #e780a6; }
    .darkPinkBG { background-color: #d80d4c !important; }
@@ -70,6 +71,16 @@
       background: -moz-linear-gradient(top,  #deedf8 0%, #deedf8 48%, #d9eaf7 52%, #d9eaf7 100%) !important; /* FF3.6-15 */
       background: -webkit-linear-gradient(top,  #deedf8 0%,#deedf8 48%,#d9eaf7 52%,#d9eaf7 100%) !important; /* Chrome10-25,Safari5.1-6 */
       background: linear-gradient(to bottom,  #deedf8 0%,#deedf8 48%,#d9eaf7 52%,#d9eaf7 100%) !important; /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+   }
+}
+
+.veryLightBlueButton {
+   border: 1px solid #C5DBEC;
+   border-radius: 7px;
+   background-color: #F4FBFF !important;
+   &:hover {
+      border-color: #79B7E7;
+      background-color: #F4FBFF !important;
    }
 }
 

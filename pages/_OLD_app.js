@@ -1,5 +1,5 @@
-import {useState,useEffect,useCallback} from "react";
-import { Provider,useSelector } from "react-redux";
+import {useState,useEffect} from "react";
+import { Provider } from "react-redux";
 import axios from "axios";
 import App from 'next/app';
 import Head from 'next/head';
@@ -33,14 +33,31 @@ function MyApp(props) {
    //console.log("MyApp props",props);
 
    const [state_mobileNavVisible, setState_mobileNavVisible] = useState( false );
-   const [state_navVisible, setState_navVisible] = useState( true );
+   const [state_routeChanging, setState_routeChanging] = useState( false );
 
-   let toggleMobileNav = useCallback(() => {
+   useEffect(()=>{
+      Router.events.on( "routeChangeStart", startRouteChange );
+      Router.events.on( "routeChangeComplete", endRouteChange );
+      Router.events.on( "routeChangeError", endRouteChange );
+
+      return ()=>{
+         Router.events.off( "routeChangeStart", startRouteChange );
+         Router.events.off( "routeChangeComplete", endRouteChange );
+         Router.events.off( "routeChangeError", endRouteChange );
+      }
+   },[]);
+
+   let startRouteChange = () =>{ setState_routeChanging(true); };
+   let endRouteChange = () =>{ setState_routeChanging(false); };
+
+   let toggleMobileNav = () => {
       //console.log("toggling mobile nav");
       setState_mobileNavVisible(prevState=>{
          return !prevState;
       });
-   },[]);
+   };
+
+   let mainComponentOpacity = state_routeChanging ? 0 : 1;
 
    return (
       <Provider store={store}>
@@ -63,15 +80,14 @@ function MyApp(props) {
             >
                <Stack>
                   <Header toggleMobileNav={toggleMobileNav} />
-                  <Flex style={{margin:"0px",overflow:"hidden",paddingTop: "5px",backgroundColor:"#fff",paddingBottom:"50px"}}>
+                  <Flex style={{margin:"0px",overflow:"hidden",paddingTop: "5px",backgroundColor:"#fff"}}>
                      <Box
                         className={appStyles.leftnav}
                         style={{zIndex:"1"}}
                         position={["relative","relative","static"]}
                         left={[(state_mobileNavVisible ? "0px" : "-100%"),(state_mobileNavVisible ? "0px" : "-100%"),"0px"]}
-                        width={["100%","100%",(state_navVisible ? "20%" : "0%")]}
-                        height={["auto","auto",(state_navVisible ? "auto" : "0px")]}
-                        overflow={["hidden","hidden",(state_navVisible ? "visible" : "hidden")]}
+                        width={["100%","100%","20%"]}
+                        overflow={["hidden","hidden","visible"]}
                         flexShrink={["0","0","1"]}
                      >
                         <LeftNav leftnav={leftnav} bestOfferItems={leftnav_bestOfferItems} />
@@ -80,10 +96,11 @@ function MyApp(props) {
                         className={appStyles.mainComponent}
                         position={["relative","relative","static"]}
                         left={["-100%","-100%","0px"]}
-                        width={["100%","100%",(state_navVisible ? "80%" : "100%")]}
+                        width={["100%","100%","80%"]}
                         flexShrink={["0","0","1"]}
+                        style={{opacity: mainComponentOpacity}}
                      >
-                        <Component {...pageProps} setNavVisibility={setState_navVisible} />
+                        <Component {...pageProps} />
                      </Box>
                   </Flex>
                   <Footer />

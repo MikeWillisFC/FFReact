@@ -1,3 +1,4 @@
+import {useState,useEffect} from "react";
 import { FaCartPlus } from 'react-icons/fa';
 import {
    Box,
@@ -12,6 +13,17 @@ import {
 } from "@chakra-ui/react";
 
 const AddToCart = props => {
+   const [state_quantity,setState_quantity] = useState(props.quantity);
+
+   useEffect(()=>{
+      setState_quantity(props.quantity);
+   },[props.quantity]);
+
+   let handleQuantityChange = value =>{
+      props.quantityRef.current = value;
+      setState_quantity(value);
+   }; // handleQuantityChange
+
    return (
       <Stack
          direction={["column", "column", "row"]}
@@ -22,8 +34,8 @@ const AddToCart = props => {
             <NumberInput
                min={0}
                placeholder="Quantity"
-               value={props.quantity}
-               onChange={value=>{props.setQuantity(value)}}
+               value={state_quantity}
+               onChange={handleQuantityChange}
             >
                <NumberInputField placeholder="Quantity" />
                <NumberInputStepper>

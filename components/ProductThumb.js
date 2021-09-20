@@ -1,10 +1,15 @@
 import Link from "next/link";
 import Image from 'next/image';
 
+import {formatPrice} from "../utilities";
+
 import styles from "../styles/productThumb.module.scss";
 
 const ProductThumb = (props) => {
    // default is large
+
+   //console.log("ProductThumb props",props);
+
    let imageWidth = 160;
    let className = styles.thumbLarge;
 
@@ -32,15 +37,28 @@ const ProductThumb = (props) => {
       <div className={className}>
          <Link href={`/page/FF/PROD/${props.code}`}>
             <a>
-               <Image
-                  src={`https://www.favorfavor.com${thumbnail}`}
-                  width={imageWidth}
-                  height={imageHeight}
-                  alt={props.alt}
-               />
+               {
+                  props.blurThumb ? (
+                     <Image
+                        src={`https://www.favorfavor.com${thumbnail}`}
+                        width={imageWidth}
+                        height={imageHeight}
+                        alt={props.alt}
+                        placeholder="blur"
+                        blurDataURL={props.blurThumb}
+                     />
+                  ) : (
+                     <Image
+                        src={`https://www.favorfavor.com${thumbnail}`}
+                        width={imageWidth}
+                        height={imageHeight}
+                        alt={props.alt}
+                     />
+                  )
+               }
                <span dangerouslySetInnerHTML={{__html: props.name}}></span>
                <br />
-               <span className="darkBlue"><b>${props.basePrice}</b></span>
+               <span className="darkBlue"><b>{formatPrice(parseInt(props.basePrice))}</b></span>
             </a>
          </Link>
       </div>

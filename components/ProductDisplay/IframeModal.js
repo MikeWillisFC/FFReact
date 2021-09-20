@@ -74,12 +74,14 @@ const IframeModal = props => {
       } else {
          let dt = new Date();
          //console.log("starting timeout",dt.getTime());
-         setTimeout(()=>{
+         let timeout = setTimeout(()=>{
             let dtB = new Date();
             //console.log("firing timeout",dtB.getTime());
             modalDisclosure.onClose();
             setSource(false);
          },state_animationDuration * 1000);
+
+         return ()=>{clearTimeout(timeout);};
       }
 
    },[state_animate,modalDisclosure,setSource,state_animationDuration]);

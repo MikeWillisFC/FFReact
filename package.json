@@ -6,24 +6,31 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "secureStart": "node --trace-warnings ./secureServer.js"
   },
   "dependencies": {
-    "@chakra-ui/icons": "^1.0.13",
-    "@chakra-ui/react": "^1.6.4",
-    "@emotion/react": "^11.4.0",
+    "@chakra-ui/icons": "^1.0.15",
+    "@chakra-ui/react": "^1.6.7",
+    "@emotion/react": "^11.4.1",
     "@emotion/styled": "^11.3.0",
-    "@reduxjs/toolkit": "^1.6.0",
+    "@reduxjs/toolkit": "^1.6.1",
     "axios": "^0.21.1",
+    "card-validator": "^8.1.1",
+    "credit-card-type": "^9.1.0",
+    "dangerously-set-html-content": "^1.0.9",
     "framer-motion": "^4.1.17",
     "lodash": "^4.17.21",
     "next": "11.0.1",
     "react": "17.0.2",
+    "react-datepicker": "^4.2.1",
     "react-dom": "17.0.2",
     "react-icons": "^4.2.0",
     "react-redux": "^7.2.4",
     "react-use-hoverintent": "^1.2.5",
-    "sass": "^1.35.1"
+    "restricted-input": "^3.0.4",
+    "sass": "^1.39.0",
+    "store": "^2.0.12"
   },
   "devDependencies": {
     "eslint": "7.29.0",

@@ -1,0 +1,15 @@
+.errorBox {
+   height: 50%;
+   padding-top: 15%;
+   padding-bottom: 15%;
+   background-color: #FED7D7;
+
+   .errorHeadline {
+      width: 100%;
+      border-bottom: 1px solid #ccc;
+      font-size: 1.2em;
+   }
+   .errorMessage {
+      padding-left: 10% !important;
+   }
+}

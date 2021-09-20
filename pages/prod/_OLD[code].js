@@ -39,12 +39,12 @@ import { createMD5 } from "../../utilities/";
 
 import styles from "../../styles/product.module.scss";
 
-const _fetchProduct = _.memoize(async (code,endpoint) => {
+const fetchProduct = async (endpoint, code) => {
    let request = `&cAction=getPROD&prodCode=${code}`;
    let hash = createMD5( request );
 
    return await axios.get(`${endpoint}${request}&h=${hash}`);
-});
+}; // fetchProduct
 
 const Product = (props) => {
    let globalConfig = useSelector((state)=>{
@@ -61,10 +61,6 @@ const Product = (props) => {
 
    const imageModalDisclosure = useDisclosure();
    const generalModalDisclosure = useDisclosure();
-
-   useEffect(()=>{
-      props.setNavVisibility(true);
-   },[]);
 
    useEffect(()=>{
       console.log("PRODUCT USEEFFECT",props.product.product);
@@ -150,12 +146,8 @@ const Product = (props) => {
             * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
             */
             bodyFormData.set( `${attKey}:value`, attribute.value );
-            if ( attribute.code ) {
-               bodyFormData.set( `${attKey}:template_code`, attribute.code );
-            }
-            if ( attribute.templateCode ) {
-               bodyFormData.set( `${attKey}:code`, attribute.templateCode );
-            }
+            bodyFormData.set( `${attKey}:code`, attribute.templateCode );
+            bodyFormData.set( `${attKey}:template_code`, attribute.code );
          });
       }
       //console.log("bodyFormData",bodyFormData);
@@ -167,7 +159,7 @@ const Product = (props) => {
          });
          if ( response.status ) {
             console.log("pushing route");
-            router.push(`/Basket`);
+            //router.push(`/Basket`);
          }
       } else {
          const response = await fetch( globalConfig.apiEndpoint, {
@@ -309,7 +301,7 @@ Product.getInitialProps = async (context) => {
 
    let config = await import("../../config/config");
    //console.log("config",config);
-   let response = await _fetchProduct(context.query.code,config.default.apiEndpoint_static);
+   let response = await fetchProduct(config.default.apiEndpoint_static, context.query.code);
    //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.query.code}`);
 
    //console.log("response.data",response.data);

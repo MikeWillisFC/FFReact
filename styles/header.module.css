@@ -59,7 +59,7 @@
 
    border-bottom-left-radius: 7px;
 }
-.siteAssistanceNav > button {
+.siteAssistanceNav > div > button {
    font-weight: bold;
 }
 .siteAssistanceNav > a {

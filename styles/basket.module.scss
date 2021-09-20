@@ -1,0 +1,121 @@
+.basketTools {
+   font-weight: bold;
+   font-size: .75em;
+
+   a:hover,a:active,span:hover,span:active {
+      text-decoration: underline;
+   }
+}
+
+.basketTable {
+   font-family: Verdana, Geneva, sans-serif;
+
+   tr {
+      .thumbColumn {  }
+      .nameColumn {  }
+      .priceColumn {  }
+      .qtyColumn {  }
+      .totalColumn {  }
+      .editColumn {  }
+   }
+   thead {
+      background-color: #26afe8;
+
+      th {
+         color: #000 !important;
+      }
+   }
+
+   td {
+      vertical-align: top;
+      padding: 2px;
+      border-bottom: none;
+      border-top: 1px solid #ccc;
+      // border: 1px solid #ccc;
+
+      transition: padding .8s ease-in-out;
+
+      &.collapsing {
+         padding: 0px !important;
+         border-top: none;
+      }
+   }
+
+   .itemRow {
+
+      &:nth-child(n+2) {
+         td {
+            padding-top: 15px;
+         }
+      }
+   }
+
+   .optionRow {
+      font-size: .8em;
+      font-style: italic;
+
+      td {
+         margin: 0px;
+         border: none;
+         // border: 1px solid #ccc;
+
+         &:first-child {
+            padding-left: 25px;
+         }
+
+         input {
+            font-style: italic;
+            font-weight: bold;
+            border: 1px dashed transparent;
+            border-radius: 5px;
+            padding-left: 2px;
+            padding-right: 2px;
+            margin-left: -2px;
+
+            &:hover {
+               border-color: #ccc;
+            }
+         }
+      }
+   }
+}
+
+.tabList {
+   button {
+      font-size: .9em;
+      font-weight: bold;
+      color: #666;
+
+      &[aria-selected='true'] {
+         background-color: #eee;
+      }
+   }
+}
+.tabPanel {
+   div[role='tabpanel'] {
+      font-size: .9em;
+   }
+}
+
+.checkout {
+   font-weight: bold;
+   font-size: .9em;
+   color: #333;
+
+   div {
+      border: 1px solid #ccc;
+      div {
+         border: none;
+         padding: 3px;
+         text-align: right;
+
+         &:first-child {
+            background-color: #eee;
+         }
+         &:last-child {
+            background-color: #fff;
+         }
+      }
+
+   }
+}

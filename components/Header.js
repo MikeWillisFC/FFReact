@@ -24,6 +24,8 @@ import {
    MenuDivider,
 } from "@chakra-ui/react";
 
+import Messages from "./Messages";
+
 /* 2021-07-19: see https://github.com/chakra-ui/chakra-ui/issues/3020
 * once that bug is really fixed, we can remove this and copy the return from
 * HeaderSiteAssistanceMenu and paste it into the appropriate spot here. Until
@@ -41,6 +43,12 @@ const Header = (props) => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+
+   const messages = useSelector(state=>{
+      return state.messages;
+   });
+
+   console.log("Header rendering");
 
    let uniqueID = () => {
       var firstPart = (Math.random() * 46656) | 0;
@@ -128,13 +136,15 @@ const Header = (props) => {
                            </a>
                         </Box>
                         <Box>
-                           <a href="https://www.favorfavor.com/mm5/merchant.mvc?Screen=BASK">
-                              <Icon as={FaCaretRight} color="#F167A8" />
-                              <span className="darkBlue">
-                                 Shopping Cart{" "}
-                                 <Icon style={{position:"relative",top:"-2px"}} as={FaShoppingCart} color="#F167A8" />
-                              </span>
-                           </a>
+                           <Link href="/Basket">
+                              <a>
+                                 <Icon as={FaCaretRight} color="#F167A8" />
+                                 <span className="darkBlue">
+                                    Shopping Cart{" "}
+                                    <Icon style={{position:"relative",top:"-2px"}} as={FaShoppingCart} color="#F167A8" />
+                                 </span>
+                              </a>
+                           </Link>
                         </Box>
 
                      </HStack>
@@ -225,6 +235,14 @@ const Header = (props) => {
                </div>
             </Box>
          </Flex>
+
+         {
+            (messages.errorMessages.length || messages.generalMessages.length) ?
+               <Messages
+                  messages={messages}
+               />
+            : ""
+         }
       </Box>
    );
 };

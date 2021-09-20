@@ -2,6 +2,10 @@ left nav:
 - close all flydowns when one opens
 - open flydown if one of it's categories is the one being viewed
 
+basket:
+- check result of editable attribute update
+- make quantity a dropdown if needed
+
 departments:
 - 2x5 is good but others need review
 

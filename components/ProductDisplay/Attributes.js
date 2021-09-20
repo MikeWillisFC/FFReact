@@ -18,7 +18,6 @@ const Attributes = props => {
          document.querySelectorAll("script[id^='attScript']").forEach(el=>{
             el.remove();
          });
-         window.FashioncraftDesigner = null;
       }
    },[]);
 
