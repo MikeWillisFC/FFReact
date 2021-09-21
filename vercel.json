@@ -1,8 +1,7 @@
 {
-   "trailingSlash": true,
   "headers": [
     {
-      "source": "(.webp)",
+      "source": "(*.webp)",
       "headers" : [
         {
           "key" : "Cache-Control",
