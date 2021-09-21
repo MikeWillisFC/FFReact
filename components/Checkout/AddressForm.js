@@ -35,31 +35,31 @@ const AddressForm = props => {
       company: false
    });
 
-   useEffect(()=>{
-      if ( false ) {
-         let valid = true;
-         Object.keys(state_fieldValidities).forEach(key => {
-            console.log("checking key",key,state_fieldValidities[key]);
-            if ( valid && !state_fieldValidities[key] ) {
-               valid = false;
-            }
-         });
-         console.log("setting state_valid",state_valid);
-         setState_valid( valid );
-      }
-   },[
-      state_fieldValidities.firstName,
-      state_fieldValidities.lastName,
-      state_fieldValidities.address1,
-      state_fieldValidities.address2,
-      state_fieldValidities.zip,
-      state_fieldValidities.state,
-      state_fieldValidities.city,
-      state_fieldValidities.country,
-      state_fieldValidities.phone,
-      state_fieldValidities.email,
-      state_fieldValidities.company
-   ]);
+   // useEffect(()=>{
+   //    if ( false ) {
+   //       let valid = true;
+   //       Object.keys(state_fieldValidities).forEach(key => {
+   //          console.log("checking key",key,state_fieldValidities[key]);
+   //          if ( valid && !state_fieldValidities[key] ) {
+   //             valid = false;
+   //          }
+   //       });
+   //       console.log("setting state_valid",state_valid);
+   //       setState_valid( valid );
+   //    }
+   // },[
+   //    state_fieldValidities.firstName,
+   //    state_fieldValidities.lastName,
+   //    state_fieldValidities.address1,
+   //    state_fieldValidities.address2,
+   //    state_fieldValidities.zip,
+   //    state_fieldValidities.state,
+   //    state_fieldValidities.city,
+   //    state_fieldValidities.country,
+   //    state_fieldValidities.phone,
+   //    state_fieldValidities.email,
+   //    state_fieldValidities.company
+   // ]);
 
    useEffect(()=>{
       if (
@@ -95,9 +95,10 @@ const AddressForm = props => {
       state_fieldValidities_company
    ]);
 
+   let {addressType,onValidityChange} = props;
    useEffect(()=>{
-      props.onValidityChange(props.addressType,state_valid);
-   },[state_valid]);
+      onValidityChange(addressType,state_valid);
+   },[state_valid,addressType,onValidityChange]);
 
    let handleValidityChange = (field,status) => {
       console.log("handling validity change",field,status);

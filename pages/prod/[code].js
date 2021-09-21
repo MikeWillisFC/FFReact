@@ -62,9 +62,10 @@ const Product = (props) => {
    const imageModalDisclosure = useDisclosure();
    const generalModalDisclosure = useDisclosure();
 
+   let {setNavVisibility} = props;
    useEffect(()=>{
-      props.setNavVisibility(true);
-   },[]);
+      setNavVisibility(true);
+   },[setNavVisibility]);
 
    useEffect(()=>{
       console.log("PRODUCT USEEFFECT",props.product.product);

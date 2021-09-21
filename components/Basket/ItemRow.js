@@ -1,4 +1,4 @@
-import {useState,useEffect,useRef,Fragment} from "react";
+import {Fragment,useState,useEffect,useRef,useMemo} from "react";
 import { FaTrashAlt } from 'react-icons/fa';
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import axios from "axios";
@@ -43,7 +43,9 @@ const ItemRow = props => {
 
    let {item} = props;
    let totalRows = 1;
-   let optionWidths = [];
+   let optionWidths = useMemo(()=>{
+      return [];
+   },[]);
 
    useEffect(()=>{
       //console.log("item.options",item.options);
@@ -123,7 +125,7 @@ const ItemRow = props => {
                   </AlertDialogHeader>
 
                   <AlertDialogBody>
-                     Are you sure? You can't undo this afterwards.
+                     Are you sure? You can&apos;t undo this afterwards.
                   </AlertDialogBody>
 
                   <AlertDialogFooter>

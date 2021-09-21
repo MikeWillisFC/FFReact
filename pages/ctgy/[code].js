@@ -35,9 +35,10 @@ const Category = (props) => {
    const [state_category,setState_category] = useState( props.category );
    const [state_categoryCode,setState_categoryCode] = useState( props.categoryCode );
 
+   let {setNavVisibility} = props;
    useEffect(()=>{
-      props.setNavVisibility(true);
-   },[]);
+      setNavVisibility(true);
+   },[setNavVisibility]);
 
    useEffect(()=>{
       setState_category( props.category );

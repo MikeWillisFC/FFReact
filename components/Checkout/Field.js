@@ -1,4 +1,4 @@
-import {useState,useEffect,useRef} from "react";
+import {useState,useEffect,useRef,useCallback} from "react";
 import { Select,Input,Textarea,Box,InputGroup,InputRightElement } from "@chakra-ui/react";
 
 import styles from "../../styles/checkout.module.scss";
@@ -12,75 +12,24 @@ const Field = props => {
 
    let changeHandled = useRef();
 
-   useEffect(()=>{
-      if ( props.onValidityChange ) {
-         props.onValidityChange(props.field,state_valid);
+   let {onValidityChange,field,required,cardValidator} = props;
+
+   let checkValidity = useCallback(value => {
+
+      // see https://stackoverflow.com/a/46181/1042398
+      let validateEmail = email => {
+        const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
       }
-   },[state_valid]);
 
-   useEffect(()=>{
-      //console.log("props.value changed",props.required,props.value);
-      setState_value(props.value || "");
-   },[props.value]);
-
-   useEffect(()=>{
-      //console.log("state_value changed",props.required,state_value);
-      setState_touched( prevState=>{
-         let result = prevState || state_value;
-         setState_focused(result);
-         return result;
-      });
-      checkValidity( state_value );
-   },[state_value,props.required]);
-
-   useEffect(()=>{
-      setState_values(props.values || "");
-   },[props.values]);
-
-   useEffect(()=>{
-      //console.log("state_value useEffect", state_value);
-      setState_focused( prevState=>{
-         //console.log("prevState",prevState);
-         if ( !prevState ) {
-            /* 2021-09-07: the value changed and it's not currently focused.
-            * This is probably an autofill of some sort, so let's trigger the change
-            * handler as well
-            */
-            //props.onFieldChange(props.field,state_value,props.addressType);
-            checkValidity( state_value );
-         }
-
-         return prevState;
-      });
-   },[state_value,props.required]);
-
-   let handleChange = event => {
-      // console.log("handleChange");
-      changeHandled.current = true;
-      setState_value( event.target.value );
-      setState_touched(true);
-      setState_focused(true);
-      checkValidity( event.target.value );
-      if ( props.onFieldChange ) {
-         props.onFieldChange(props.field,event.target.value);
-      }
-   }; // handleChange
-
-   // see https://stackoverflow.com/a/46181/1042398
-   let validateEmail = email => {
-     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-     return re.test(email);
-   }
-
-   let checkValidity = value => {
-      if ( !props.required ) {
+      if ( !required ) {
          setState_valid( true );
       } else {
          let isValid;
-         if ( !props.required ) {
+         if ( !required ) {
             isValid = true;
          } else {
-            switch( props.field ) {
+            switch( field ) {
             case "firstName":
             case "lastName":
             case "address1":
@@ -107,23 +56,81 @@ const Field = props => {
                if ( !value ) {
                   isValid = false;
                } else {
-                  if ( props.cardValidator && value.length >= 4 ) {
-                     let cardValidation = props.cardValidator.number(value);
+                  if ( cardValidator && value.length >= 4 ) {
+                     let cardValidation = cardValidator.number(value);
                      isValid = cardValidation.isPotentiallyValid;
                   } else {
-                     isValid = !props.required || value;
+                     isValid = !required || value;
                   }
                }
                break;
             default:
-               isValid = !props.required || value;
+               isValid = !required || value;
                break;
             }
          }
 
          setState_valid( isValid );
       }
-   };
+   },[
+      required,
+      field,
+      cardValidator
+   ]); // checkValidity
+
+   useEffect(()=>{
+      if ( onValidityChange ) {
+         onValidityChange(field,state_valid);
+      }
+   },[state_valid,onValidityChange,field]);
+
+   useEffect(()=>{
+      //console.log("props.value changed",props.required,props.value);
+      setState_value(props.value || "");
+   },[props.value]);
+
+   useEffect(()=>{
+      //console.log("state_value changed",props.required,state_value);
+      setState_touched( prevState=>{
+         let result = prevState || state_value;
+         setState_focused(result);
+         return result;
+      });
+      checkValidity( state_value );
+   },[state_value,props.required,checkValidity]);
+
+   useEffect(()=>{
+      setState_values(props.values || "");
+   },[props.values]);
+
+   useEffect(()=>{
+      //console.log("state_value useEffect", state_value);
+      setState_focused( prevState=>{
+         //console.log("prevState",prevState);
+         if ( !prevState ) {
+            /* 2021-09-07: the value changed and it's not currently focused.
+            * This is probably an autofill of some sort, so let's trigger the change
+            * handler as well
+            */
+            //props.onFieldChange(props.field,state_value,props.addressType);
+            checkValidity( state_value );
+         }
+
+         return prevState;
+      });
+   },[state_value,props.required,checkValidity]);
+
+   let handleChange = event => {
+      // console.log("handleChange");
+      changeHandled.current = true;
+      setState_value( event.target.value );
+      setState_touched(true);
+      setState_focused(true);
+      checkValidity( event.target.value );
+      if ( props.onFieldChange ) {
+         props.onFieldChange(props.field,event.target.value);
+      }
+   }; // handleChange
 
    let handleFocus = event => {
       setState_focused(true);
@@ -192,7 +199,7 @@ const Field = props => {
                   inputMode={props.inputMode || null}
                />
                {
-                  props.icon && <InputRightElement children={props.icon} />
+                  props.icon && <InputRightElement>{props.icon}</InputRightElement>
                }
             </InputGroup>
 

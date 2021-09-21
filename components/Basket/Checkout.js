@@ -66,7 +66,7 @@ const Checkout = props => {
 
          <Flex>
             <Box width="100%">
-               <Link href="/checkout/Shipping">
+               <Link href="/checkout/Shipping" passHref>
                   <Button
                      leftIcon={<FaLock />}
                      size="lg"

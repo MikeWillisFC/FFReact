@@ -38,17 +38,21 @@ const OptionRow = props => {
    useEffect(()=>{
       setState_rowCollapsing(props.motion.collapsing);
       if ( props.motion.collapsing ) {
-         console.log("collapsing");
+         //console.log("collapsing");
          controls.start("collapsed");
       }
-   },[props.motion.collapsing]);
+   },[controls,props.motion.collapsing]);
 
+   let {receiveWidth} = props;
    useEffect(()=>{
       if ( spanRef.current ) {
          //console.log("spanRef.current.offsetWidth:",spanRef.current.offsetWidth);
-         props.receiveWidth(spanRef.current.offsetWidth);
+         receiveWidth(spanRef.current.offsetWidth);
       }
-   },[spanRef.current]);
+   },[
+      //spanRef.current,
+      receiveWidth
+   ]);
 
    useEffect(()=>{
       setState_optionVal(props.option.value);

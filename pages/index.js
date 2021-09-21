@@ -22,9 +22,10 @@ let _fetchHome = _.memoize(async (endpoint) => {
 const Home = (props) => {
    //console.log("Home props", props);
 
+   let {setNavVisibility} = props;
    useEffect(()=>{
-      props.setNavVisibility(true);
-   },[]);
+      setNavVisibility(true);
+   },[setNavVisibility]);
 
    return (
       <div>

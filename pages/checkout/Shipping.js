@@ -1,4 +1,4 @@
-import {Fragment,useState,useEffect} from "react";
+import {Fragment,useState,useEffect,useCallback} from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
@@ -65,7 +65,7 @@ const Shipping = props => {
 
    const expeditedShippingModal = useDisclosure();
 
-   let getAddresses = async () => {
+   let getAddresses = useCallback(async () => {
       console.log("getAddresses called");
       let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getAddresses`,
          {
@@ -77,9 +77,9 @@ const Shipping = props => {
          setState_billingAddress( response.data.addresses.billing );
          setState_shippingAddress( response.data.addresses.shipping );
       }
-   }; // getAddresses
+   },[globalConfig.apiEndpoint]); // getAddresses
 
-   let getStates = async () => {
+   let getStates = useCallback(async () => {
       let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getStates`,
          {
             withCredentials: true
@@ -90,13 +90,14 @@ const Shipping = props => {
          setState_states( response.data.states );
          setState_countries( response.data.countries );
       }
-   }; // getAddresses
+   },[globalConfig.apiEndpoint]); // getAddresses
 
+   let {setNavVisibility} = props;
    useEffect(()=>{
       getAddresses();
       getStates();
-      props.setNavVisibility(false);
-   },[]);
+      setNavVisibility(false);
+   },[getAddresses,getStates,setNavVisibility]);
 
    useEffect(()=>{
       if ( state_showShipping ) {
@@ -104,7 +105,7 @@ const Shipping = props => {
       } else {
          shippingAddressControls.start("collapsed");
       }
-   },[state_showShipping]);
+   },[state_showShipping,shippingAddressControls]);
 
    useEffect(()=>{
       console.log("ADDRESS VALIDITY CHANGE",state_billingAddressValid,state_shippingAddressValid);
@@ -165,7 +166,7 @@ const Shipping = props => {
 		if ( state_shippingMethod && !ignoredMethods.includes( shippingLabel ) ) {
          expeditedShippingModal.onOpen();
       }
-   },[state_shippingMethod]);
+   },[state_shippingMethod,expeditedShippingModal]);
 
    useEffect(()=>{
       if ( state_rateAddress ) {
@@ -238,7 +239,14 @@ const Shipping = props => {
          shippingLoadingControls.start("collapsed");
          shippingProceedControls.start("open");
       }
-   },[state_rateAddress]);
+   },[
+      globalConfig.domain,
+      state_rateAddress,
+      shippingLoadingControls,
+      shippingProceedControls,
+      state_billingAddress,
+      state_shippingAddress
+   ]);
 
    useEffect(()=>{
       if ( state_getRatesAddressType ) {

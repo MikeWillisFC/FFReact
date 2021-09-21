@@ -21,7 +21,7 @@ const Messages = props => {
                      mr={2}
                      className={styles.errorHeadline}
                   >
-                     We're sorry, but the following errors were encountered
+                     We&apos;re sorry, but the following errors were encountered
                   </AlertTitle>
                </Alert>
                {

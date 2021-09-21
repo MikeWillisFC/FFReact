@@ -23,10 +23,11 @@ const FlyoutListItem = (props) =>  {
       setState_arrowColor( props.caretColors.off );
    }
 
+   let {setFlyout} = props;
    useEffect(()=>{
       //console.log(`${props.linkText} isHovering:`,isHovering);
-      props.setFlyout(isHovering);
-   },[isHovering]);
+      setFlyout(isHovering);
+   },[isHovering,setFlyout]);
 
    return (
       <ListItem

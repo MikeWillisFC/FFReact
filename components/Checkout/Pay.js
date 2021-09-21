@@ -22,6 +22,10 @@ const Pay = props => {
       return state.global;
    });
 
+   let authorizeLoaded = useRef();
+   let cardInputField_restrictedInput = useRef(false);
+   let authorizeScriptID = "authorizeAcceptJS";
+
    useEffect(()=>{
       let unloadAuthorize = () => {
          //console.log("unloading authorize");
@@ -37,26 +41,22 @@ const Pay = props => {
       return ()=>{
          unloadAuthorize();
       }
-   },[]);
+   },[authorizeScriptID]);
 
    useEffect(()=>{
+
+      const cardPatterns = {
+   		"visa": "{{9999}} {{9999}} {{9999}} {{9999}}",
+   		"american-express": "{{9999}} {{999999}} {{99999}}"
+   	};
       console.log("props.cardFieldRef.current",props.cardFieldRef.current);
       if ( props.cardFieldRef.current ) {
-         cardInputField_restrictedInput = new RestrictedInput({
+         cardInputField_restrictedInput.current = new RestrictedInput({
    			element: props.cardFieldRef.current,
    			pattern: cardPatterns.visa
    		});
       }
-   },[props.cardFieldRef.current]);
-
-   let authorizeLoaded = useRef();
-
-   let authorizeScriptID = "authorizeAcceptJS";
-   const cardPatterns = {
-		"visa": "{{9999}} {{9999}} {{9999}} {{9999}}",
-		"american-express": "{{9999}} {{999999}} {{99999}}"
-	};
-   let cardInputField_restrictedInput = false;
+   },[props.cardFieldRef]);
 
    let getFieldName = (blurb,double=false) => {
       if ( !double ) {
@@ -182,7 +182,7 @@ const Pay = props => {
             </Grid>
 
             {
-               additional && <InnerHTML html={additional} />
+               //additional && <InnerHTML html={additional} />
             }
          </Fragment>
       );
@@ -269,17 +269,8 @@ const Pay = props => {
             <legend>Payment</legend>
             <form>
                {
-                  false && (
-                     props.opay && props.opay.paymentFieldsLoad && props.opay.paymentFieldsLoad.data && props.opay.paymentFieldsLoad.success === 1 ?
-                        renderPayment_CC(props.opay.paymentFieldsLoad.data.fields,props.opay.paymentFieldsLoad.data.additional)
-                     :
-                     <InnerHTML html={props.opay.payment.html} />
-                  )
-               }
-               {
                   props.paymentMethod === "authorize" && renderAuthNet()
                }
-
             </form>
          </fieldset>
       );

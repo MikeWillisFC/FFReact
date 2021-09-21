@@ -31,6 +31,8 @@ const Basket = props => {
    const [state_basketCharges,setState_basketCharges] = useState(null);
    const [state_basketID,setState_basketID] = useState(null);
 
+   let {setNavVisibility} = props;
+
    useEffect(()=>{
       let getBasket = async () => {
          let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getBASK`,
@@ -45,9 +47,9 @@ const Basket = props => {
             setState_basketID( response.data.basketID );
          }
       };
-      props.setNavVisibility(false);
+      setNavVisibility(false);
       getBasket();
-   },[]);
+   },[globalConfig.apiEndpoint,setNavVisibility]);
 
    useEffect(()=>{
       let subtotal = 0;

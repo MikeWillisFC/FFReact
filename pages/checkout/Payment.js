@@ -59,8 +59,9 @@ const Payment = props => {
    useEffect(()=>{
       dispatch(messagesActions.setErrors([]));
       return ()=>{dispatch(messagesActions.setErrors([]));}
-   },[]);
+   },[dispatch]);
 
+   let {setNavVisibility} = props;
    useEffect(()=>{
       let getPaymentScreen = () => {
          const opay = store.get("opay");
@@ -98,13 +99,13 @@ const Payment = props => {
             }
          }
       }; // getPaymentScreen
-      props.setNavVisibility(false);
+      setNavVisibility(false);
       getPaymentScreen();
 
       return ()=>{
          //store.remove("opay");
       }
-   },[]);
+   },[setNavVisibility]);
 
    useEffect(()=>{
       console.log("state_shipping",state_shipping);

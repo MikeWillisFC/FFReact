@@ -9,13 +9,12 @@ class CustomInput extends React.Component {
             <Input {...this.props} onKeyPress={event=>event.preventDefault()} />
             <InputRightElement
                pointerEvents="none"
-               children={
-                  <Icon
-                     as={FaCalendarAlt}
-                     color="#ccc"
-                  />
-               }
-            />
+            >
+               <Icon
+                  as={FaCalendarAlt}
+                  color="#ccc"
+               />
+            </InputRightElement>
          </InputGroup>
       );
    }

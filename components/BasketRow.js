@@ -1,4 +1,4 @@
-import {useState,useEffect,useRef,Fragment} from "react";
+import {Fragment,useState,useEffect,useRef,useMemo} from "react";
 import axios from "axios";
 import Link from "next/link";
 import {
@@ -23,7 +23,9 @@ const BasketRow = props => {
 
    let {item} = props;
    let totalRows = 1;
-   let optionWidths = [];
+   let optionWidths = useMemo(()=>{
+      return [];
+   },[]);
 
    useEffect(()=>{
       console.log("item.options",item.options);
