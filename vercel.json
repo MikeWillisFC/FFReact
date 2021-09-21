@@ -1,13 +1,14 @@
 {
-  "headers": [
-    {
-      "source": "(*.webp)",
-      "headers" : [
-        {
-          "key" : "Cache-Control",
-          "value" : "max-age=31536000"
-        }
-      ]
-    }
-  ]
+   "trailingSlash": false,
+   "headers": [
+      {
+         "source": "(*.webp)",
+         "headers" : [
+            {
+               "key" : "Cache-Control",
+               "value" : "max-age=31536000"
+            }
+         ]
+      }
+   ]
 }
