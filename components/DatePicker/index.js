@@ -6,7 +6,8 @@ import ReactDatePicker from "react-datepicker";
 import CustomInput from "./CustomInput";
 
 import "react-datepicker/dist/react-datepicker.css";
-import "react-datepicker/dist/overrides.css"; // this is MY file! If you update react-datepicker, you MUST re-create this file!
+//import "../../styles/react-datepicker-overrides.css"; // this is MY file! If you update react-datepicker, you MUST re-create this file!
+//import "react-datepicker/dist/overrides.css"; // this is MY file! If you update react-datepicker, you MUST re-create this file!
 
 const DatePicker = (props) => {
    return (
