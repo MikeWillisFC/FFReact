@@ -52,25 +52,29 @@ const Flyout = (props) => {
       props.flyout &&
       <div className={styles.deptPreview} style={state_flyoutStyle}>
          <p className={styles.borderCover}></p>
-         <div style={{marginLeft:"3px"}} className={styles.flyoutMenu}>
-            {
-               props.flyout.links.map(link=>{
-                  return (
-                     <Link
-                        shallow
-                        href={link.target}
-                        key={link.target}
-                     >
-                        <a
-                           onClick={()=>{props.setFlyout(false);}}>
-                           <ListIcon as={FaCaretRight} color={props.caretColors.off} />
-                           {link.text}
-                        </a>
-                     </Link>
-                  )
-               })
-            }
-         </div>
+         {
+            props.flyoutVisible &&
+            <div style={{marginLeft:"3px"}} className={styles.flyoutMenu}>
+               {
+                  props.flyout.links.map(link=>{
+                     return (
+                        <Link
+                           shallow
+                           href={link.target}
+                           key={link.target}
+                        >
+                           <a
+                              onClick={()=>{props.setFlyout(false);}}>
+                              <ListIcon as={FaCaretRight} color={props.caretColors.off} />
+                              {link.text}
+                           </a>
+                        </Link>
+                     )
+                  })
+               }
+            </div>
+         }
+
          {
             ( props.flyout.featured && props.flyout.featured.length ) ?
                <Box className={styles.featuredProducts}>
