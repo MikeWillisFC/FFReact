@@ -1,10 +1,11 @@
-import {useEffect,useState,useRef,useImperativeHandle,cloneElement,Fragment} from "react";
+import {Fragment,useEffect,useState,useCallback} from "react";
 import { ListItem,Icon } from "@chakra-ui/react";
 import { FaCaretRight } from 'react-icons/fa';
 import Link from "next/link";
 import { useHoverIntent } from 'react-use-hoverintent';
 
-import Department from "./departments/Department";
+import Flyout from "./departments/Flyout";
+import Flydown from "./departments/Flydown";
 
 import styles from "../../styles/leftnav.module.scss";
 
@@ -23,35 +24,47 @@ const FlyoutListItem = (props) =>  {
       setState_arrowColor( props.caretColors.off );
    }
 
-   let {setFlyout} = props;
+   let setFlyout = useCallback(
+      props.setFlyout,
+      []
+   );
    useEffect(()=>{
-      //console.log(`${props.linkText} isHovering:`,isHovering);
+      console.log(`${props.linkText} isHovering:`,isHovering);
       setFlyout(isHovering);
    },[isHovering,setFlyout]);
 
    return (
-      <ListItem
-         className={styles.parentList}
-         onClick={props.toggleFlydowns}
-         //onMouseLeave={()=>{props.setFlyout(false);}}
-         //onMouseEnter={()=>{props.setFlyout(true);}}
-         ref={ref}
-      >
-         <Link
-            shallow
-            className="lna"
-            href={props.linkTarget}
+      <Fragment>
+         <ListItem
+            className={styles.parentList}
+            onClick={props.toggleFlydowns}
+            //onMouseLeave={()=>{props.setFlyout(false);}}
+            //onMouseEnter={()=>{props.setFlyout(true);}}
+            ref={ref}
          >
-            <a
-               //onMouseEnter={()=>{props.setFlyout(true);}}
-               onClick={()=>{props.setFlyout(false);}}
+            <Link
+               shallow
+               className="lna"
+               href={props.linkTarget}
             >
-               {props.linkText}
-               <Icon as={FaCaretRight} color={state_arrowColor} />
-            </a>
-         </Link>
-         {props.children}
-      </ListItem>
+               <a
+                  //onMouseEnter={()=>{props.setFlyout(true);}}
+                  onClick={()=>{props.setFlyout(false);}}
+
+               >
+                  {props.linkText}
+                  <Icon as={FaCaretRight} color={state_arrowColor} />
+               </a>
+            </Link>
+            {props.flyout}
+         </ListItem>
+         {
+            props.flydowns &&
+            <ListItem>
+               {props.flydown}
+            </ListItem>
+         }
+      </Fragment>
    );
 }; // FlyoutListItem
 
@@ -59,22 +72,23 @@ const FlyoutContainer = (props) => {
    const [state_flydownsVisible, setState_flydownsVisible] = useState( props.openedFlydown === props.linkTarget );
    const [state_flyoutVisible, setState_flyoutVisible] = useState( false );
 
-   //console.log("FlyoutContainer rendering, props:",props);
+   console.log("FlyoutContainer rendering, props:",props);
    useEffect(()=>{
+      console.log("FlyoutContainer useEffect running");
       setState_flydownsVisible( props.openedFlydown === props.linkTarget );
    }, [props.openedFlydown,props.linkTarget]);
 
    let toggleFlydowns = () => {
       //setState_flydownsVisible( prevState=>!prevState );
-      //console.log("toggleFlydowns",props.linkTarget);
+      console.log("toggleFlydowns",props.linkTarget);
       props.openFlydown(props.linkTarget);
    };
    let toggleFlyout = () => {
-      //console.log("toggling flyout");
+      console.log("toggling flyout");
       setState_flyoutVisible( prevState=>!prevState );
    };
    let setFlyout = setting => {
-      //console.log("toggling flyout");
+      console.log("setting flyout",setting);
       setState_flyoutVisible( setting );
    };
 
@@ -86,17 +100,26 @@ const FlyoutContainer = (props) => {
          toggleFlydowns={toggleFlydowns}
          toggleFlyout={toggleFlyout}
          setFlyout={setFlyout}
+         flyout={
+            <Flyout
+               basePrices={props.basePrices}
+               caretColors={props.caretColors}
+               flyoutVisible={state_flyoutVisible}
+               flyout={props.flyout}
+               toggleFlyout={toggleFlyout}
+               setFlyout={setFlyout}
+            />
+         }
+         flydowns={props.flydowns}
+         flydown={
+            <Flydown
+               basePrices={props.basePrices}
+               caretColors={props.caretColors}
+               flydowns={props.flydowns}
+               flydownsVisible={state_flydownsVisible}
+            />
+         }
       >
-         <Department
-            basePrices={props.basePrices}
-            caretColors={props.caretColors}
-            flydowns={props.flydowns}
-            flydownsVisible={state_flydownsVisible}
-            flyoutVisible={state_flyoutVisible}
-            flyout={props.flyout}
-            toggleFlyout={toggleFlyout}
-            setFlyout={setFlyout}
-         />
       </FlyoutListItem>
    )
 };

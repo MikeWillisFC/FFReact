@@ -9,13 +9,41 @@
       font-weight: bold;
    }
 
-   ul, .linkList {
+   .mainMenu, .flyoutMenu, .flydownMenu {
       list-style-type: none;
       padding-left: 0;
       font-size: .9em;
       margin-top: 1px;
       margin-left: 0px;
 
+      a {
+         display: block;
+         border-top: 1px solid transparent;
+         border-bottom: 1px solid transparent;
+      }
+   }
+
+   .mainMenu {
+      a {
+         padding-left: 10px;
+      }
+
+      > li:hover {
+         a {
+            border-top-color: #969696;
+            border-bottom-color: #969696;
+         }
+
+         .flydownMenu {
+            a {
+               border-top-color: transparent;
+               border-bottom-color: transparent;
+            }
+         }
+      }
+   }
+
+   .flyoutMenu {
       li:hover a {
          border-top: 1px solid #969696;
          border-bottom: 1px solid #969696;
@@ -28,18 +56,16 @@
          border-bottom: 1px solid transparent;
          margin: 1px 0px;
       }
+   }
 
-      li ul {
-         // overflow: hidden;
-         // height: 0px;
-         // transition: height 0.2s linear;
-      }
+   .flydownMenu {
+      a {
+         padding-left: 25px;
 
-      li ul li a, li:hover ul li a {
-         border: none;
-         display: inline-block;
-         padding: 1px 5px 0px 25px;
-         width: 100%;
+         &:hover {
+            border-top-color: #969696 !important;
+            border-bottom-color: #969696 !important;
+         }
       }
    }
 }
@@ -83,7 +109,7 @@
          top: 0px;
       }
 
-      ul, .linkList {
+      .flyoutMenu {
          float: left;
          width: 40%;
 
@@ -113,7 +139,7 @@
    }
 
    .borderCover {
-      background-color: #faf3f8;
+      background-color: #faf3f8 !important;
    }
 
    li:hover > a {
@@ -131,6 +157,10 @@
    .deptPreview {
 
    }
+
+   .flydownMenu a:hover {
+      background-color: #faf3f8;
+   }
 }
 
 .greenSection {
@@ -145,7 +175,7 @@
    }
 
    .borderCover {
-      background-color: #e9fbfb;
+      background-color: #e9fbfb !important;
    }
 
    li:hover > a {
@@ -162,7 +192,10 @@
 
    .deptPreview {
       background-color: #e9fbfb;
+   }
 
+   .flydownMenu a:hover {
+      background-color: #e9fbfb;
    }
 }
 
@@ -178,7 +211,7 @@
    }
 
    .borderCover {
-      background-color: #E8F4FA;
+      background-color: #E8F4FA !important;
    }
 
    li:hover > a {
@@ -195,7 +228,10 @@
 
    .deptPreview {
       background-color: #E8F4FA;
+   }
 
+   .flydownMenu a:hover {
+      background-color: #E8F4FA;
    }
 }
 
@@ -211,7 +247,7 @@
    }
 
    .borderCover {
-      background-color: #fee4db;
+      background-color: #fee4db !important;
    }
 
    li:hover > a {
@@ -226,6 +262,13 @@
       background-position: 5px 2px;
    }
 
+   .deptPreview {
+      background-color: #fee4db;
+   }
+
+   .flydownMenu a:hover {
+      background-color: #fee4db;
+   }
 
 }
 
@@ -244,6 +287,10 @@
 
    .featuredName {
       text-align: center;
+   }
+   .featuredPrice {
+      text-align: center;
+      display: block;
    }
 
    .bestOfferText {

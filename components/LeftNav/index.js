@@ -66,7 +66,7 @@ const LeftNav = (props) => {
                      <Box className={blockClass} key={navBlock.headline}>
                         <h3>{navBlock.headline}</h3>
 
-                        <UnorderedList>
+                        <UnorderedList className={styles.mainMenu}>
                            {
                               navBlock.links.map(link=>{
                                  if ( link.flyout ) {

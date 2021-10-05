@@ -34,34 +34,31 @@ const ProductThumb = (props) => {
    }
 
    return (
-      <div className={className}>
-         <Link href={`/page/FF/PROD/${props.code}`}>
-            <a>
-               {
-                  props.blurThumb ? (
-                     <Image
-                        src={`https://www.favorfavor.com${thumbnail}`}
-                        width={imageWidth}
-                        height={imageHeight}
-                        alt={props.alt}
-                        placeholder="blur"
-                        blurDataURL={props.blurThumb}
-                     />
-                  ) : (
-                     <Image
-                        src={`https://www.favorfavor.com${thumbnail}`}
-                        width={imageWidth}
-                        height={imageHeight}
-                        alt={props.alt}
-                     />
-                  )
-               }
-               <span dangerouslySetInnerHTML={{__html: props.name}}></span>
-               <br />
-               <span className="darkBlue"><b>{formatPrice(parseInt(props.basePrice))}</b></span>
-            </a>
-         </Link>
-      </div>
+      <Link href={`/page/FF/PROD/${props.code}`}>
+         <a className={className}>
+            {
+               props.blurThumb ? (
+                  <Image
+                     src={`https://www.favorfavor.com${thumbnail}`}
+                     width={imageWidth}
+                     height={imageHeight}
+                     alt={props.alt}
+                     placeholder="blur"
+                     blurDataURL={props.blurThumb}
+                  />
+               ) : (
+                  <Image
+                     src={`https://www.favorfavor.com${thumbnail}`}
+                     width={imageWidth}
+                     height={imageHeight}
+                     alt={props.alt}
+                  />
+               )
+            }
+            <span dangerouslySetInnerHTML={{__html: props.name}}></span>
+            <span className={`darkBlue ${styles.price}`}>{formatPrice(parseInt(props.basePrice))}</span>
+         </a>
+      </Link>
    );
 }
 
