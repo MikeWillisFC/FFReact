@@ -9,7 +9,7 @@
       font-weight: bold;
    }
 
-   ul, .linkList {
+   ul {
       list-style-type: none;
       padding-left: 0;
       font-size: .9em;
@@ -82,22 +82,6 @@
          left: -1px;
          top: 0px;
       }
-
-      ul, .linkList {
-         float: left;
-         width: 40%;
-
-         a {
-            border-bottom: 1px dashed #f00 !important;
-            white-space: nowrap;
-         }
-      }
-      a {
-         padding: 2px;
-      }
-      a:hover {
-         background-color: #fff;
-      }
    }
 }
 
@@ -129,7 +113,21 @@
    }
 
    .deptPreview {
+      ul {
+         float: left;
+         width: 40%;
 
+         li a {
+            white-space: nowrap;
+            border-bottom: 1px dashed #f00 !important;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
    }
 }
 
@@ -162,7 +160,21 @@
 
    .deptPreview {
       background-color: #e9fbfb;
+      ul {
+         float: left;
+         width: 40%;
 
+         li a {
+            white-space: nowrap;
+            border-bottom: 1px dashed #f00 !important;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
    }
 }
 
@@ -195,7 +207,21 @@
 
    .deptPreview {
       background-color: #E8F4FA;
+      ul {
+         float: left;
+         width: 40%;
 
+         li a {
+            white-space: nowrap;
+            border-bottom: 1px dashed #f00 !important;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
    }
 }
 
@@ -226,7 +252,23 @@
       background-position: 5px 2px;
    }
 
+   .deptPreview {
+      ul {
+         float: left;
+         width: 40%;
 
+         li a {
+            border-bottom: 1px dashed #f00 !important;
+            white-space: nowrap;
+         }
+      }
+      a {
+         padding: 2px;
+      }
+      a:hover {
+         background-color: #fff;
+      }
+   }
 }
 
 .featuredProducts {

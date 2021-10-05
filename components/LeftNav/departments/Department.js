@@ -99,26 +99,25 @@ const Department = (props) => {
             <Fragment>
                <div className={styles.deptPreview} style={state_flyoutStyle}>
                   <p className={styles.borderCover}></p>
-                  <UnorderedList style={{marginLeft:"3px"}}>
+                  <div style={{marginLeft:"3px"}} className={styles.linkList}>
                      {
                         props.flyout.links.map(link=>{
                            return (
-                              <ListItem key={link.target}>
-                                 <Link
-                                    shallow
-                                    href={link.target}
-                                 >
-                                    <a
-                                       onClick={()=>{props.setFlyout(false);}}>
-                                       <ListIcon as={FaCaretRight} color={props.caretColors.off} />
-                                       {link.text}
-                                    </a>
-                                 </Link>
-                              </ListItem>
+                              <Link
+                                 shallow
+                                 href={link.target}
+                                 key={link.target}
+                              >
+                                 <a
+                                    onClick={()=>{props.setFlyout(false);}}>
+                                    <ListIcon as={FaCaretRight} color={props.caretColors.off} />
+                                    {link.text}
+                                 </a>
+                              </Link>
                            )
                         })
                      }
-                  </UnorderedList>
+                  </div>
                   {
                      ( props.flyout.featured && props.flyout.featured.length ) ?
                         <Box className={styles.featuredProducts}>
