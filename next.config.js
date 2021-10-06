@@ -2,6 +2,10 @@ module.exports = {
   reactStrictMode: true,
   "trailingSlash": false,
 
+  images: {
+    minimumCacheTTL: 365,
+  },
+
   "headers": [
      {
         "source": "**/*.@(jpg|jpeg|gif|png|webp|svg)",
