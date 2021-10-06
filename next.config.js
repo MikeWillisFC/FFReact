@@ -4,7 +4,7 @@ module.exports = {
 
   "headers": [
      {
-        "source": "(*.webp)",
+        "source": "**/*.@(jpg|jpeg|gif|png|webp)",
         "headers" : [
            {
               "key" : "Cache-Control",
