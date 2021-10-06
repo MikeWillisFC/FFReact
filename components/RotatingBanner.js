@@ -1,7 +1,7 @@
 import {useState,useEffect,useRef,useCallback} from "react";
 import Link from "next/link";
 import Image from 'next/image';
-import { Container } from "@chakra-ui/react"
+import { Container, useBreakpointValue } from "@chakra-ui/react"
 
 import styles from "../styles/rotatingBanner.module.scss";
 
@@ -25,6 +25,8 @@ const RotatingBanner = (props) => {
    const [state_slides, setState_slides] = useState( [] );
    const [state_targetURL, setState_targetURL] = useState( "" );
    const [state_interval, setState_interval] = useState( false );
+
+   const breakPoint = useBreakpointValue({ base: "hidden", md: "visible" })
 
    useEffect(()=>{
       setState_slides(props.slides.map((slide,index)=>{
@@ -96,6 +98,7 @@ const RotatingBanner = (props) => {
    }
 
    return (
+      breakPoint === "hidden" ? null :
       <Container display={["none","none","block"]} maxW="container.xl">
          <div className={styles.container}>
             <a
