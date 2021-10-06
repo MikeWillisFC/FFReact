@@ -26,7 +26,7 @@ const RotatingBanner = (props) => {
    const [state_targetURL, setState_targetURL] = useState( "" );
    const [state_interval, setState_interval] = useState( false );
 
-   const breakPoint = useBreakpointValue({ base: "hidden", md: "visible" });
+   const breakPoint = useBreakpointValue({ base: "mobile", md: "notMobile" });
 
    useEffect(()=>{
       setState_slides(props.slides.map((slide,index)=>{
@@ -98,7 +98,7 @@ const RotatingBanner = (props) => {
    }
 
    return (
-      breakPoint === "hidden" ? null :
+      breakPoint === "mobile" ? null :
       <Container display={["none","none","block"]} maxW="container.xl">
          <div className={styles.container}>
             <a

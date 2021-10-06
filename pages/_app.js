@@ -13,7 +13,9 @@ import {
    Flex,
    Skeleton,
    SkeletonCircle,
-   SkeletonText
+   SkeletonText,
+
+   useBreakpointValue
 } from "@chakra-ui/react";
 
 import store from "../store";
@@ -32,6 +34,8 @@ function MyApp(props) {
    const { Component, pageProps } = props;
    //console.log("MyApp props",props);
 
+   const breakPoint = useBreakpointValue({ base: "mobile", md: "notMobile" });
+
    const [state_mobileNavVisible, setState_mobileNavVisible] = useState( false );
    const [state_navVisible, setState_navVisible] = useState( true );
 
@@ -46,6 +50,21 @@ function MyApp(props) {
       <Provider store={store}>
          <Head>
             <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+            {
+               breakPoint === "mobile" ? (
+                  <link
+                     rel="preload"
+                     href="https://www.favorfavor.com/images/misc/responsive/Logo.svg"
+                     as="image"
+                  />
+               ) : (
+                  <link
+                     rel="preload"
+                     href="https://www.favorfavor.com/images/misc/miscSpriteMain.3.png"
+                     as="image"
+                  />
+               )
+            }
          </Head>
          <ChakraProvider theme={theme}>
             <Box

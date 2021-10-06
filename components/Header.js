@@ -46,7 +46,7 @@ const Header = (props) => {
       return state.global;
    });
 
-   const breakPoint = useBreakpointValue({ base: "hidden", md: "visible" });
+   const breakPoint = useBreakpointValue({ base: "mobile", md: "notMobile" });
 
    const messages = useSelector(state=>{
       return state.messages;
@@ -121,7 +121,7 @@ const Header = (props) => {
                         height="21"
                         width="10"
                         alt="phone number"
-                        loading={breakPoint === "hidden" ? "lazy" : "eager"}
+                        loading={breakPoint === "mobile" ? "lazy" : "eager"}
                      />
                      {globalConfig.phoneNumber}
                   </Box>
