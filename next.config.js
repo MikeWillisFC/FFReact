@@ -2,9 +2,9 @@ module.exports = {
   reactStrictMode: true,
   "trailingSlash": false,
 
-  images: {
-    minimumCacheTTL: 31536000,
-  },
+  // images: {
+  //   minimumCacheTTL: 31536000,
+  // },
 
   // "headers": [
   //    {
