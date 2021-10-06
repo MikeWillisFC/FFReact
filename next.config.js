@@ -4,7 +4,7 @@ module.exports = {
 
   "headers": [
      {
-        "source": "(*.webp)",
+        "source": "/(*.webp)",
         "headers" : [
            {
               "key" : "Cache-Control",
