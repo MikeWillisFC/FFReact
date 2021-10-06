@@ -3,7 +3,7 @@ module.exports = {
   "trailingSlash": false,
 
   images: {
-    minimumCacheTTL: 365,
+    minimumCacheTTL: 31536000,
   },
 
   "headers": [
@@ -12,7 +12,7 @@ module.exports = {
         "headers" : [
            {
               "key" : "Cache-Control",
-              "value" : "max-age=31536000"
+              "value" : "s-max-age=31536000"
            }
         ]
      }
