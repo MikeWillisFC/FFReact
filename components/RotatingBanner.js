@@ -104,10 +104,18 @@ const RotatingBanner = (props) => {
                onMouseOut={handleMouseOut}
             >
                {
-                  state_slides.length ? state_slides.map(slide=>{
+                  state_slides.length ? state_slides.map((slide,index)=>{
+                     let loading = index > 0 ? "lazy" : "eager";
+
                      return (
                         <div key={slide.src} style={{opacity: slide.opacity}} className={styles.banner}>
-                           <Image key={slide.src} src={slide.src} alt={slide.title} layout="fill" />
+                           <Image
+                              key={slide.src}
+                              src={slide.src}
+                              alt={slide.title}
+                              layout="fill"
+                              loading={loading}
+                           />
                         </div>
                      );
                   }) : ""

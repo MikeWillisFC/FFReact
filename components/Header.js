@@ -112,7 +112,13 @@ const Header = (props) => {
                      display={["none","none","block","block"]}
                      className={`${headerStyles.phoneNumber} darkBlue`}
                   >
-                     <Image src="https://www.favorfavor.com/images/misc/header/phone.png" height="21" width="10" alt="phone number" />
+                     <Image
+                        src="https://www.favorfavor.com/images/misc/header/phone.png"
+                        height="21"
+                        width="10"
+                        alt="phone number"
+                        loading="eager"
+                     />
                      {globalConfig.phoneNumber}
                   </Box>
                }
