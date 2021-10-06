@@ -14,20 +14,6 @@ module.exports = {
      }
   ],
 
-  async headers() {
-     return [
-        {
-           source: "**/*.@(jpg|jpeg|gif|png|webp|svg)",
-           headers: [
-             {
-                key: "Cache-Control",
-                value: "max-age=31536000"
-             }
-           ]
-        }
-     ]
-  },
-
   images: {
     domains: ['www.favorfavor.com','www.nicepricefavors.com','localhost','cart.favorfavor.com'],
   },
