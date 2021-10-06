@@ -61,24 +61,39 @@ const ProductThumb = (props) => {
                !props.requireIntersect || state_isInView ?
                   <Fragment>
                      {
-                        props.blurThumb ? (
+                        !props.eagerLoad ?
+                           <Fragment>
+                              {
+                                 props.blurThumb ? (
+                                    <Image
+                                       src={`https://www.favorfavor.com${thumbnail}`}
+                                       width={imageWidth}
+                                       height={imageHeight}
+                                       alt={props.alt}
+                                       placeholder="blur"
+                                       blurDataURL={props.blurThumb}
+                                    />
+                                 ) : (
+                                    <Image
+                                       src={`https://www.favorfavor.com${thumbnail}`}
+                                       width={imageWidth}
+                                       height={imageHeight}
+                                       alt={props.alt}
+                                    />
+                                 )
+                              }
+                           </Fragment>
+                        : <Fragment>
                            <Image
                               src={`https://www.favorfavor.com${thumbnail}`}
                               width={imageWidth}
                               height={imageHeight}
                               alt={props.alt}
-                              placeholder="blur"
-                              blurDataURL={props.blurThumb}
+                              loading="eager"
                            />
-                        ) : (
-                           <Image
-                              src={`https://www.favorfavor.com${thumbnail}`}
-                              width={imageWidth}
-                              height={imageHeight}
-                              alt={props.alt}
-                           />
-                        )
+                        </Fragment>
                      }
+
                      <span dangerouslySetInnerHTML={{__html: props.name}}></span>
                      <span className={`darkBlue ${styles.price}`}>{formatPrice(parseInt(props.basePrice))}</span>
                   </Fragment>

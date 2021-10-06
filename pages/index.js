@@ -31,8 +31,8 @@ const Home = (props) => {
       <div>
          <RotatingBanner slides={props.slides} duration={props.slideDuration} />
          {
-            props.categories.map(category=>{
-               return <HorizontalProductList key={category.target} {...category} />
+            props.categories.map((category,index)=>{
+               return <HorizontalProductList key={category.target} rowNumber={index} {...category} />
             })
          }
       </div>

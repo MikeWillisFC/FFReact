@@ -38,8 +38,13 @@ const HorizontalProductList_INTERSECT = (props) => {
          <div className={styles.itemsContainer}>
             <div className={styles.items}>
                {
-                  props.items.map(item=>{
-                     return <ProductThumb requireIntersect={true} key={item.code} size="medium" {...item} />
+                  props.items.map((item,index)=>{
+                     /* we lazy load / intersect on row 4+ and image 4+. Basically, anything that
+                     * will show up in the viewport on a mobile device will NOT be lazy loaded
+                     */
+                     let requireIntersect = props.rowNumber > 3 && index > 3;
+
+                     return <ProductThumb eagerLoad={!requireIntersect} requireIntersect={requireIntersect} key={item.code} size="medium" {...item} />
                   })
                }
             </div>
