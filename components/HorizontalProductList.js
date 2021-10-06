@@ -3,7 +3,6 @@ import Link from "next/link";
 // import { FixedSizeList as List } from 'react-window';
 // import { Virtuoso } from 'react-virtuoso'
 // import { ResponsiveReactWindow } from 'responsive-react-window';
-import { useBreakpointValue } from "@chakra-ui/react";
 
 import ProductThumb from "./ProductThumb";
 
@@ -32,8 +31,6 @@ const HorizontalProductList_ORIGINAL = (props) => {
 // 2021-10-05: works fine
 const HorizontalProductList_INTERSECT = (props) => {
 
-   const breakPoint = useBreakpointValue({ base: "mobile", md: "notMobile" });
-
    return (
       <div className={styles.list}>
          <h2 className="darkBlue">
@@ -43,15 +40,10 @@ const HorizontalProductList_INTERSECT = (props) => {
             <div className={styles.items}>
                {
                   props.items.map((item,index)=>{
-                     /* we lazy load / intersect on row 4+ and image 4+. Basically, anything that
+                     /* we lazy load / intersect on row 2+ and image 2+. Basically, anything that
                      * will show up in the viewport on a mobile device will NOT be lazy loaded
                      */
-                     let requireIntersect;
-                     if ( breakPoint === "mobile" ) {
-                        requireIntersect = props.rowNumber > 2 || index > 2;
-                     } else {
-                        requireIntersect = props.rowNumber > 2 || index > 5;
-                     }
+                     let requireIntersect = props.rowNumber > 2 || index > 2;
                      // console.log("props.rowNumber",props.rowNumber);
                      // console.log("index",index);
                      // console.log("requireIntersect",requireIntersect);
