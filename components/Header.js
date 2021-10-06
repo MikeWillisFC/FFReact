@@ -22,6 +22,8 @@ import {
    MenuIcon,
    MenuCommand,
    MenuDivider,
+
+   useBreakpointValue
 } from "@chakra-ui/react";
 
 import Messages from "./Messages";
@@ -43,6 +45,8 @@ const Header = (props) => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+
+   const breakPoint = useBreakpointValue({ base: "hidden", md: "visible" });
 
    const messages = useSelector(state=>{
       return state.messages;
@@ -117,7 +121,7 @@ const Header = (props) => {
                         height="21"
                         width="10"
                         alt="phone number"
-                        loading="eager"
+                        loading={breakPoint === "hidden" ? "lazy" : "eager"}
                      />
                      {globalConfig.phoneNumber}
                   </Box>

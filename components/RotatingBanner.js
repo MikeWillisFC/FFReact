@@ -26,7 +26,7 @@ const RotatingBanner = (props) => {
    const [state_targetURL, setState_targetURL] = useState( "" );
    const [state_interval, setState_interval] = useState( false );
 
-   const breakPoint = useBreakpointValue({ base: "hidden", md: "visible" })
+   const breakPoint = useBreakpointValue({ base: "hidden", md: "visible" });
 
    useEffect(()=>{
       setState_slides(props.slides.map((slide,index)=>{
