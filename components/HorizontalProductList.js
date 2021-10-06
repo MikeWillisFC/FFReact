@@ -42,8 +42,10 @@ const HorizontalProductList_INTERSECT = (props) => {
                      /* we lazy load / intersect on row 4+ and image 4+. Basically, anything that
                      * will show up in the viewport on a mobile device will NOT be lazy loaded
                      */
-                     let requireIntersect = props.rowNumber > 3 && index > 3;
-
+                     let requireIntersect = props.rowNumber > 2 || index > 2;
+                     console.log("props.rowNumber",props.rowNumber);
+                     console.log("index",index);
+                     console.log("requireIntersect",requireIntersect);
                      return <ProductThumb eagerLoad={!requireIntersect} requireIntersect={requireIntersect} key={item.code} size="medium" {...item} />
                   })
                }
