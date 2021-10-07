@@ -8,7 +8,7 @@ module.exports = {
 
   "headers": [
      {
-        "source": "**/*.@(jpg|jpeg|gif|png|webp|svg)",
+        "source": "/*.(jpg|jpeg|gif|png|webp|svg)",
         "headers" : [
            {
               "key" : "Cache-Control",
