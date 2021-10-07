@@ -8,18 +8,31 @@ module.exports = {
 
   "headers": [
      {
-        "source": "/*.(jpg|jpeg|gif|png|webp|svg)",
-        "headers" : [
-           {
+       "source": "/*.(jpg|jpeg|gif|png|webp|svg)",
+       "headers" : [
+          {
               "key" : "Cache-Control",
               "value" : "s-max-age=31536000"
-           },
-           {
+          },
+          {
               "key" : "TEST",
               "value" : "ASDF"
-           }
-        ]
-     }
+          }
+       ]
+    },
+    {
+      "source": "/_next/image*",
+      "headers" : [
+          {
+             "key" : "Cache-Control",
+             "value" : "s-max-age=31536000"
+          },
+          {
+             "key" : "TEST",
+             "value" : "ASDF"
+          }
+      ]
+    }
   ],
 
   images: {
