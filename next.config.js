@@ -12,24 +12,16 @@ module.exports = {
        "headers" : [
           {
               "key" : "Cache-Control",
-              "value" : "s-max-age=31536000"
-          },
-          {
-              "key" : "TEST",
-              "value" : "ASDF"
+              "value" : "max-age=31536000"
           }
        ]
     },
     {
-      "source": "/_next/image*",
+      "source": "/_next/image(.*)",
       "headers" : [
           {
              "key" : "Cache-Control",
-             "value" : "s-max-age=31536000"
-          },
-          {
-             "key" : "TEST",
-             "value" : "ASDF"
+             "value" : "max-age=31536000"
           }
       ]
     }
@@ -37,7 +29,6 @@ module.exports = {
 
   images: {
     domains: ['www.favorfavor.com','www.nicepricefavors.com','localhost','cart.favorfavor.com'],
-    minimumCacheTTL: 31536000,
   },
 
   async rewrites() {
