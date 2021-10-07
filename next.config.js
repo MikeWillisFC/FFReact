@@ -20,6 +20,7 @@ module.exports = {
 
   images: {
     domains: ['www.favorfavor.com','www.nicepricefavors.com','localhost','cart.favorfavor.com'],
+    minimumCacheTTL: 31536000,
   },
 
   async rewrites() {
