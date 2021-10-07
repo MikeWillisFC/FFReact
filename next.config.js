@@ -1,42 +1,35 @@
 module.exports = {
   reactStrictMode: true,
-  "trailingSlash": false,
+  trailingSlash: false,
 
-  // images: {
-  //   minimumCacheTTL: 31536000,
-  // },
-
-  "headers": [
-     {
-       "source": "/*.(jpg|jpeg|gif|png|webp|svg)",
-       "headers" : [
-          {
-              "key" : "Cache-Control",
-              "value" : "s-max-age=31536000"
-          },
-          {
-              "key" : "TEST",
-              "value" : "ASDF"
-          }
-       ]
+  headers: [
+    {
+      source: '/*.(jpg|jpeg|gif|png|webp|svg)',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'max-age=31536000',
+        },
+      ],
     },
     {
-      "source": "/_next/image*",
-      "headers" : [
-          {
-             "key" : "Cache-Control",
-             "value" : "s-max-age=31536000"
-          },
-          {
-             "key" : "TEST",
-             "value" : "ASDF"
-          }
-      ]
-    }
+      source: '/_next/image*',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'max-age=31536000',
+        },
+      ],
+    },
   ],
 
   images: {
-    domains: ['www.favorfavor.com','www.nicepricefavors.com','localhost','cart.favorfavor.com'],
+    domains: [
+      'www.favorfavor.com',
+      'www.nicepricefavors.com',
+      'localhost',
+      'cart.favorfavor.com',
+    ],
     minimumCacheTTL: 31536000,
   },
 
@@ -50,6 +43,6 @@ module.exports = {
         source: '/page/FF/PROD/:prodCode',
         destination: '/prod/:prodCode',
       },
-    ]
+    ];
   },
-}
+};
