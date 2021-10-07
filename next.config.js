@@ -13,7 +13,7 @@ module.exports = {
       ],
     },
     {
-      source: '/_next/image*',
+      source: '/_next/image.(*)',
       headers: [
         {
           key: 'Cache-Control',
