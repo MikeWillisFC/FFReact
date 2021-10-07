@@ -39,7 +39,24 @@ const Home = (props) => {
    );
 };
 
-Home.getInitialProps = async (context) => {
+// server-side render
+// Home.getInitialProps = async (context) => {
+//    //console.log("context",context);
+//
+//    let config = await import("../config/config");
+//    //console.log("config",config);
+//
+//    let response = await _fetchHome(config.default.apiEndpoint_static);
+//    //console.log("response",response);
+//    if ( response ) {
+//       return response.data.home;
+//    } else {
+//       return null;
+//    }
+// };
+
+// server-side render and pre-render
+export async function getStaticProps() {
    //console.log("context",context);
 
    let config = await import("../config/config");
@@ -48,10 +65,15 @@ Home.getInitialProps = async (context) => {
    let response = await _fetchHome(config.default.apiEndpoint_static);
    //console.log("response",response);
    if ( response ) {
-      return response.data.home;
+      return {
+         props: response.data.home,
+         revalidate: 60
+      }
    } else {
-      return null;
+      return {
+         props: null
+      }
    }
-};
+}
 
 export default Home;
