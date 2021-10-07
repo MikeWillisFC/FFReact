@@ -13,6 +13,10 @@ module.exports = {
            {
               "key" : "Cache-Control",
               "value" : "s-max-age=31536000"
+           },
+           {
+              "key" : "TEST",
+              "value" : "ASDF"
            }
         ]
      }
