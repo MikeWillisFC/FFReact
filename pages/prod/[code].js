@@ -333,8 +333,8 @@ export async function getStaticPaths() {
    let response = await axios.get(`https://${config.default.domain}/api/get/ti.php`);
    //console.log("response",response);
    return {
-      paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
-      //paths: response.data.items.map(item=>({ params: { code: item } })),
+      //paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
+      paths: response.data.items.map(item=>({ params: { code: item } })),
       fallback: true // See the "fallback" section below
    };
 };
