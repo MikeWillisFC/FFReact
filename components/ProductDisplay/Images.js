@@ -57,13 +57,18 @@ const Images = props => {
       return `https://${props.domain}${path}`;
    }; // fixImageSrc
 
-   let renderImage = (path, width, height, alt, blur=false) => {
+   let renderImage = (path, width, height, alt, blur=false, eager=false) => {
       // because I don't like repeating code
-      if ( blur ) {
-         return <Image src={fixImageSrc(path)} width={width} height={height} alt={alt} placeholder="blur" blurDataURL={blur} />
+      if ( eager ) {
+         return <Image loading="eager" src={fixImageSrc(path)} width={width} height={height} alt={alt} />
       } else {
-         return <Image src={fixImageSrc(path)} width={width} height={height} alt={alt} />
+         if ( blur ) {
+            return <Image src={fixImageSrc(path)} width={width} height={height} alt={alt} placeholder="blur" blurDataURL={blur} />
+         } else {
+            return <Image src={fixImageSrc(path)} width={width} height={height} alt={alt} />
+         }
       }
+
    }; // renderImage
 
    let handleModalImageListClick = event => {
@@ -104,12 +109,12 @@ const Images = props => {
                   href={getLargeImageLink()}
                   onClick={event=>{handleImageClick(event,getLargeImageLink())}}
                >
-                  {renderImage(props.images.main.path, props.images.main.width, props.images.main.height, props.strippedName, props.images.main.blur)}
+                  {renderImage(props.images.main.path, props.images.main.width, props.images.main.height, props.strippedName, props.images.main.blur, true)}
                   <span>
                      Enlarge <Image src={`https://${props.domain}/images/misc/enlarge2.png`} width="27" height="15" alt="enlarge" />
                   </span>
                </a>
-            : renderImage(props.images.main.path, props.images.main.width, props.images.main.height, props.strippedName, props.images.main.blur)
+            : renderImage(props.images.main.path, props.images.main.width, props.images.main.height, props.strippedName, props.images.main.blur, true)
          }
 
          {
@@ -133,7 +138,8 @@ const Images = props => {
                         props.images.reviewImages && props.images.reviewImages.length ?
                            <TabPanel className={props.styles.additionalImages}>
                               {
-                                 props.images.reviewImages.map(image=>{
+                                 props.images.reviewImages.map((image,index)=>{
+                                    let eager = index < 3;
                                     return (
                                        <a
                                           key={image.thumb.path}
@@ -148,7 +154,7 @@ const Images = props => {
                                           }}
                                           href={image.main.path}
                                        >
-                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur)}
+                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur, eager)}
                                        </a>
                                     );
                                  })
@@ -160,7 +166,8 @@ const Images = props => {
                         props.images.additionalImages && props.images.additionalImages.length ?
                            <TabPanel className={props.styles.additionalImages}>
                               {
-                                 props.images.additionalImages.map(image=>{
+                                 props.images.additionalImages.map((image,index)=>{
+                                    let eager = !props.images.reviewImages && index < 3;
                                     return (
                                        <a
                                           key={image.thumb.path}
@@ -175,7 +182,7 @@ const Images = props => {
                                           }}
                                           href={image.main.path}
                                        >
-                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur)}
+                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur, eager)}
                                        </a>
                                     );
                                  })
