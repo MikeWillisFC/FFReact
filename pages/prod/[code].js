@@ -339,7 +339,7 @@ export async function getStaticPaths() {
    };
 };
 export async function getStaticProps(context) {
-   //console.log("context",context);
+   console.log("getStaticProps context",context);
 
    let config = await import("../../config/config");
    //console.log("config",config);
