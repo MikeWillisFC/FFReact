@@ -334,7 +334,7 @@ export async function getStaticPaths() {
    //console.log("response",response);
    return {
       //paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
-      paths: response.data.items.map(item=>({ params: { code: item } })),
+      paths: [response.data.items.map(item=>({ params: { code: item } }))[0]],
       fallback: true // See the "fallback" section below
    };
 };
