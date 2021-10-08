@@ -29,7 +29,7 @@ const FlyoutListItem = (props) =>  {
       []
    );
    useEffect(()=>{
-      console.log(`${props.linkText} isHovering:`,isHovering);
+      //console.log(`${props.linkText} isHovering:`,isHovering);
       setFlyout(isHovering);
    },[isHovering,setFlyout]);
 
@@ -72,23 +72,23 @@ const FlyoutContainer = (props) => {
    const [state_flydownsVisible, setState_flydownsVisible] = useState( props.openedFlydown === props.linkTarget );
    const [state_flyoutVisible, setState_flyoutVisible] = useState( false );
 
-   console.log("FlyoutContainer rendering, props:",props);
+   //console.log("FlyoutContainer rendering, props:",props);
    useEffect(()=>{
-      console.log("FlyoutContainer useEffect running");
+      //console.log("FlyoutContainer useEffect running");
       setState_flydownsVisible( props.openedFlydown === props.linkTarget );
    }, [props.openedFlydown,props.linkTarget]);
 
    let toggleFlydowns = () => {
       //setState_flydownsVisible( prevState=>!prevState );
-      console.log("toggleFlydowns",props.linkTarget);
+      //console.log("toggleFlydowns",props.linkTarget);
       props.openFlydown(props.linkTarget);
    };
    let toggleFlyout = () => {
-      console.log("toggling flyout");
+      //console.log("toggling flyout");
       setState_flyoutVisible( prevState=>!prevState );
    };
    let setFlyout = setting => {
-      console.log("setting flyout",setting);
+      //console.log("setting flyout",setting);
       setState_flyoutVisible( setting );
    };
 
