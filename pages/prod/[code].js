@@ -305,23 +305,57 @@ const Product = (props) => {
    );
 };
 
-Product.getInitialProps = async (context) => {
+// server-side render
+// Product.getInitialProps = async (context) => {
+//    //console.log("context",context);
+//
+//    let config = await import("../../config/config");
+//    //console.log("config",config);
+//    let response = await _fetchProduct(context.query.code,config.default.apiEndpoint_static);
+//    //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.query.code}`);
+//
+//    //console.log("response.data",response.data);
+//    //console.log("context.params.code",context.params.code);
+//    if ( response ) {
+//       return {
+//          product: response.data
+//       };
+//    } else {
+//       return {
+//          product: null
+//       }
+//    }
+// };
+
+// server-side render and pre-render
+export async function getStaticPaths() {
+   let config = await import("../../config/config");
+   let response = await axios.get(`https://${config.default.domain}/api/get/ti.php`);
+   //console.log("response",response);
+   return {
+      //paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
+      paths: response.data.items.map(item=>({ params: { code: item } })),
+      fallback: true // See the "fallback" section below
+   };
+};
+export async function getStaticProps(context) {
    //console.log("context",context);
 
    let config = await import("../../config/config");
    //console.log("config",config);
-   let response = await _fetchProduct(context.query.code,config.default.apiEndpoint_static);
-   //let response = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.query.code}`);
 
-   //console.log("response.data",response.data);
-   //console.log("context.params.code",context.params.code);
+   let response = await _fetchProduct(context.params.code,config.default.apiEndpoint_static);
+   //console.log("response",response);
    if ( response ) {
       return {
-         product: response.data
-      };
+         props: {
+            product: response.data
+         },
+         revalidate: (60 * 30) // seconds
+      }
    } else {
       return {
-         product: null
+         props: null
       }
    }
 };

@@ -67,7 +67,7 @@ export async function getStaticProps() {
    if ( response ) {
       return {
          props: response.data.home,
-         revalidate: 60
+         revalidate: (60 * 30) // seconds
       }
    } else {
       return {
