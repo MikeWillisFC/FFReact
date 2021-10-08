@@ -52,7 +52,7 @@ const Product = (props) => {
    });
    const router = useRouter();
 
-   const [state_product,setState_product] = useState( props.product.product || {} );
+   const [state_product,setState_product] = useState( props.product || {} );
    const [state_productIsSet,setState_productIsSet] = useState( false );
    const [state_generalModal,setState_generalModal] = useState( {title: false,content: false, size:false} );
 
@@ -68,10 +68,10 @@ const Product = (props) => {
    },[setNavVisibility]);
 
    useEffect(()=>{
-      console.log("PRODUCT USEEFFECT",props.product.product);
-      setState_product( props.product.product );
+      console.log("PRODUCT USEEFFECT",props.product);
+      setState_product( props.product );
       setState_productIsSet( true );
-   },[props.product.product]);
+   },[props.product]);
 
    useEffect(()=>{
       console.log("PRODUCT USEEFFECT - state_product");
@@ -318,7 +318,7 @@ const Product = (props) => {
 //    //console.log("context.params.code",context.params.code);
 //    if ( response ) {
 //       return {
-//          product: response.data
+//          response.data
 //       };
 //    } else {
 //       return {
@@ -348,9 +348,7 @@ export async function getStaticProps(context) {
    //console.log("response",response);
    if ( response ) {
       return {
-         props: {
-            product: response.data
-         },
+         props: response.data,
          revalidate: (60 * 30) // seconds
       }
    } else {

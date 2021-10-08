@@ -24,7 +24,7 @@ const ProductThumb = (props) => {
       }
    },[inView_isInView]);
 
-   console.log("ProductThumb props",props);
+   //console.log("ProductThumb props",props);
 
    let imageWidth = 160;
    let className = styles.thumbLarge;
