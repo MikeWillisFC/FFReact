@@ -13,7 +13,7 @@ const LeftNav = (props) => {
       return state.global;
    });
 
-   console.log("LeftNav rendering");
+   //console.log("LeftNav rendering");
 
    const [state_openedFlydown,setState_openedFlydown] = useState(false);
 

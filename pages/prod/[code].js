@@ -12,13 +12,6 @@ import {
    WrapItem,
    Heading,
    Flex,
-   Modal,
-   ModalOverlay,
-   ModalContent,
-   ModalHeader,
-   ModalFooter,
-   ModalBody,
-   ModalCloseButton,
    Button,
    Spinner,
    Stack,
@@ -34,17 +27,12 @@ import Images from "../../components/ProductDisplay/Images";
 import Stats from "../../components/ProductDisplay/Stats";
 import Attributes from "../../components/ProductDisplay/Attributes";
 import AddToCart from "../../components/ProductDisplay/AddToCart";
+import Description from "../../components/ProductDisplay/Description";
+import AlsoShopped from "../../components/ProductDisplay/AlsoShopped";
 
 import { createMD5 } from "../../utilities/";
 
 import styles from "../../styles/product.module.scss";
-
-const _fetchProduct = _.memoize(async (code,endpoint) => {
-   let request = `&cAction=getPROD&prodCode=${code}`;
-   let hash = createMD5( request );
-
-   return await axios.get(`${endpoint}${request}&h=${hash}`);
-});
 
 const Product = (props) => {
    let globalConfig = useSelector((state)=>{
@@ -52,15 +40,16 @@ const Product = (props) => {
    });
    const router = useRouter();
 
-   const [state_product,setState_product] = useState( props.product || {} );
+   //console.log("Product props",props);
+
+   const [state_product,setState_product] = useState( props.product || false );
    const [state_productIsSet,setState_productIsSet] = useState( false );
-   const [state_generalModal,setState_generalModal] = useState( {title: false,content: false, size:false} );
+   const [state_focusedImageData,setState_focusedImageData] = useState( false );
 
    let quantityRef = useRef();
    let attributeValuesRef = useRef([]);
 
    const imageModalDisclosure = useDisclosure();
-   const generalModalDisclosure = useDisclosure();
 
    let {setNavVisibility} = props;
    useEffect(()=>{
@@ -68,22 +57,17 @@ const Product = (props) => {
    },[setNavVisibility]);
 
    useEffect(()=>{
-      console.log("PRODUCT USEEFFECT",props.product);
+      //console.log("PRODUCT USEEFFECT",props.product);
       setState_product( props.product );
       setState_productIsSet( true );
    },[props.product]);
 
    useEffect(()=>{
-      console.log("PRODUCT USEEFFECT - state_product");
+      //console.log("PRODUCT USEEFFECT - state_product");
    },[state_product]);
    useEffect(()=>{
-      console.log("PRODUCT USEEFFECT - state_productIsSet");
+      //console.log("PRODUCT USEEFFECT - state_productIsSet");
    },[state_productIsSet]);
-   useEffect(()=>{
-      console.log("PRODUCT USEEFFECT - state_generalModal");
-   },[state_generalModal]);
-
-   console.log("Product props",props);
 
    /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
    * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
@@ -123,10 +107,7 @@ const Product = (props) => {
    }; // renderSpinner
 
    let decodeEntities = encodedString => {
-      // see https://stackoverflow.com/a/1395954/1042398
-      var textArea = document.createElement('textarea');
-      textArea.innerHTML = encodedString;
-      return textArea.value;
+      return _.unescape(encodedString);
    }; // decodeEntities
 
    let handleSubmit = async (event) => {
@@ -178,17 +159,13 @@ const Product = (props) => {
             body: bodyFormData
          });
       }
-
-
-
-
       //console.log("response",response);
    }; // handleSubmit
 
    let formID = "basketAdd";
 
    return (
-      !state_productIsSet ? renderSpinner() :
+      !state_product ? renderSpinner() :
       <Fragment>
          <Head>
             <title>
@@ -208,10 +185,10 @@ const Product = (props) => {
                dangerouslySetInnerHTML={{__html: _.unescape(state_product.name)}}
             >
             </Heading>
-            <Flex className={styles.details}>
+            <Flex className={styles.details} wrap={"wrap"}>
                <Box
                   className={styles.mainImage}
-                  w="325px"
+                  w={["100%","100%","325px"]}
                >
                   <Images
                      hasLargeImage={state_product.customFields.hasLargeImage}
@@ -222,9 +199,15 @@ const Product = (props) => {
                      modalDisclosure={imageModalDisclosure}
                      styles={styles}
                      renderSpinner={renderSpinner}
+                     imageData={state_focusedImageData}
+                     setImageData={setState_focusedImageData}
                   />
                </Box>
-               <Box flex="1" className={styles.specifics}>
+               <Box
+                  flex="1"
+                  className={styles.specifics}
+                  w={["100%","100%","325px"]}
+               >
                   <Heading
                      as="h1"
                      display={["none","none","block"]}
@@ -237,8 +220,8 @@ const Product = (props) => {
                      product={state_product}
                      styles={styles}
                      globalConfig={globalConfig}
-                     generalModalDisclosure={generalModalDisclosure}
-                     setGeneralModal={setState_generalModal}
+                     miscModalDisclosure={props.miscModalDisclosure}
+                     setMiscModal={props.setMiscModal}
                   />
 
                   <form
@@ -253,8 +236,8 @@ const Product = (props) => {
                         parentTemplateCode=""
                         styles={styles}
                         globalConfig={globalConfig}
-                        generalModalDisclosure={generalModalDisclosure}
-                        setGeneralModal={setState_generalModal}
+                        miscModalDisclosure={props.miscModalDisclosure}
+                        setMiscModal={props.setMiscModal}
                         receiveAttributeValue={receiveAttributeValue}
                      />
 
@@ -263,47 +246,38 @@ const Product = (props) => {
                         quantity={quantityRef.current}
                         quantityRef={quantityRef}
                      />
-
                   </form>
-
                </Box>
             </Flex>
+
+            <Description
+               product={state_product}
+               domain={globalConfig.domain}
+               apiEndpoint_static={globalConfig.apiEndpoint_static}
+               setImageData={setState_focusedImageData}
+            />
+
+            {
+               state_product.alsoShopped.length && (
+                  <AlsoShopped
+                     prodCode={state_product.code}
+                     items={state_product.alsoShopped}
+                  />
+               )
+            }
+
          </Box>
-
-         <Modal
-            isOpen={generalModalDisclosure.isOpen}
-            onClose={generalModalDisclosure.onClose}
-            size={state_generalModal.size}
-            isCentered
-         >
-            <ModalOverlay />
-            <ModalContent
-               className={styles.generalModal}
-            >
-               <ModalHeader className="blueHeader">
-                  {state_generalModal.title}
-                  <ModalCloseButton />
-               </ModalHeader>
-               <Box>
-                  {
-                     typeof( state_generalModal.content ) === "object" ?
-                        <ModalBody className={styles.gmBody}>
-                           {state_generalModal.content}
-                        </ModalBody>
-                     : <ModalBody
-                        className={styles.gmBody}
-                        dangerouslySetInnerHTML={{__html: _.unescape(state_generalModal.content)}}
-                       >
-                     </ModalBody>
-                  }
-
-               </Box>
-            </ModalContent>
-         </Modal>
-
       </Fragment>
    );
 };
+
+const fetchProduct = async (code,endpoint) => {
+   let request = `&cAction=getPROD&prodCode=${code}`;
+   let hash = createMD5( request );
+
+   return await axios.get(`${endpoint}${request}&h=${hash}`);
+}; // fetchProduct
+const _fetchProduct = _.memoize(fetchProduct);
 
 // server-side render
 // Product.getInitialProps = async (context) => {
@@ -335,21 +309,21 @@ export async function getStaticPaths() {
    return {
       //paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
       paths: response.data.items.map(item=>({ params: { code: item } })),
-      fallback: true // See the "fallback" section below
+      fallback: true
    };
 };
 export async function getStaticProps(context) {
-   console.log("getStaticProps context",context);
+   //console.log("getStaticProps context",context);
 
    let config = await import("../../config/config");
    //console.log("config",config);
 
-   let response = await _fetchProduct(context.params.code,config.default.apiEndpoint_static);
+   let response = await fetchProduct(context.params.code,config.default.apiEndpoint_static);
    //console.log("response",response);
    if ( response ) {
       return {
          props: response.data,
-         revalidate: (60 * 30) // seconds
+         revalidate: config.default.cacheKeepAlive.prod
       }
    } else {
       return {

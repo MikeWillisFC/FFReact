@@ -1,0 +1,31 @@
+.allReviews {
+   tr {
+      background-color: transparent !important;
+   }
+
+   div[itemProp="review"] {
+      border-bottom: none;
+      margin-bottom: 0px;
+   }
+
+   div[class*='datatableContainer'] {
+      overflow: auto !important;
+   }
+}
+
+.allReviewsModal {
+   div[class*='datatableContainer'] {
+      height: 55vh !important;
+   }
+}
+
+.allReviewsFull {
+   div[class*='datatableContainer'] {
+      height: 70vh !important;
+   }
+}
+
+.prodLink {
+   font-weight: bold;
+   text-decoration: underline;
+}

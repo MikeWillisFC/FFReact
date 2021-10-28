@@ -10,7 +10,7 @@ const Attributes = props => {
    const [state_attributeRows,setState_attributeRows] = useState( [] );
    const [state_attributeScripts,setState_attributeScripts] = useState( [] );
 
-   console.log("Attributes props",props);
+   //console.log("Attributes props",props);
 
    useEffect(()=>{
       // clean up included attribute scripts and whatever crap they might have set
@@ -68,7 +68,7 @@ const Attributes = props => {
          });
       }
 
-      console.log("ATTRIBUTES",attributes);
+      //console.log("ATTRIBUTES",attributes);
 
       let attributeScripts = [];
       attributes.forEach(att=>{
@@ -93,9 +93,9 @@ const Attributes = props => {
 
    let handleChange = (value,onChange,code,templateCode) => {
       // 2021-08-10: this is only called if the attribute has an onChange
-      console.log("handling change");
-      console.log("value",value);
-      console.log("onChange",onChange);
+      // console.log("handling change");
+      // console.log("value",value);
+      // console.log("onChange",onChange);
 
       let changeHandled = false;
       onChange.forEach(change=>{
@@ -154,9 +154,9 @@ const Attributes = props => {
                if ( !attribute ) {
                   return null;
                } else {
-                  console.log("printing attribute",attribute);
+                  //console.log("printing attribute",attribute);
                   if ( attribute.hiddenSetting ) {
-                     console.log("hiddenSetting",attribute.hiddenSetting);
+                     //console.log("hiddenSetting",attribute.hiddenSetting);
                      switch( attribute.hiddenSetting ) {
                         case "beginHiddenOptions":
                            hidingOptions = true;
@@ -183,8 +183,8 @@ const Attributes = props => {
                            attribute={attribute}
                            styles={props.styles}
                            globalConfig={props.globalConfig}
-                           generalModalDisclosure={props.generalModalDisclosure}
-                           setGeneralModal={props.setState_generalModal}
+                           miscModalDisclosure={props.miscModalDisclosure}
+                           setMiscModal={props.setMiscModal}
                            onChange={handleChange}
                            product={props.product}
                            receiveAttributeValue={props.receiveAttributeValue}

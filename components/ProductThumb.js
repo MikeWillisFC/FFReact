@@ -8,6 +8,8 @@ import {formatPrice} from "../utilities";
 import styles from "../styles/productThumb.module.scss";
 
 const ProductThumb = (props) => {
+   //console.log("ProductThumb props",props);
+
    // default is large
    const [state_isInView,setState_isInView] = useState(false);
    const [inView_ref, inView_isInView, inView_entry] = useInView({
@@ -69,7 +71,7 @@ const ProductThumb = (props) => {
                                        src={`https://www.favorfavor.com${thumbnail}`}
                                        width={imageWidth}
                                        height={imageHeight}
-                                       alt={props.alt}
+                                       alt={props.alt || props.name}
                                        placeholder="blur"
                                        blurDataURL={props.blurThumb}
                                     />
@@ -78,7 +80,7 @@ const ProductThumb = (props) => {
                                        src={`https://www.favorfavor.com${thumbnail}`}
                                        width={imageWidth}
                                        height={imageHeight}
-                                       alt={props.alt}
+                                       alt={props.alt || props.name}
                                     />
                                  )
                               }
@@ -88,14 +90,25 @@ const ProductThumb = (props) => {
                               src={`https://www.favorfavor.com${thumbnail}`}
                               width={imageWidth}
                               height={imageHeight}
-                              alt={props.alt}
+                              alt={props.alt || props.name}
                               loading="eager"
                            />
                         </Fragment>
                      }
 
                      <span dangerouslySetInnerHTML={{__html: props.name}}></span>
-                     <span className={`darkBlue ${styles.price}`}>{formatPrice(parseInt(props.basePrice))}</span>
+                     <span className={`darkBlue ${styles.price}`}>
+                        {
+                           props.basePrice ?
+                              formatPrice(parseInt(props.basePrice))
+                           :
+                           (
+                              props.price ?
+                                 formatPrice(parseInt(props.price))
+                              : ""
+                           )
+                        }
+                     </span>
                   </Fragment>
                : "Loading..."
             }

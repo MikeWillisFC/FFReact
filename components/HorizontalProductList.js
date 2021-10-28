@@ -29,15 +29,27 @@ const HorizontalProductList_ORIGINAL = (props) => {
 };
 
 // 2021-10-05: works fine
-const HorizontalProductList_INTERSECT = (props) => {
+const HorizontalProductList_INTERSECT = props => {
+   //console.log("styles.items",styles.items);
+
+   let itemsStyle = {};
+   if ( props.resetWidth ) {
+      itemsStyle.width = `${(props.items.length * 155)}px`;
+   }
+
+   //console.log("itemsStyle",itemsStyle);
 
    return (
       <div className={styles.list}>
-         <h2 className="darkBlue">
-            <Link href={props.target}>{props.text}</Link>
-         </h2>
+         {
+            props.target && (
+               <h2 className="darkBlue">
+                  <Link href={props.target}>{props.text}</Link>
+               </h2>
+            )
+         }
          <div className={styles.itemsContainer}>
-            <div className={styles.items}>
+            <div className={styles.items} style={itemsStyle}>
                {
                   props.items.map((item,index)=>{
                      /* we lazy load / intersect on row 2+ and image 2+. Basically, anything that
@@ -47,7 +59,15 @@ const HorizontalProductList_INTERSECT = (props) => {
                      // console.log("props.rowNumber",props.rowNumber);
                      // console.log("index",index);
                      // console.log("requireIntersect",requireIntersect);
-                     return <ProductThumb eagerLoad={!requireIntersect} requireIntersect={requireIntersect} key={item.code} size="medium" {...item} />
+                     return (
+                        <ProductThumb
+                           eagerLoad={!requireIntersect}
+                           requireIntersect={requireIntersect}
+                           key={item.code}
+                           size="medium"
+                           {...item}
+                        />
+                     );
                   })
                }
             </div>

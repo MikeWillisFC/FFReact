@@ -1,23 +1,55 @@
+general:
+- disable caching on ff website (use vercel instead)
+- XXXX increase cache age on vercel (24 hours? 12?)
+- EFFICIENCY!!
+--- minimize re-renders
+--- page speed
+--- memoize stuff
+--- SPEED!!!!!!!!!!!!!!!
+
+header:
+- XXXX end date for $9.99 shipping
+- XXXX id for site assistance menu
+- facebook like link
+
 left nav:
-- close all flydowns when one opens
+- XXXX close all flydowns when one opens
+- flyouts sometimes remain open, wtf?!
 - open flydown if one of it's categories is the one being viewed
+
+product:
+- click on review count to scroll to / open reviews panel
+- click on estimated delivery, enter zip, get estimate
+- all attributes need review
+--- buttons such as click here to design, etc
+- quantity dropdown menu for items sold as sets
+- main image: peel corner for items that use that
+- recently viewed items list? (under customers also shopped for)
+- set link in shipping / production to point to terms / conditions when that page is ready
+- add schema.org stuff
+- remove red border around large product images, image box, etc
 
 basket:
 - check result of editable attribute update
 - make quantity a dropdown if needed
 
+checkout:
+- full review
+
+search:
+- do it
+
+saved cart:
+- do it
+
 departments:
 - 2x5 is good but others need review
+- why isn't this dept header loading? http://localhost:3001/page/FF/CTGY/PersonalizedWeddingFavors
 
 category:
 - don't show pagination / view all if there are less than 1 page worth of products
 - check responsiveness
 - show out of stock notice on items that need it: <i>(OUT OF STOCK, Available 5/21)</i>
-
-product:
-- set link in shipping / production to point to terms / conditions when that page is ready
-- add schema.org stuff
-- remove red border around large product images, image box, etc
 
 ATTRIBUTES NEEDING REVIEW:
 PRODUCTS:

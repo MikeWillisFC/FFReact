@@ -38,8 +38,8 @@ const AttributeRow = props => {
                attribute={props.attribute}
                styles={props.styles}
                globalConfig={props.globalConfig}
-               generalModalDisclosure={props.generalModalDisclosure}
-               setGeneralModal={props.setGeneralModal}
+               miscModalDisclosure={props.miscModalDisclosure}
+               setMiscModal={props.setMiscModal}
                onChange={props.onChange}
                product={props.product}
                receiveAttributeValue={props.receiveAttributeValue}

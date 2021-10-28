@@ -3,6 +3,16 @@
 * and paste it into the appropriate spot in Header.js. Until
 * then, this gets around the issue by forcing this component to not
 * use SSR, which is not an ideal solution
+*
+* 2021-10-28: NO LONGER IN USE
+* Instead we can add an id to the Menu along with isLazy prop.
+* if you ever need to switch back to this though, here's what you must add to
+* the Header component:
+import dynamic from 'next/dynamic';
+const HeaderSiteAssistanceMenu = dynamic(import('./HeaderSiteAssistanceMenu'), {
+  ssr: false
+});
+* then just render <HeaderSiteAssistanceMenu /> wherever you want
 */
 import { FaCaretRight } from 'react-icons/fa';
 import {
@@ -13,7 +23,7 @@ import {
    MenuItem,
    Box
 } from "@chakra-ui/react";
-import headerStyles from "../styles/header.module.css";
+import headerStyles from "../styles/header.module.scss";
 const HeaderSiteAssistanceMenu = (props) => {
    return (
       <Box>

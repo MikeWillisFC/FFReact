@@ -1,4 +1,4 @@
-import {Fragment,useState} from "react";
+import {Fragment,useState,useEffect} from "react";
 import axios from "axios";
 import Image from 'next/image';
 import {
@@ -16,16 +16,26 @@ import {
    TabPanels,
    Tab,
    TabPanel,
-   Center,
-
-   useDisclosure
+   Center
 } from "@chakra-ui/react";
+
+import tabStyles from "../../styles/tabs.module.scss";
 
 const Images = props => {
    const [state_imageModalContent,setState_imageModalContent] = useState( false );
    const [state_imageZoomedIn,setState_imageZoomedIn] = useState("false"); // this is a string on purpose
 
-   const modalDisclosure = useDisclosure();
+   let {imageData,setImageData} = props;
+   useEffect(()=>{
+      if ( imageData ) {
+         setImageData(false);
+         handleAdditionalImageListClick({
+            path: imageData.url,
+            width: imageData.width,
+            height: imageData.height
+         });
+      }
+   },[imageData,setImageData]);
 
    let getLargeImageLink = () => {
       let image = props.hasLargeImage === "1" ? props.prodCode : props.hasLargeImage;
@@ -72,6 +82,7 @@ const Images = props => {
    }; // renderImage
 
    let handleModalImageListClick = event => {
+      //console.log("handleModalImageListClick called");
       event.preventDefault();
       setState_imageZoomedIn( "false" );
       let target = document.querySelectorAll("img[data-enlargedimage='true']")[0];
@@ -86,7 +97,10 @@ const Images = props => {
    }; // handleModalImageListClick
 
    let handleAdditionalImageListClick = options => {
-      options.event.preventDefault();
+      console.log("handleAdditionalImageListClick called");
+      if ( options.event ) {
+         options.event.preventDefault();
+      }
       setState_imageZoomedIn( "false" );
       props.modalDisclosure.onOpen();
       // console.log("href",fixImageSrc(event.currentTarget.getAttribute("href")));
@@ -118,81 +132,88 @@ const Images = props => {
          }
 
          {
-            (props.images.additionalImages && props.images.additionalImages.length) ||
-            (props.images.reviewImages && props.images.reviewImages.length) ?
-               <Tabs variant="enclosed">
-                  <TabList mb="1em" className="blueHeader">
-                     {
-                        props.images.reviewImages && props.images.reviewImages.length ?
-                           <Tab>Customer Images</Tab>
-                        : ""
-                     }
-                     {
-                        props.images.additionalImages && props.images.additionalImages.length ?
-                           <Tab>Alternate Images</Tab>
-                        : ""
-                     }
-                  </TabList>
-                  <TabPanels>
-                     {
-                        props.images.reviewImages && props.images.reviewImages.length ?
-                           <TabPanel className={props.styles.additionalImages}>
-                              {
-                                 props.images.reviewImages.map((image,index)=>{
-                                    let eager = index < 3;
-                                    return (
-                                       <a
-                                          key={image.thumb.path}
-                                          onClick={(event)=>{
-                                             handleAdditionalImageListClick({
-                                                event: event,
-                                                path: image.main.path,
-                                                width: image.main.width,
-                                                height: image.main.height,
-                                                blur: image.main.blur
-                                             })
-                                          }}
-                                          href={image.main.path}
-                                       >
-                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur, eager)}
-                                       </a>
-                                    );
-                                 })
-                              }
-                           </TabPanel>
-                        : ""
-                     }
-                     {
-                        props.images.additionalImages && props.images.additionalImages.length ?
-                           <TabPanel className={props.styles.additionalImages}>
-                              {
-                                 props.images.additionalImages.map((image,index)=>{
-                                    let eager = !props.images.reviewImages && index < 3;
-                                    return (
-                                       <a
-                                          key={image.thumb.path}
-                                          onClick={(event)=>{
-                                             handleAdditionalImageListClick({
-                                                event: event,
-                                                path: image.main.path,
-                                                width: image.main.width,
-                                                height: image.main.height,
-                                                blur: image.main.blur
-                                             })
-                                          }}
-                                          href={image.main.path}
-                                       >
-                                          {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur, eager)}
-                                       </a>
-                                    );
-                                 })
-                              }
-                           </TabPanel>
-                        : ""
-                     }
-                  </TabPanels>
-               </Tabs>
-            : ""
+            /* 2021-10-27: we're putting an id here to stop chakraUI / popover from complaining about IDs not matching.
+            * other than that it serves no purpose, and never will.
+            * see https://github.com/chakra-ui/chakra-ui/issues/3020
+            */
+            (
+               (props.images.additionalImages && props.images.additionalImages.length) ||
+               (props.images.reviewImages && props.images.reviewImages.length)
+            )
+               ?
+                  <Tabs id="productImagesTabs" variant="enclosed" className={tabStyles.container}>
+                     <TabList mb="1em" className="blueHeader">
+                        {
+                           props.images.reviewImages && props.images.reviewImages.length ?
+                              <Tab>Customer Images</Tab>
+                           : ""
+                        }
+                        {
+                           props.images.additionalImages && props.images.additionalImages.length ?
+                              <Tab>Alternate Images</Tab>
+                           : ""
+                        }
+                     </TabList>
+                     <TabPanels>
+                        {
+                           props.images.reviewImages && props.images.reviewImages.length ?
+                              <TabPanel className={props.styles.additionalImages}>
+                                 {
+                                    props.images.reviewImages.map((image,index)=>{
+                                       let eager = index < 3;
+                                       return (
+                                          <a
+                                             key={image.thumb.path}
+                                             onClick={(event)=>{
+                                                handleAdditionalImageListClick({
+                                                   event: event,
+                                                   path: image.main.path,
+                                                   width: image.main.width,
+                                                   height: image.main.height,
+                                                   blur: image.main.blur
+                                                })
+                                             }}
+                                             href={image.main.path}
+                                          >
+                                             {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur, eager)}
+                                          </a>
+                                       );
+                                    })
+                                 }
+                              </TabPanel>
+                           : ""
+                        }
+                        {
+                           props.images.additionalImages && props.images.additionalImages.length ?
+                              <TabPanel className={props.styles.additionalImages}>
+                                 {
+                                    props.images.additionalImages.map((image,index)=>{
+                                       let eager = !props.images.reviewImages && index < 3;
+                                       return (
+                                          <a
+                                             key={image.thumb.path}
+                                             onClick={(event)=>{
+                                                handleAdditionalImageListClick({
+                                                   event: event,
+                                                   path: image.main.path,
+                                                   width: image.main.width,
+                                                   height: image.main.height,
+                                                   blur: image.main.blur
+                                                })
+                                             }}
+                                             href={image.main.path}
+                                          >
+                                             {renderImage(image.thumb.path, image.thumb.width, image.thumb.height, "", image.thumb.blur, eager)}
+                                          </a>
+                                       );
+                                    })
+                                 }
+                              </TabPanel>
+                           : ""
+                        }
+                     </TabPanels>
+                  </Tabs>
+               : ""
          }
 
          <Modal

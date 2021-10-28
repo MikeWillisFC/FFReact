@@ -15,44 +15,43 @@ import {
   Center
 } from "@chakra-ui/react"
 
+import ReviewStars from "./ReviewStars";
 import ShippingProduction from "./ShippingProduction";
+
+import { openMiscModal } from "../../utilities";
 
 const Stats = props => {
 
    let handleFRShipping = async (event) => {
       event.preventDefault();
-      let response = await axios.get(event.currentTarget.getAttribute("href"));
-      if ( response.status ) {
-         props.setGeneralModal({
-            title: "Promotion Details",
-            content: response.data,
-            size: "2xl"
-         });
-         props.generalModalDisclosure.onOpen();
-      } else {
-         // boo
-      }
+      openMiscModal({
+         setModal: props.setMiscModal,
+         disclosure: props.miscModalDisclosure,
+         title: "Promotion Details",
+         href: event.currentTarget.getAttribute("href"),
+         size: "2xl"
+      });
    };
 
    let showShippingInfo = () => {
-      props.setGeneralModal({
+      props.setMiscModal({
          title: "Estimated Transit Map",
          content: <ShippingProduction styles={props.styles} globalConfig={props.globalConfig} manufacturer={props.product.customFields.MANUFACTURER} availability={props.product.customFields.AVAILABILITY} />,
          size: "2xl"
       });
-      props.generalModalDisclosure.onOpen();
+      props.miscModalDisclosure.onOpen();
    }; // showShippingInfo
 
    let renderEstimatedDelivery = () => {
       let shipsOnOrAboutDisclaimer = "This refers to the date the item will leave our warehouse. For a transit time estimate, click on the 'more shipping info' link.";
 
       let handleShipsOnOrAboutClick = () => {
-         props.setGeneralModal({
+         props.setMiscModal({
             title: "Shipping Notes",
             content: shipsOnOrAboutDisclaimer,
             size: "2xl"
          });
-         props.generalModalDisclosure.onOpen();
+         props.miscModalDisclosure.onOpen();
       }; // handleShipsOnOrAboutClick
 
       if ( !props.globalConfig.estDelivery || !props.product.customFields.estimatedDeliveryDate ) {
@@ -152,16 +151,7 @@ const Stats = props => {
                      <Td>Customer Rating</Td>
                      <Td className={props.styles.rating}>
                         <a href="#reviews">
-                           {
-                              Array.from({length:5}).map((noOneCares,index)=>{
-                                    let onStar = index + 1;
-                                 if ( props.product.customFields.reviewAverage >= onStar ) {
-                                    return <Image alt="solid heart" key={onStar} src={`https://${props.globalConfig.domain}/images/misc/heartSolid.png`} width="18" height="16" />
-                                 } else {
-                                    return <Image alt="empty heart" key={onStar} src={`https://${props.globalConfig.domain}/images/misc/heartEmpty.png`} width="17" height="16" />
-                                 }
-                              })
-                           }
+                           <ReviewStars domain={props.globalConfig.domain} stars={props.product.reviews.average} />
                            {" "} read {props.product.customFields.reviewTotal}
                         </a>
                      </Td>
@@ -185,7 +175,7 @@ const Stats = props => {
                            onClick={handleFRShipping}
                            style={{display:"inline-block",width:"100%"}}
                           >
-                           <Image style={{display:"inline-block"}} src={`https://${props.globalConfig.domain}/images/misc/redX.png`} width="14" height="11" alt="X" />
+                           <Image src={`https://${props.globalConfig.domain}/images/misc/redX.png`} width="14" height="11" alt="X" />
                            {" "} unavailable
                         </a>
                      }

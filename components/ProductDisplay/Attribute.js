@@ -53,7 +53,7 @@ const Attribute = props => {
          ];
 
          window.openFashioncraftDesignToolModal = href => {
-            console.log("href",href);
+            //console.log("href",href);
 
             /* IMPORTANT: only use links that point to trusted sources!
             */
@@ -66,7 +66,7 @@ const Attribute = props => {
                }
             });
 
-            console.log("proceed",proceed);
+            //console.log("proceed",proceed);
 
             if ( proceed ) {
                if ( href.substr(0,5) === "http:" ) {
@@ -88,17 +88,17 @@ const Attribute = props => {
 
    let style = {};
 
-   console.log("attribute props",attribute);
+   //console.log("attribute props",attribute);
 
-   console.log("attribute.prompt.substr(0,1)",attribute.prompt.substr(0,1));
+   //console.log("attribute.prompt.substr(0,1)",attribute.prompt.substr(0,1));
    if ( attribute.prompt.substr(0,1) === "{" ) {
       attribute.promptDecoded = JSON.parse( attribute.prompt );
-      console.log("attribute.promptDecoded",attribute.promptDecoded);
+      //console.log("attribute.promptDecoded",attribute.promptDecoded);
       attribute.prompt = attribute.promptDecoded.prompt;
    }
 
    let renderDecodedPrompt = () => {
-      console.log("prompt",prompt);
+      //console.log("prompt",prompt);
       return (
          <Button
             width="90%"
@@ -115,7 +115,7 @@ const Attribute = props => {
       event.preventDefault();
       let response = await axios.get(`https://${props.globalConfig.domain}${attribute.previewURL}`);
       if ( response.status ) {
-         console.log("response.data",response.data);
+         //console.log("response.data",response.data);
          setState_modal({
             options: response.data,
             title: attribute.prompt
@@ -124,8 +124,8 @@ const Attribute = props => {
    };
 
    let setValue = (event,value) => {
-      console.log("event",event);
-      console.log("value",value);
+      // console.log("event",event);
+      // console.log("value",value);
       setState_value( value || event.target.value );
    };
 

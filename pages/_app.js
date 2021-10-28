@@ -4,6 +4,7 @@ import axios from "axios";
 import App from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
+import _ from "lodash";
 import {
    ChakraProvider,
    Box,
@@ -13,7 +14,16 @@ import {
    Flex,
    Skeleton,
    SkeletonCircle,
-   SkeletonText
+   SkeletonText,
+   Modal,
+   ModalOverlay,
+   ModalContent,
+   ModalHeader,
+   ModalFooter,
+   ModalBody,
+   ModalCloseButton,
+
+   useDisclosure
 } from "@chakra-ui/react";
 
 import store from "../store";
@@ -34,6 +44,9 @@ function MyApp(props) {
 
    const [state_mobileNavVisible, setState_mobileNavVisible] = useState( false );
    const [state_navVisible, setState_navVisible] = useState( true );
+   const [state_miscModal,setState_miscModal] = useState( {title: false,content: false, size:false} );
+
+   const miscModalDisclosure = useDisclosure();
 
    let toggleMobileNav = useCallback(() => {
       //console.log("toggling mobile nav");
@@ -62,7 +75,11 @@ function MyApp(props) {
                ]}
             >
                <Stack>
-                  <Header toggleMobileNav={toggleMobileNav} />
+                  <Header
+                     toggleMobileNav={toggleMobileNav}
+                     miscModalDisclosure={miscModalDisclosure}
+                     setMiscModal={setState_miscModal}
+                  />
                   <Flex style={{margin:"0px",overflow:"hidden",paddingTop: "5px",backgroundColor:"#fff",paddingBottom:"50px"}}>
                      <Box
                         className={appStyles.leftnav}
@@ -83,12 +100,49 @@ function MyApp(props) {
                         width={["100%","100%",(state_navVisible ? "80%" : "100%")]}
                         flexShrink={["0","0","1"]}
                      >
-                        <Component {...pageProps} setNavVisibility={setState_navVisible} />
+                        <Component
+                           {...pageProps}
+                           setNavVisibility={setState_navVisible}
+                           miscModalDisclosure={miscModalDisclosure}
+                           setMiscModal={setState_miscModal}
+                        />
                      </Box>
                   </Flex>
                   <Footer />
                </Stack>
             </Box>
+
+            <Modal
+               isOpen={miscModalDisclosure.isOpen}
+               onClose={miscModalDisclosure.onClose}
+               size={state_miscModal.size}
+               isCentered
+            >
+               <ModalOverlay />
+               <ModalContent
+                  className={appStyles.miscModal}
+               >
+                  <ModalHeader className="blueHeader">
+                     {state_miscModal.title}
+                     <ModalCloseButton />
+                  </ModalHeader>
+                  <Box>
+                     {
+                        typeof( state_miscModal.content ) === "object" ?
+                           <ModalBody className={appStyles.mmBody}>
+                              {state_miscModal.content}
+                           </ModalBody>
+                        : <ModalBody
+                           className={appStyles.mmBody}
+                           dangerouslySetInnerHTML={{__html: _.unescape(state_miscModal.content)}}
+                          >
+                        </ModalBody>
+                     }
+
+                  </Box>
+               </ModalContent>
+            </Modal>
+
          </ChakraProvider>
       </Provider>
    )

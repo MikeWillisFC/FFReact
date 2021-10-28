@@ -6,6 +6,9 @@
 
 /***************************  NPROGRESS END ***********************/
 
+.hideMe {
+   display: none !important;
+}
 .nomarg, p.nomarg {
     margin: 0;
 }
@@ -21,10 +24,12 @@
 .posRel {
     position: relative;
 }
+.clear { clear: both !important; }
 
 /*** miscellaneous colors ***/
    .green { color: #657B00 !important; }
    .red { color: #f00 !important; }
+   .blue { color: #2ba2e7; }
    .darkBlue, .darkBlue a, a.darkBlue { color: #1874ab !important; } /* #pOrder input color must match this!!! */
    .darkerBlue, .darkerBlue a, a.darkerBlue { color: #2e6e9e !important; }
    .darkPink { color: #d80d4c !important; }
@@ -36,9 +41,9 @@
    .darkGrey, .darkGrey a { color: #474747 !important; }
    .lightGrey, .lightGrey a { color: #999999 !important; }
    .darkestGrey, .darkestGrey a { color: #2f2f2f !important; }
-   .blue { color: #2ba2e7; }
    .lightBlue { color: #0571b9; }
    .gBackLight { background-color: #F6F6F6; }
+   .lighterBlue { color: #a6c9e2; }
 /*** END miscellaneous colors ***/
 
 .subHeader {
@@ -295,3 +300,10 @@
     box-shadow: 0px 0px 5px 3px rgba(153,153,153,0.6);
 }
 /******* END REACT DATEPICKER STUFF **********/
+
+.chakraUI_buttonIconSeparator_right {
+   height: 100%;
+   width: 1px;
+   border-left: 1px solid #fff;
+   margin-left: 7px;
+}

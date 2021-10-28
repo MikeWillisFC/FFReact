@@ -1,7 +1,9 @@
-// import { Fragment } from "react";
+import { Fragment } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import Image from 'next/image';
+import { format,lastDayOfMonth } from 'date-fns';
+import axios from "axios";
 import { FaCaretRight,FaShoppingCart,FaThumbsUp,FaBars } from 'react-icons/fa';
 import {
    Icon,
@@ -28,20 +30,11 @@ import {
 
 import Messages from "./Messages";
 
-/* 2021-07-19: see https://github.com/chakra-ui/chakra-ui/issues/3020
-* once that bug is really fixed, we can remove this and copy the return from
-* HeaderSiteAssistanceMenu and paste it into the appropriate spot here. Until
-* then, this gets around the issue by forcing this component to not
-* use SSR, which is not an ideal solution
-*/
-import dynamic from 'next/dynamic';
-const HeaderSiteAssistanceMenu = dynamic(import('./HeaderSiteAssistanceMenu'), {
-  ssr: false
-});
+import { openMiscModal } from "../utilities";
 
-import headerStyles from "../styles/header.module.css";
+import headerStyles from "../styles/header.module.scss";
 
-const Header = (props) => {
+const Header = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
@@ -52,7 +45,7 @@ const Header = (props) => {
       return state.messages;
    });
 
-   console.log("Header rendering");
+   //console.log("Header rendering");
 
    let uniqueID = () => {
       var firstPart = (Math.random() * 46656) | 0;
@@ -61,6 +54,30 @@ const Header = (props) => {
       secondPart = ("000" + secondPart.toString(36)).slice(-3);
       return firstPart + secondPart;
    };
+
+   let renderEndDate = () => {
+      let today = new Date();
+      let month = format(today, 'LLLL');
+      let day = lastDayOfMonth(today);
+      let dayStart = format(day,"d");
+      let dayEnd = format(day,"do").replace(/\d/g,"");
+      return (
+         <Fragment>
+            {month} {dayStart}<sup>{dayEnd}</sup>
+         </Fragment>
+      );
+   };
+
+   let handleCheapShipping = event => {
+      event.preventDefault();
+      openMiscModal({
+         setModal: props.setMiscModal,
+         disclosure: props.miscModalDisclosure,
+         title: "Promotion Details",
+         href: event.currentTarget.getAttribute("href"),
+         size: "xl"
+      });
+   }; // handleCheapShipping
 
    return (
       <Box
@@ -133,7 +150,28 @@ const Header = (props) => {
                >
                   <div>
                      <HStack className={headerStyles.siteAssistanceNav} spacing="10px">
-                        <HeaderSiteAssistanceMenu />
+
+
+                        {
+                           /* 2021-10-27: we're putting an id and isLazy here to stop chakraUI / popover from complaining about IDs not matching.
+                           * other than that it serves no purpose, and never will.
+                           * see https://github.com/chakra-ui/chakra-ui/issues/3020
+                           */
+                        }
+                        <Box>
+                           <Menu id="hsaMenu" isLazy>
+                              <MenuButton><Icon as={FaCaretRight} color="#F167A8" />Site Assistance</MenuButton>
+                              <MenuList className={headerStyles.siteAssistanceNavDropdown}>
+                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/aboutus.html">About Us</a></MenuItem>
+                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/contact_us.php">Contact Us</a></MenuItem>
+                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/order-favor-samples.php">Samples</a></MenuItem>
+                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php">Terms & Conditions</a></MenuItem>
+                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#shipping">Shipping</a></MenuItem>
+                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#PrivacyPolicy">Privacy</a></MenuItem>
+                              </MenuList>
+                           </Menu>
+                        </Box>
+
                         <Box><a href="/o-status.htm"><Icon as={FaCaretRight} color="#F167A8" />Order Status</a></Box>
                         <Box
                            style={{padding:"0px"}}
@@ -163,13 +201,16 @@ const Header = (props) => {
             </HStack>
 
             { false && <p className="fRight nomarg darkBlue" id="hPhone"><a href="/contact_us.php">Contact Us</a></p> }
-
-            <Box display={["none","none","none","block"]} className={headerStyles.headerPromo}>
-               <a href="/includes/ajax/freeShipping.php">
+            <a
+               href={`https://${globalConfig.APIdomain}/includes/ajax/freeShipping.php`}
+               onClick={handleCheapShipping}
+               className={headerStyles.headerPromo}
+            >
+               <Box display={["none","none","none","block"]}>
                   $9.99 shipping* on hundreds of items<br />
-                  ends month day<sup>sth</sup> &nbsp;&nbsp;<span>*click for details</span>
-               </a>
-            </Box>
+                  ends {renderEndDate()} &nbsp;<span>*click for details</span>
+               </Box>
+            </a>
 
             <Box
                display={["block","block","none"]}

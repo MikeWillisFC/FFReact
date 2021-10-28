@@ -80,6 +80,9 @@
 }
 
 .headerPromo {
+   text-decoration: none;
+   color: #ffffbf;
+   text-align: center;
    padding: 1px;
    position: absolute;
    bottom: 5px;
@@ -88,10 +91,10 @@
    font-size: .8em;
    background-color: #0e8dde;
    border-radius: 7px;
-}
-.headerPromo a {
-   text-decoration: none;
-   color: #ffffbf;
+
+   &:hover {
+      background-color: #00abf2 !important;
+   }
 }
 
 .search {
