@@ -24,9 +24,10 @@ const FlyoutListItem = (props) =>  {
       setState_arrowColor( props.caretColors.off );
    }
 
+   let pSetFlyout = props.setFlyout;
    let setFlyout = useCallback(
-      props.setFlyout,
-      []
+      ()=>{pSetFlyout();},
+      [pSetFlyout]
    );
    useEffect(()=>{
       //console.log(`${props.linkText} isHovering:`,isHovering);

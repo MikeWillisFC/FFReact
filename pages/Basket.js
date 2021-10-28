@@ -163,7 +163,7 @@ const Basket = props => {
       }
    }; // handleRemoveItem
 
-   console.log("Basket props",props);
+   //console.log("Basket props",props);
 
    return (
       <Fragment>

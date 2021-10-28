@@ -30,6 +30,7 @@ const TheDataTable = memo(props => {
          width:"110px",
          sortable: true,
          sortBy: (columnName, value, row)=>{ return value !== "" ? parseInt(value) : 0; },
+         // eslint-disable-next-line react/display-name
          cell: row=>{
             return <ReviewStars domain={props.domain} stars={row.rating} />;
          }
@@ -48,6 +49,7 @@ const TheDataTable = memo(props => {
       {
          name: 'Review',
          selector: 'review',
+         // eslint-disable-next-line react/display-name
          cell: row=>{
             return (
                <Review
@@ -93,7 +95,7 @@ const AllReviews = props => {
       } else {
          imageModalDisclosure.onOpen();
       }
-   },[state_focusedImageData]);
+   },[state_focusedImageData,imageModalDisclosure]);
 
    return (
       <div className={`${styles.allReviews} ${(props.modal ? styles.allReviewsModal : styles.allReviewsFull)}`}>
@@ -125,6 +127,7 @@ const AllReviews = props => {
                            src={`https://${globalConfig.domain}${state_focusedImageData.url}`}
                            width={state_focusedImageData.width}
                            height={state_focusedImageData.height}
+                           alt="customer supplied image"
                         />
                      </Center>
                   </ModalBody>

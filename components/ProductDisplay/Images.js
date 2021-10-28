@@ -1,4 +1,4 @@
-import {Fragment,useState,useEffect} from "react";
+import {Fragment,useState,useEffect,useCallback} from "react";
 import axios from "axios";
 import Image from 'next/image';
 import {
@@ -25,6 +25,31 @@ const Images = props => {
    const [state_imageModalContent,setState_imageModalContent] = useState( false );
    const [state_imageZoomedIn,setState_imageZoomedIn] = useState("false"); // this is a string on purpose
 
+   let pDomain = props.domain;
+   let fixImageSrc = useCallback(path => {
+      return `https://${pDomain}${path}`;
+   },[pDomain]); // fixImageSrc
+
+   let pModalDisclosure = props.modalDisclosure;
+   let handleAdditionalImageListClick = useCallback(options => {
+      console.log("handleAdditionalImageListClick called");
+      if ( options.event ) {
+         options.event.preventDefault();
+      }
+      setState_imageZoomedIn( "false" );
+      pModalDisclosure.onOpen();
+      // console.log("href",fixImageSrc(event.currentTarget.getAttribute("href")));
+      // console.log("rendered image",renderImage(event.currentTarget.getAttribute("href"), "", "", ""));
+      let img = null;
+      if ( options.blur ) {
+         img = <Image src={fixImageSrc(options.path)} width={options.width} height={options.height} alt="" placeholder="blur" blurDataURL={options.blur} data-enlargedimage='true' />;
+      } else {
+         img = <Image src={fixImageSrc(options.path)} width={options.width} height={options.height} alt="" data-enlargedimage='true' />;
+      }
+      //console.log("img",img);
+      setState_imageModalContent( img );
+   },[pModalDisclosure,fixImageSrc]); // handleAdditionalImageListClick
+
    let {imageData,setImageData} = props;
    useEffect(()=>{
       if ( imageData ) {
@@ -35,7 +60,7 @@ const Images = props => {
             height: imageData.height
          });
       }
-   },[imageData,setImageData]);
+   },[imageData,setImageData,handleAdditionalImageListClick]);
 
    let getLargeImageLink = () => {
       let image = props.hasLargeImage === "1" ? props.prodCode : props.hasLargeImage;
@@ -62,10 +87,6 @@ const Images = props => {
          });
       }
    }; // handleImageZoom
-
-   let fixImageSrc = path => {
-      return `https://${props.domain}${path}`;
-   }; // fixImageSrc
 
    let renderImage = (path, width, height, alt, blur=false, eager=false) => {
       // because I don't like repeating code
@@ -95,25 +116,6 @@ const Images = props => {
       target.style.minWidth = "";
       target.style.maxWidth = "";
    }; // handleModalImageListClick
-
-   let handleAdditionalImageListClick = options => {
-      console.log("handleAdditionalImageListClick called");
-      if ( options.event ) {
-         options.event.preventDefault();
-      }
-      setState_imageZoomedIn( "false" );
-      props.modalDisclosure.onOpen();
-      // console.log("href",fixImageSrc(event.currentTarget.getAttribute("href")));
-      // console.log("rendered image",renderImage(event.currentTarget.getAttribute("href"), "", "", ""));
-      let img = null;
-      if ( options.blur ) {
-         img = <Image src={fixImageSrc(options.path)} width={options.width} height={options.height} alt="" placeholder="blur" blurDataURL={options.blur} data-enlargedimage='true' />;
-      } else {
-         img = <Image src={fixImageSrc(options.path)} width={options.width} height={options.height} alt="" data-enlargedimage='true' />;
-      }
-      //console.log("img",img);
-      setState_imageModalContent( img );
-   }; // handleAdditionalImageListClick
 
    return (
       <Fragment>

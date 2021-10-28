@@ -19,10 +19,23 @@ const Reviews = props => {
    //console.log("props",props);
    return (
       <Fragment>
-         <p>
-            All Reviews for <Link href={`/page/FF/PROD/${props.code}`}><a className={styles.prodLink}>{props.reviews.pName}</a></Link>
-         </p>
-         <AllReviews domain={globalConfig.domain} reviews={props.reviews} code={props.code} />
+         {
+            props.reviews ? (
+               <Fragment>
+                  <p>
+                     All Reviews for <Link href={`/page/FF/PROD/${props.code}`}><a className={styles.prodLink}>{props.reviews.pName}</a></Link>
+                  </p>
+                  <AllReviews domain={globalConfig.domain} reviews={props.reviews} code={props.code} />
+               </Fragment>
+            ) : (
+               <Fragment>
+                  <p>
+                     No Reviews yet for <Link href={`/page/FF/PROD/${props.code}`}><a className={styles.prodLink}>this item</a></Link>
+                  </p>
+               </Fragment>
+            )
+         }
+
       </Fragment>
    );
 };

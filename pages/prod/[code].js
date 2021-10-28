@@ -258,7 +258,7 @@ const Product = (props) => {
             />
 
             {
-               state_product.alsoShopped.length && (
+               (state_product.alsoShopped && state_product.alsoShopped.length) && (
                   <AlsoShopped
                      prodCode={state_product.code}
                      items={state_product.alsoShopped}
