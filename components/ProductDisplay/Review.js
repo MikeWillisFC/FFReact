@@ -31,6 +31,9 @@ const Review = props => {
       event.preventDefault;
       // console.log("showing image",`https://${props.domain}/images/productReviews/${props.code}/${props.review.uploadedImage}`);
       // console.log("imageDimensions",imageDimensions);
+      if ( props.imageModalDisclosure ) {
+         props.imageModalDisclosure.onOpen();
+      }
       props.setImageData({
          url: `/images/productReviews/${props.code}/${props.review.uploadedImage}`,
          width: imageDimensions.width,
