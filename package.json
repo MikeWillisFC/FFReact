@@ -19,7 +19,6 @@
     "card-validator": "^8.1.1",
     "credit-card-type": "^9.1.0",
     "dangerously-set-html-content": "^1.0.9",
-    "datatable": "git+ssh://git@github.com/MikeWillisFC/datatable.git",
     "date-fns": "^2.25.0",
     "framer-motion": "^4.1.17",
     "lodash": "^4.17.21",
