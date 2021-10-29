@@ -24,19 +24,15 @@ const FlyoutListItem = (props) =>  {
       setState_arrowColor( props.caretColors.off );
    }
 
-   let setFlyout;
-   if ( true ) {
-      let pSetFlyout = props.setFlyout;
-      setFlyout = useCallback(
-         isHovering=>{pSetFlyout(isHovering);},
-         [pSetFlyout,isHovering]
-      );
-   } else {
-      // setFlyout = useCallback(
-      //    props.setFlyout,
-      //    []
-      // );
-   }
+   let pSetFlyout = props.setFlyout;
+   let setFlyout = useCallback(
+      isHovering=>{pSetFlyout(isHovering);},
+      [pSetFlyout]
+   );
+   // setFlyout = useCallback(
+   //    props.setFlyout,
+   //    []
+   // );
    useEffect(()=>{
       //console.log(`${props.linkText} isHovering:`,isHovering);
       setFlyout(isHovering);
