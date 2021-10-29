@@ -1,3 +1,40 @@
+/* 2021-10-29: NOT IN USE
+* see config/leftnav.js instead
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 [
    {
       color: "pink",
@@ -182,7 +219,7 @@
                ],
                featured: [
                   { code: "4180beach", price: "asdf", thumbnail: "asdf", bgPosition: "-184px -184px", text: "Beach Themed Mini - Chocolates" },
-                  { code: "4210heart", price: "asdf", thumbnail: "asdf", bgPosition: "-276px -184px", text: "Heart Themed Hersheys Kisses" }
+                  { code: "4217000DD-Heart", price: "asdf", thumbnail: "asdf", text: "Heart Themed Hersheys Kisses" }
                ]
             }
          },

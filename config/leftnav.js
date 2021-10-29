@@ -1,7 +1,7 @@
 export const leftnav_bestOfferItems = [
    "5863s",
    "3421s",
-   "4187",
+   "5991ST",
    "4247",
    "1902",
    "3975",
@@ -9,24 +9,24 @@ export const leftnav_bestOfferItems = [
    "5919",
    "6415",
    "5702",
-   "5374",
-   "6164",
+   "8795",
+   "8884",
    "4180beach",
-   "4210heart",
-   "4185",
-   "6100",
+   "4217000DD-Heart",
+   "5456",
+   "5433ST",
    "2202",
-   "2217",
+   "2275",
    "8318-coffee",
-   "8377000DD-Beach",
+   "DD8347000-Beach",
    "4680",
-   "6779ST",
-   "4507",
-   "DC6080",
-   "12606",
-   "8713",
-   "WS9299-P-1016",
-   "1015ECC",
+   "6821",
+   "6753ST",
+   "6705ST",
+   "5144SM",
+   "5144",
+   "ILA91705",
+   "ILA91706",
    "5929",
    "GC220"
 ];
@@ -89,7 +89,7 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/New?Sort_By=newest", "text": "View All New Favors" }
                ],
                "featured": [
-                  { "code": "4187", "text": "Tea Time Ceramic Tea Cup & Saucer Candle Holder", "price": "", "thumbnail": "", "bgPosition": "0px -460px" },
+                  { "code": "5991ST", "text": "Personalized Expressions Hand Sanitizer Favors", "price": "asdf", "thumbnail": "asdf" },
                   { "code": "4247", "text": "Vintage Travel Themed Map Design Metal Bottle Opener", "price": "", "thumbnail": "", "bgPosition": "-92px -460px" }
                ]
             }
@@ -191,8 +191,8 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/PlacecardHolders", "text": "View All Placecard Holders" }
                ],
                "featured": [
-                  { "code": "5374", "price": "", "thumbnail": "", "bgPosition": "0px -184px", "text": "Heart Themed Place Card Holders" },
-                  { "code": "6164", "price": "", "thumbnail": "", "bgPosition": "-92px -184px", "text": "Vintage Bicycle Placecard Holders" }
+                  { "code": "8795", "price": "asdf", "thumbnail": "asdf", "text": "Make It Royal Gold Baroque Crown Frame" },
+                  { "code": "8884", "price": "asdf", "thumbnail": "asdf", "text": "On Trend Unicorn Place Card Holder" }
                ]
             }
          },
@@ -219,7 +219,7 @@ const leftnav = [
                ],
                "featured": [
                   { "code": "4180beach", "price": "", "thumbnail": "", "bgPosition": "-184px -184px", "text": "Beach Themed Mini - Chocolates" },
-                  { "code": "4210heart", "price": "", "thumbnail": "", "bgPosition": "-276px -184px", "text": "Heart Themed Hersheys Kisses" }
+                  { "code": "4217000DD-Heart", "price": "asdf", "thumbnail": "asdf", "text": "Heart Themed Hersheys Kisses" }
                ]
             }
          },
@@ -245,8 +245,8 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/CandleHolders", "text": "View All" }
                ],
                "featured": [
-                  { "code": "4185", "price": "", "thumbnail": "", "bgPosition": "0px -276px", "text": "Love Lights The Way Luminous Lantern" },
-                  { "code": "6100", "price": "", "thumbnail": "", "bgPosition": "-92px -276px", "text": "Calla Lilly Candle Favors" }
+                  { "code": "5456", "price": "asdf", "thumbnail": "asdf", "text": "Stunning Beach-Themed Candle Favor" },
+                  { "code": "5433ST", "price": "asdf", "thumbnail": "asdf", "text": "Personalized Candle Favors" }
                ]
             }
          },
@@ -259,7 +259,7 @@ const leftnav = [
                ],
                "featured": [
                   { "code": "2202", "price": "", "thumbnail": "", "bgPosition": "-184px -276px", "text": "Crystal Rose Wedding Favors" },
-                  { "code": "2217", "price": "", "thumbnail": "", "bgPosition": "-276px -276px", "text": "Crystal Heart Bottle Stoppers" }
+                  { "code": "2275", "price": "asdf", "thumbnail": "asdf", "text": "Crystal Glass Globe With Key Chain" }
                ]
             }
          },
@@ -294,7 +294,7 @@ const leftnav = [
                ],
                "featured": [
                   { "code": "8318-coffee", "price": "", "thumbnail": "", "bgPosition": "0px -368px", "text": "Fairy Tale Coffee Favors" },
-                  { "code": "8377000DD-Beach", "price": "", "thumbnail": "", "bgPosition": "-92px -368px", "text": "Beach Theme Personalized Coffee Favors" }
+                  { "code": "DD8347000-Beach", "price": "asdf", "thumbnail": "asdf", "text": "Personalized K-Cup Coffee Favors: Beach Theme" }
                ]
             }
          },
@@ -321,7 +321,7 @@ const leftnav = [
                ],
                "featured": [
                   { "code": "4680", "price": "", "thumbnail": "", "bgPosition": "-184px -368px", "text": "Heart Shaped Boxes / Mint Tins" },
-                  { "code": "6779ST", "price": "", "thumbnail": "", "bgPosition": "-276px -368px", "text": "Personalized Wishing Glass Jar With Guardian Angel" }
+                  { "code": "6821", "price": "asdf", "thumbnail": "asdf", "text": "Perfectly Plain Collection Glass Jar With Sealed Cover" }
                ]
             }
          },
@@ -333,8 +333,8 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/BathSoapFavors", "text": "View All Bath & Soap" }
                ],
                "featured": [
-                  { "code": "4507", "price": "", "thumbnail": "", "bgPosition": "-184px -460px", "text": "Hello Gorgeous Manicure Set" },
-                  { "code": "DC6080", "price": "", "thumbnail": "", "bgPosition": "-276px -460px", "text": "Sweet Treats Blueberry Sundae Towel Favor" }
+                  { "code": "6753ST", "price": "asdf", "thumbnail": "asdf", "text": "Personalized Travel Manicure Sets" },
+                  { "code": "6705ST", "price": "asdf", "thumbnail": "asdf", "text": "Personalized Compact Mirror Favors" }
                ]
             }
          },
@@ -346,8 +346,8 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/porcelain-wedding-favors", "text": "View All Ceramic & Porcelain" }
                ],
                "featured": [
-                  { "code": "12606", "price": "", "thumbnail": "", "bgPosition": "0px -552px", "text": "College Fund Piggy Bank" },
-                  { "code": "8713", "price": "", "thumbnail": "", "bgPosition": "-92px -552px", "text": "Bridal Couple Salt & Pepper Shaker" }
+                  { "code": "5144SM", "price": "asdf", "thumbnail": "asdf", "text": "Personalized Metallic Ceramic Jar With Epoxy Dome" },
+                  { "code": "5144", "price": "asdf", "thumbnail": "asdf", "text": "Perfectly Plain Ceramic Jar With Epoxy Dome" }
                ]
             }
          },
@@ -420,8 +420,8 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/BannersRunnersDecals", "text": "View All" }
                ],
                "featured": [
-                  { "code": "WS9299-P-1016", "price": "", "thumbnail": "", "bgPosition": "-184px -552px", "text": "Lavish Monogram Personalized Aisle Runner" },
-                  { "code": "1015ECC", "price": "", "thumbnail": "", "bgPosition": "-276px -552px", "text": "Elegance Aisle Runner" }
+                  { "code": "ILA91705", "price": "asdf", "thumbnail": "asdf", "text": "Snowflake Monogram Aisle Runner" },
+                  { "code": "ILA91706", "price": "asdf", "thumbnail": "asdf", "text": "Heart and Arrow Aisle Runner" }
                ]
             }
          },
