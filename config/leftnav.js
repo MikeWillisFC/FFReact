@@ -11,7 +11,7 @@ export const leftnav_bestOfferItems = [
    "5702",
    "8795",
    "8884",
-   "4180beach",
+   "4187000DD-Beach",
    "4217000DD-Heart",
    "5456",
    "5433ST",
@@ -218,8 +218,8 @@ const leftnav = [
                   { "target": "/page/FF/CTGY/Edible_Favors", "text": "View All Edible Favors" }
                ],
                "featured": [
-                  { "code": "4180beach", "price": "", "thumbnail": "", "bgPosition": "-184px -184px", "text": "Beach Themed Mini - Chocolates" },
-                  { "code": "4217000DD-Heart", "price": "asdf", "thumbnail": "asdf", "text": "Heart Themed Hersheys Kisses" }
+                  { "code": "4187000DD-Beach", "price": "", "thumbnail": "", "text": "Beach Themed Hershey's Mini - Chocolates" },
+                  { "code": "4217000DD-Heart", "price": "asdf", "thumbnail": "asdf", "text": "Heart Themed Hershey's Kisses" }
                ]
             }
          },
