@@ -63,7 +63,7 @@
          list-style: none;
 
          .subCat {
-            margin: 3px 7px;
+            margin: 3px 4px;
 
             a {
                display: inline-block;
@@ -77,12 +77,12 @@
                &:hover {
                   border-color: #aa285e;
 
-                  span {
+                  .title {
                      color: #aa285e;
                   }
                }
 
-               span {
+               .title {
                   display: inline-block;
                   width: 100%;
                   position: absolute;
@@ -112,7 +112,7 @@
                height: 50%;
                font-size: .8em;
 
-               a span {
+               a .title {
                   height: 33px;
                }
             }

@@ -6,6 +6,15 @@ general:
 --- page speed
 --- memoize stuff
 --- SPEED!!!!!!!!!!!!!!!
+- VALIDATION!!!!
+--- product page, checkout, etc
+- page titles, meta, etc
+- 3rd party scripts:
+--- google analytics
+--- sentry
+--- pinterest
+--- facebook
+--- anyone else
 
 header:
 - XXXX end date for $9.99 shipping
@@ -14,24 +23,25 @@ header:
 
 left nav:
 - XXXX close all flydowns when one opens
-- flyouts sometimes remain open, wtf?!
+- XXXX flyouts sometimes remain open, wtf?!
 - open flydown if one of it's categories is the one being viewed
 
 product:
-- click on review count to scroll to / open reviews panel
-- click on estimated delivery, enter zip, get estimate
+- XXXX click on review count to scroll to / open reviews panel
+- XXXX click on estimated delivery, enter zip, get estimate
 - all attributes need review
 --- buttons such as click here to design, etc
-- quantity dropdown menu for items sold as sets
+- XXXX quantity dropdown menu for items sold as sets
 - main image: peel corner for items that use that
 - recently viewed items list? (under customers also shopped for)
 - set link in shipping / production to point to terms / conditions when that page is ready
 - add schema.org stuff
-- remove red border around large product images, image box, etc
+- XXXX remove red border around large product images, image box, etc
 
 basket:
 - check result of editable attribute update
 - make quantity a dropdown if needed
+- show mini-cart on header basket click?
 
 checkout:
 - full review
@@ -43,13 +53,14 @@ saved cart:
 - do it
 
 departments:
-- 2x5 is good but others need review
-- why isn't this dept header loading? http://localhost:3001/page/FF/CTGY/PersonalizedWeddingFavors
+- XXXX 2x5 is good but others need review
+- XXXX why isn't this dept header loading? http://localhost:3001/page/FF/CTGY/PersonalizedWeddingFavors
 
 category:
 - don't show pagination / view all if there are less than 1 page worth of products
 - check responsiveness
 - show out of stock notice on items that need it: <i>(OUT OF STOCK, Available 5/21)</i>
+- prod names with HTML are not rendering correctly in category list (such as 6700 on http://localhost:3001/page/FF/CTGY/Inexpensive)
 
 ATTRIBUTES NEEDING REVIEW:
 PRODUCTS:

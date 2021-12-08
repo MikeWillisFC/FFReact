@@ -5,7 +5,7 @@ import { Stack, HStack, VStack, Box, Wrap, WrapItem } from "@chakra-ui/react";
 
 import styles from "../styles/subDepartmentList.module.scss";
 
-const SubDepartmentList = (props) => {
+const SubDepartmentList = props => {
    //console.log("SubDepartmentList props",props);
 
    const [state_columns,setState_columns] = useState( 1 );
@@ -125,8 +125,14 @@ const SubDepartmentList = (props) => {
             >
                <Link shallow={shallow} href={link}>
                   <a>
-                     <Image alt={tile.text} src={`https://www.favorfavor.com${tile.image.path}`} width={tile.image.width} height={tile.image.height} />
-                     <span>{tile.text}</span>
+                     <Image
+                        alt={tile.text}
+                        src={`https://www.favorfavor.com${tile.image.path}`}
+                        width={tile.image.width}
+                        height={tile.image.height}
+                        //style={{width:`${tile.image.width}px !important`,height:`${tile.image.height}px !important`}}
+                     />
+                     <span className={styles.title}>{tile.text}</span>
                   </a>
                </Link>
             </WrapItem>

@@ -3,39 +3,40 @@ import _ from "lodash";
 import axios from "axios";
 import Link from "next/link";
 import { useSelector } from "react-redux";
+import { Center,Spinner } from '@chakra-ui/react';
 
 import AllReviews from "../../components/AllReviews";
 
 import styles from "../../styles/allReviews.module.scss";
 
-const _fetchReviews = _.memoize(async (code,endpoint) => {
-   return await axios.get(`${endpoint}&sft=reviews&code=${code}`);
-});
-
 const Reviews = props => {
+   //console.log("Reviews rendering, props",props);
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
-   //console.log("props",props);
    return (
       <Fragment>
          {
             props.reviews ? (
                <Fragment>
-                  <p>
-                     All Reviews for <Link href={`/page/FF/PROD/${props.code}`}><a className={styles.prodLink}>{props.reviews.pName}</a></Link>
-                  </p>
-                  <AllReviews domain={globalConfig.domain} reviews={props.reviews} code={props.code} />
+                  <Fragment>
+                     <p>
+                        All Reviews for
+                        <Link href={`/page/FF/PROD/${props.code}`}>
+                           <a className={styles.prodLink}>
+                              {props.reviews.pName}
+                           </a>
+                        </Link>
+                     </p>
+                     <AllReviews domain={globalConfig.domain} reviews={props.reviews} code={props.code} />
+                  </Fragment>
                </Fragment>
             ) : (
-               <Fragment>
-                  <p>
-                     No Reviews yet for <Link href={`/page/FF/PROD/${props.code}`}><a className={styles.prodLink}>this item</a></Link>
-                  </p>
-               </Fragment>
+               <Center>
+                  <Spinner />
+               </Center>
             )
          }
-
       </Fragment>
    );
 };
@@ -43,32 +44,19 @@ const Reviews = props => {
 // server-side render and pre-render
 export async function getStaticPaths() {
    let config = await import("../../config/config");
-   let response = await axios.get(`https://${config.default.domain}/api/get/ti.php`);
-   //console.log("response",response);
+   let axResponse = await axios.get(`https://${config.default.domain}/api/get/ti.php`);
    return {
-      //paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
-      paths: response.data.items.map(item=>({ params: { code: item } })),
+      paths: axResponse.data.items.map(item=>({ params: { code: item } })),
       fallback: true
    };
 };
 export async function getStaticProps(context) {
-   //console.log("getStaticProps context",context);
-
    let config = await import("../../config/config");
-   //console.log("config",config);
-
-   let response = await _fetchReviews(context.params.code,config.default.apiEndpoint_static);
-   //console.log("response",response);
-   if ( response ) {
-      return {
-         props: {...response.data,code:context.params.code},
-         revalidate: config.default.cacheKeepAlive.rvws
-      }
-   } else {
-      return {
-         props: null
-      }
-   }
+   let axResponse = await axios.get(`${config.default.apiEndpoint_static}&sft=reviews&code=${context.params.code}`);
+   return {
+      props: {...axResponse.data,code:context.params.code},
+      revalidate: config.default.cacheKeepAlive.rvws
+   };
 };
 
 export default Reviews;

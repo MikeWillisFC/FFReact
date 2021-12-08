@@ -188,6 +188,7 @@ const Attributes = props => {
                            onChange={handleChange}
                            product={props.product}
                            receiveAttributeValue={props.receiveAttributeValue}
+                           blockSamples={props.blockSamples}
                         />
                      )
                   }

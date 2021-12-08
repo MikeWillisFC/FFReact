@@ -139,3 +139,7 @@
     -webkit-box-shadow: 0px 0px 5px 3px rgba(153,153,153,0.6);
     box-shadow: 0px 0px 5px 3px rgba(153,153,153,0.6);
 }
+
+.chakra-input__right-element {
+   border-left: 1px dashed #ccc;
+}

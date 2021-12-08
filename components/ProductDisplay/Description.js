@@ -1,4 +1,4 @@
-import {Fragment,useState} from "react";
+import {Fragment,useEffect,useState,forwardRef} from "react";
 import Image from 'next/image';
 import Link from "next/link";
 import _ from "lodash";
@@ -42,15 +42,27 @@ import {semiRandomString} from "../../utilities";
 import styles from "../../styles/product.module.scss";
 import tabStyles from "../../styles/tabs.module.scss";
 
-const Description = props => {
-   //console.log("Description props",props);
+const Description = forwardRef((props,ref) => {
+   // console.log("Description rendering");
+   // console.log("Description props",props);
 
    const [state_allReviews,setState_allReviews] = useState({});
+   const [state_tabIndex,setState_tabIndex] = useState(0);
 
    const buttonControls = useAnimation();
    const reviewBoxControls = useAnimation();
 
    const reviewsModalControls = useDisclosure();
+
+   let {tabIndex,setTabIndex} = props;
+   useEffect(()=>{
+      //console.log("tabIndex useEffect running");
+      if ( tabIndex !== false ) {
+         //console.log("setting state to '" + tabIndex + "'");
+         setState_tabIndex( tabIndex );
+         setTabIndex(false);
+      }
+   },[tabIndex,setTabIndex])
 
    let showMoreReviews = () => {
       buttonControls.start("collapsed");
@@ -75,7 +87,14 @@ const Description = props => {
    * see https://github.com/chakra-ui/chakra-ui/issues/3020
    */
    return (
-      <Tabs id="productDescriptionTabs" variant="enclosed" className={`${tabStyles.container} ${styles.descriptionTabs}`}>
+      <Tabs
+         onChange={(index) => setState_tabIndex(index)}
+         index={state_tabIndex}
+         ref={ref}
+         id="productDescriptionTabs"
+         variant="enclosed"
+         className={`${tabStyles.container} ${styles.descriptionTabs}`}
+      >
          <TabList mb="1em" className="blueHeader">
             <Tab>Description</Tab>
             <Tab>Shipping/Production</Tab>
@@ -248,6 +267,6 @@ const Description = props => {
          </TabPanels>
       </Tabs>
    );
-};
+});
 
 export default Description;

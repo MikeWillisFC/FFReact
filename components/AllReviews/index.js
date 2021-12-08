@@ -21,7 +21,6 @@ import styles from "../../styles/allReviews.module.scss";
 const TheDataTable = dynamic(import('./TheDataTable'), {
   ssr: false
 });
-
 const AllReviews = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;

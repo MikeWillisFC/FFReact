@@ -62,7 +62,7 @@ export async function getStaticProps() {
    let config = await import("../config/config");
    //console.log("config",config);
 
-   let response = await _fetchHome(config.default.apiEndpoint_static);
+   let response = await axios.get(`${config.default.apiEndpoint}&cAction=getHome`);
    //console.log("response",response);
    if ( response ) {
       return {

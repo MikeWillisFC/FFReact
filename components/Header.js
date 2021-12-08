@@ -262,10 +262,10 @@ const Header = props => {
                <a>Categories</a>
             </Box>
             <Box flex="1">
-               <Link shallow href="/page/FF/CTGY/Inexpensive">$0.99 &amp; Under Favors</Link>
+               <Link href="/page/FF/CTGY/Inexpensive">$0.99 &amp; Under Favors</Link>
             </Box>
             <Box flex="1">
-               <Link shallow href="/page/FF/CTGY/popular-wedding-favors">Most Popular Favors</Link>
+               <Link href="/page/FF/CTGY/popular-wedding-favors">Most Popular Favors</Link>
             </Box>
             <Box flex="1">
                <Link shallow href="/page/FF/CTGY/ThemeFavors">Theme Favors</Link>

@@ -35,11 +35,28 @@ export const openMiscModal = async (options) => {
    }
 }; // openMiscModal
 
+export const scrollTo = (ref) => {
+   //console.log("scrollTo called on ref",ref);
+   if ( ref && ref.current ) {
+      ref.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+   }
+}; // scrollTo
+
 export const formatPrice = price => {
+   // v1.0
    /* price is expected to be stored as cents. Divide by 100, format, and return
    */
    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price / 100);
 }
+
+export const formatNumber = number => {
+   // v1.0
+   return new Intl.NumberFormat('en-US').format(number);
+}
+
+export const isZipUSorCA = zip => {
+   return ( zip.match(/[a-zA-Z][0-9][a-zA-Z](-| |)[0-9][a-zA-Z][0-9]/) || /\d{5}-\d{4}$|^\d{5}$/.test(zip) );
+};
 
 // see https://stackoverflow.com/a/7719185/1042398
 /* usage:

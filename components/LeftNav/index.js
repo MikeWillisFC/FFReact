@@ -8,7 +8,7 @@ import FlyoutContainer from "./FlyoutContainer";
 
 import styles from "../../styles/leftnav.module.scss";
 
-const LeftNav = (props) => {
+const LeftNav = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
@@ -81,7 +81,7 @@ const LeftNav = (props) => {
                                           flydowns={link.flydowns}
                                           flyout={link.flyout}
 
-                                          openFlydown={setState_openedFlydown}
+                                          setOpenedFlydown={setState_openedFlydown}
                                           openedFlydown={state_openedFlydown}
                                        />
                                     )
@@ -94,7 +94,15 @@ const LeftNav = (props) => {
                                              key={link.target}
                                              href={link.target}
                                           >
-                                             {link.text}
+                                             <a
+                                                onClick={event=>{
+                                                   //console.log("clicked");
+                                                   // this closes any open flydowns
+                                                   setState_openedFlydown(link.target);
+                                                }}
+                                             >
+                                                {link.text}
+                                             </a>
                                           </Link>
                                        </ListItem>
                                     );

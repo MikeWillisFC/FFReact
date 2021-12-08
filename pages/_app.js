@@ -167,13 +167,13 @@ if ( false ) {
       } else {
          let config = await import("../config/config");
          //console.log("config",config);
-         let response = await axios.get(`${config.default.apiEndpoint}&cAction=getLeftNav`);
+         let responseD = await axios.get(`${config.default.apiEndpoint}&cAction=getLeftNav`);
 
-         //console.log("response",response);
-         if ( response ) {
+         //console.log("responseD",responseD);
+         if ( responseD ) {
             return {
                ...pageProps,
-               leftnav: response.data.leftNav
+               leftnav: responseD.data.leftNav
             };
          } else {
             return {

@@ -54,7 +54,7 @@ const ProductList = (props) => {
    const router = useRouter();
 
    useEffect(()=>{
-      console.log("useEffect 7");
+      //console.log("useEffect 7");
       // called on pagination, sort, or view all
       let url = window.location.pathname;
       let separator = "?";
@@ -84,18 +84,18 @@ const ProductList = (props) => {
    },[state_addressBar]);
 
    useEffect(()=>{
-      console.log("router has changed");
+      //console.log("router has changed");
    }, [router]);
 
    useEffect(()=>{
-      console.log("useEffect 6");
+      //console.log("useEffect 6");
       //console.log("useEffect products",props.products);
       setState_products(props.products);
       setState_sortedProducts(props.products);
    }, [props.products]);
 
    useEffect(()=>{
-      console.log("useEffect 5");
+      //console.log("useEffect 5");
       // handles back/forward browser button clicks
       let popListener = event => {
          // console.log("popstate detected");
@@ -134,12 +134,12 @@ const ProductList = (props) => {
    },[defaults.perPage,defaults.sortBy]);
 
    useEffect(()=>{
-      console.log("useEffect 4");
+      //console.log("useEffect 4");
       setState_totalPages( Math.ceil( state_products.length / state_paginateAt ) );
    },[state_paginateAt,state_products]);
 
    useEffect(()=>{
-      console.log("useEffect 3");
+      //console.log("useEffect 3");
       // handles sortBy change
       //console.log("state_sortBy useEffect called:",state_sortBy);
       let sortedProducts = [...state_products];
@@ -203,9 +203,8 @@ const ProductList = (props) => {
 
    },[state_products,defaults.paginateAt,defaults.perPage,state_perPage,state_sortBy]);
 
-
    useEffect(()=>{
-      console.log("useEffect 2");
+      //console.log("useEffect 2");
       // handles query string changes
       let links = {
          up: window.location.pathname,
@@ -248,7 +247,7 @@ const ProductList = (props) => {
    },[props.queryString.Offset,props.queryString.Per_Page,props.queryString.Sort_By,state_Offset,state_products.length]);
 
    useEffect(()=>{
-      console.log("useEffect 1");
+      //console.log("useEffect 1");
       if ( state_perPage ) {
          setState_focusedProducts(state_sortedProducts.slice(0,state_perPage));
       }
@@ -258,7 +257,7 @@ const ProductList = (props) => {
    let depsB = [state_Offset];
    useEffect(()=>{
       // called when the offset changes
-      console.log("offset useEffect running");
+      //console.log("offset useEffect running");
 
       setState_Offset( prevOffset=>{
          setState_paginateAt( prevPaginateAt=>{
@@ -490,13 +489,16 @@ const ProductList = (props) => {
                </label>
 
             </Box>
-            <Box className={prodListStyles.paginate}>
-               {
-                  !state_perPage ?
-                     renderPagination()
-                  : ""
-               }
-            </Box>
+
+
+            {
+               ( !state_perPage && state_products.length > state_paginateAt) && (
+                  <Box className={prodListStyles.paginate}>
+                     {renderPagination()}
+                  </Box>
+               )
+            }
+
          </SimpleGrid>
 
          <Wrap justify="center">

@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 const ReviewStars = props => {
    return (
-      <div style={{whiteSpace:"nowrap"}}>
+      <div style={{whiteSpace:"nowrap", display: "inline-block"}}>
          {
             [1,2,3,4,5].map(i=>{
                if ( props.stars >= i ) {

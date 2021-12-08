@@ -30,7 +30,7 @@ import AddToCart from "../../components/ProductDisplay/AddToCart";
 import Description from "../../components/ProductDisplay/Description";
 import AlsoShopped from "../../components/ProductDisplay/AlsoShopped";
 
-import { createMD5 } from "../../utilities/";
+import { createMD5, scrollTo } from "../../utilities/";
 
 import styles from "../../styles/product.module.scss";
 
@@ -39,15 +39,17 @@ const Product = (props) => {
       return state.global;
    });
    const router = useRouter();
-
-   //console.log("Product props",props);
+   //console.log("Product rendering, props:",props);
 
    const [state_product,setState_product] = useState( props.product || false );
    const [state_productIsSet,setState_productIsSet] = useState( false );
    const [state_focusedImageData,setState_focusedImageData] = useState( false );
+   const [state_descTabIndex,setState_descTabIndex] = useState(false);
+
 
    let quantityRef = useRef();
    let attributeValuesRef = useRef([]);
+   let descriptionRef = useRef();
 
    const imageModalDisclosure = useDisclosure();
 
@@ -222,6 +224,8 @@ const Product = (props) => {
                      globalConfig={globalConfig}
                      miscModalDisclosure={props.miscModalDisclosure}
                      setMiscModal={props.setMiscModal}
+                     descriptionRef={descriptionRef}
+                     setTabIndex={setState_descTabIndex}
                   />
 
                   <form
@@ -239,22 +243,28 @@ const Product = (props) => {
                         miscModalDisclosure={props.miscModalDisclosure}
                         setMiscModal={props.setMiscModal}
                         receiveAttributeValue={receiveAttributeValue}
+                        blockSamples={state_product.customFields.blockSamples}
                      />
 
                      <AddToCart
                         formID={formID}
                         quantity={quantityRef.current}
                         quantityRef={quantityRef}
+                        minimum={state_product.customFields.MINIMUM}
+                        blockSamples={state_product.customFields.blockSamples}
                      />
                   </form>
                </Box>
             </Flex>
 
             <Description
+               ref={descriptionRef}
                product={state_product}
                domain={globalConfig.domain}
                apiEndpoint_static={globalConfig.apiEndpoint_static}
                setImageData={setState_focusedImageData}
+               tabIndex={state_descTabIndex}
+               setTabIndex={setState_descTabIndex}
             />
 
             {
@@ -318,11 +328,11 @@ export async function getStaticProps(context) {
    let config = await import("../../config/config");
    //console.log("config",config);
 
-   let response = await fetchProduct(context.params.code,config.default.apiEndpoint_static);
-   //console.log("response",response);
-   if ( response ) {
+   let axResponse = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.params.code}`);
+   //console.log("prod getStaticProps response",axResponse);
+   if ( axResponse ) {
       return {
-         props: response.data,
+         props: axResponse.data,
          revalidate: config.default.cacheKeepAlive.prod
       }
    } else {

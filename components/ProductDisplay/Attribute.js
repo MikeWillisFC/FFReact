@@ -225,7 +225,11 @@ const Attribute = props => {
                   >
                      {
                         attribute.options.map(option=>{
-                           return ( <option key={option.code} value={option.code}>{option.prompt}</option> );
+                           if ( props.blockSamples && option.code.toLowerCase() === "sample" ) {
+                              return "";
+                           } else {
+                              return ( <option key={option.code} value={option.code}>{option.prompt}</option> );
+                           }
                         })
                      }
                   </Select>

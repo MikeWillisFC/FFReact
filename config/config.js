@@ -16,6 +16,12 @@ const config = {
       ctgy: 60 * 60 * 12,
       rvws: 60 * 60 * 12
    },
+   // cacheKeepAlive: {
+   //    home: 1,
+   //    prod: 1,
+   //    ctgy: 1,
+   //    rvws: 1
+   // },
    authorize: {
       production: {
          loginID: "6X7PF92dxW",

@@ -4,16 +4,16 @@ import {
    Box,
    Stack,
    Button,
-   NumberInput,
-   NumberInputField,
-   NumberInputStepper,
-   NumberIncrementStepper,
-   NumberDecrementStepper,
    Icon
 } from "@chakra-ui/react";
 
+import QuantityInput from "./QuantityInput";
+import QuantityDropdown from "./QuantityDropdown";
+
 const AddToCart = props => {
    const [state_quantity,setState_quantity] = useState(props.quantity);
+
+   //console.log("AddToCart rendering, props:",props);
 
    useEffect(()=>{
       setState_quantity(props.quantity);
@@ -24,6 +24,8 @@ const AddToCart = props => {
       setState_quantity(value);
    }; // handleQuantityChange
 
+   let inputType = props.minimum && props.minimum.indexOf("^") !== -1 ? "dropdown" : "input";
+
    return (
       <Stack
          direction={["column", "column", "row"]}
@@ -31,18 +33,25 @@ const AddToCart = props => {
          style={{borderTop: "1px solid #C5DBEC", padding:"4px"}}
       >
          <Box w={["100%","100%","50%"]} className="darkBlue">
-            <NumberInput
-               min={0}
-               placeholder="Quantity"
-               value={state_quantity}
-               onChange={handleQuantityChange}
-            >
-               <NumberInputField placeholder="Quantity" />
-               <NumberInputStepper>
-                  <NumberIncrementStepper />
-                  <NumberDecrementStepper />
-               </NumberInputStepper>
-            </NumberInput>
+            {
+               inputType === "input" ? (
+                  <QuantityInput
+                     quantity={state_quantity}
+                     onChange={handleQuantityChange}
+                     minimum={props.minimum}
+                     blockSamples={props.blockSamples}
+                     isValid={props.isValid}
+                  />
+               ) : (
+                  <QuantityDropdown
+                     quantity={state_quantity}
+                     onChange={handleQuantityChange}
+                     minimum={props.minimum}
+                     blockSamples={props.blockSamples}
+                     isValid={props.isValid}
+                  />
+               )
+            }
          </Box>
          <Box
             width={["100%","100%","50%"]}

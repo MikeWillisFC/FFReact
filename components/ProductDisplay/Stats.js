@@ -17,8 +17,9 @@ import {
 
 import ReviewStars from "./ReviewStars";
 import ShippingProduction from "./ShippingProduction";
+import DeliveryEstimate from "./DeliveryEstimate";
 
-import { openMiscModal } from "../../utilities";
+import { openMiscModal,scrollTo } from "../../utilities";
 
 const Stats = props => {
 
@@ -86,6 +87,11 @@ const Stats = props => {
                <Td>Estimated Delivery</Td>
                <Td>
                   <b>{props.product.customFields.estimatedDeliveryDate}</b>
+                  <DeliveryEstimate
+                     miscModalDisclosure={props.miscModalDisclosure}
+                     setMiscModal={props.setMiscModal}
+                     prodCode={props.product.code}
+                  />
                </Td>
             </Tr>
          );
@@ -150,10 +156,17 @@ const Stats = props => {
                   <Tr>
                      <Td>Customer Rating</Td>
                      <Td className={props.styles.rating}>
-                        <a href="#reviews">
+                        <div
+                           style={{cursor:"pointer"}}
+                           onClick={event=>{
+                              event.preventDefault(); // actually there is no default but whatever
+                              scrollTo(props.descriptionRef);
+                              props.setTabIndex(2);
+                           }}
+                        >
                            <ReviewStars domain={props.globalConfig.domain} stars={props.product.reviews.average} />
-                           {" "} read {props.product.customFields.reviewTotal}
-                        </a>
+                           {" "}read {props.product.customFields.reviewTotal}
+                        </div>
                      </Td>
                   </Tr>
                }
