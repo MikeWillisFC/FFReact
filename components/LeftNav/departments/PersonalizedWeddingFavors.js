@@ -24,29 +24,29 @@ const PersonalizedWeddingFavors = (props) => {
       <Fragment>
          <ul style={{display:"none"}}>
             {
-               // <Link shallow href="/page/FF/CTGY/Inexpensive">$0.99 &amp; Under Favors</Link>
+               // <Link href="/page/FF/CTGY/Inexpensive">$0.99 &amp; Under Favors</Link>
             }
 
-            <li><Link shallow href="/page/FF/CTGY/Glassware">- Glasses: Shot, Wine, Flutes etc</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/Pers_Candles">- Candles</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/PersonalizedRibbons">- Ribbons</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/Napkins">- Napkins &amp; Matches</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/Hersheys-mini-chocolates">- Hershey&apos;s Mini Chocolates</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/Personalized-Express">- Express Personalized Favors</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/allMintTins">- Mint Tins</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/WeddingPens">- Pens</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/CoffeeTea">- Coffee &amp; Tea</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/HersheysKissesFavors">- Hershey&apos;s Kisses</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/Honey">- Honey</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/Lip-Balm">- Lip Balm</Link></li>
-            <li><Link shallow href="/page/FF/CTGY/PersonalizedMugs">- Mugs</Link></li>
+            <li><Link href="/page/FF/CTGY/Glassware">- Glasses: Shot, Wine, Flutes etc</Link></li>
+            <li><Link href="/page/FF/CTGY/Pers_Candles">- Candles</Link></li>
+            <li><Link href="/page/FF/CTGY/PersonalizedRibbons">- Ribbons</Link></li>
+            <li><Link href="/page/FF/CTGY/Napkins">- Napkins &amp; Matches</Link></li>
+            <li><Link href="/page/FF/CTGY/Hersheys-mini-chocolates">- Hershey&apos;s Mini Chocolates</Link></li>
+            <li><Link href="/page/FF/CTGY/Personalized-Express">- Express Personalized Favors</Link></li>
+            <li><Link href="/page/FF/CTGY/allMintTins">- Mint Tins</Link></li>
+            <li><Link href="/page/FF/CTGY/WeddingPens">- Pens</Link></li>
+            <li><Link href="/page/FF/CTGY/CoffeeTea">- Coffee &amp; Tea</Link></li>
+            <li><Link href="/page/FF/CTGY/HersheysKissesFavors">- Hershey&apos;s Kisses</Link></li>
+            <li><Link href="/page/FF/CTGY/Honey">- Honey</Link></li>
+            <li><Link href="/page/FF/CTGY/Lip-Balm">- Lip Balm</Link></li>
+            <li><Link href="/page/FF/CTGY/PersonalizedMugs">- Mugs</Link></li>
          </ul>
          <div className="deptPreviewBC hideMe"></div>
          <div className={styles.deptPreview} style={state_flyoutStyle}>
             <p className={styles.borderBlock}></p>
             <UnorderedList style={{marginLeft:"3px"}}>
                <ListItem>
-                  <Link shallow href="/page/FF/CTGY/Glassware">
+                  <Link href="/page/FF/CTGY/Glassware">
                      <a>
                         <ListIcon as={FaCaretRight} color="#EB8DA8" />
                         Glasses: Shot, Wine, Flutes etc
@@ -59,23 +59,23 @@ const PersonalizedWeddingFavors = (props) => {
             </UnorderedList>
             <ul className="fLeft">
                <li></li>
-               <li><Link shallow href="/page/FF/CTGY/Pers_Candles">Candles</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/PersonalizedRibbons">Ribbons</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/Napkins">Napkins &amp; Matches</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/Hersheys-mini-chocolates">Hershey&apos;s Mini Chocolates</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/Personalized-Express">Express Personalized Favors</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/allMintTins">Mint Tins</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/WeddingPens">Pens</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/CoffeeTea">Coffee &amp; Tea</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/HersheysKissesFavors">Hershey&apos;s Kisses</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/Honey">Honey</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/Lip-Balm">Lip Balm</Link></li>
-               <li><Link shallow href="/page/FF/CTGY/PersonalizedMugs">Mugs</Link></li>
+               <li><Link href="/page/FF/CTGY/Pers_Candles">Candles</Link></li>
+               <li><Link href="/page/FF/CTGY/PersonalizedRibbons">Ribbons</Link></li>
+               <li><Link href="/page/FF/CTGY/Napkins">Napkins &amp; Matches</Link></li>
+               <li><Link href="/page/FF/CTGY/Hersheys-mini-chocolates">Hershey&apos;s Mini Chocolates</Link></li>
+               <li><Link href="/page/FF/CTGY/Personalized-Express">Express Personalized Favors</Link></li>
+               <li><Link href="/page/FF/CTGY/allMintTins">Mint Tins</Link></li>
+               <li><Link href="/page/FF/CTGY/WeddingPens">Pens</Link></li>
+               <li><Link href="/page/FF/CTGY/CoffeeTea">Coffee &amp; Tea</Link></li>
+               <li><Link href="/page/FF/CTGY/HersheysKissesFavors">Hershey&apos;s Kisses</Link></li>
+               <li><Link href="/page/FF/CTGY/Honey">Honey</Link></li>
+               <li><Link href="/page/FF/CTGY/Lip-Balm">Lip Balm</Link></li>
+               <li><Link href="/page/FF/CTGY/PersonalizedMugs">Mugs</Link></li>
             </ul>
             <div className="foFeaturedProducts fRight ui-corner-all posRel">
                <p className="foBestOffer nomarg"></p>
                <p className="foFeaturedProduct foFeaturedProduct1">
-                  <Link shallow href="/page/FF/PROD/5863s">
+                  <Link href="/page/FF/PROD/5863s">
                      <a>
                         <span className="featuredProductImage"></span>
                         Personalized Votive Candle Favors
@@ -84,10 +84,10 @@ const PersonalizedWeddingFavors = (props) => {
                   <span className="darkPink">$0.89</span>
                   <br />
                   <br />
-                  <Link shallow className="foDetails" href="/page/FF/PROD/5863s">See Details</Link> <br className="clear" />
+                  <Link className="foDetails" href="/page/FF/PROD/5863s">See Details</Link> <br className="clear" />
                </p>
                <p className="foFeaturedProduct">
-                  <Link shallow href="/page/FF/PROD/3421s">
+                  <Link href="/page/FF/PROD/3421s">
                      <a>
                         <span style={{backgroundPosition: "-92px 0px"}} className="featuredProductImage"></span>
                         Personalized Stemless Wine Glass Favors
@@ -95,7 +95,7 @@ const PersonalizedWeddingFavors = (props) => {
                   </Link>
                   <span className="darkPink">$1.19</span> <br />
                   <br />
-                  <Link shallow className="foDetails" href="/page/FF/PROD/3421s">See Details</Link> <br className="clear" />
+                  <Link className="foDetails" href="/page/FF/PROD/3421s">See Details</Link> <br className="clear" />
                </p>
             </div>
          </div>

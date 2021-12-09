@@ -59,7 +59,6 @@ const Flyout = (props) => {
                   props.flyout.links.map(link=>{
                      return (
                         <Link
-                           shallow
                            href={link.target}
                            key={link.target}
                         >

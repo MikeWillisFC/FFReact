@@ -19,7 +19,7 @@ let getParameterByName = (name, url = window.location.href ) => {
    return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
-const ProductList = (props) => {
+const ProductList = props => {
    //console.log("ProductList props",props);
    let defaults = {
       paginateAt: 32,
@@ -92,6 +92,7 @@ const ProductList = (props) => {
       //console.log("useEffect products",props.products);
       setState_products(props.products);
       setState_sortedProducts(props.products);
+      setState_sortBy( defaults.sortBy );
    }, [props.products]);
 
    useEffect(()=>{

@@ -62,7 +62,6 @@ const FlyoutListItem = props =>  {
             ref={ref}
          >
             <Link
-               shallow
                className="lna"
                href={props.linkTarget}
             >

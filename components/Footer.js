@@ -18,12 +18,12 @@ const Footer = (props) => {
                   spacing="5"
                   padding="10"
                >
-                  <Link shallow href="/page/FF/CTGY/Specials">
+                  <Link href="/page/FF/CTGY/Specials">
                      <a>
                         <Image src="https://www.favorfavor.com/images/misc/responsive/clearance.png" width="305" height="98" alt="Discounted / Clearance" />
                      </a>
                   </Link>
-                  <Link shallow href="/page/FF/CTGY/PersonalizedWeddingFavors">
+                  <Link href="/page/FF/CTGY/PersonalizedWeddingFavors">
                      <a>
                         <Image src="https://www.favorfavor.com/images/misc/responsive/personalized.png" width="305" height="98" alt="Personalized Favors" />
                      </a>
@@ -80,7 +80,7 @@ const Footer = (props) => {
                   <Image src="https://www.favorfavor.com/images/misc/welcomeToFavorFavor.png" width="248" height="85" alt="Welcome to Favor Favor" />
                </Box>
                <Box>
-                  <Link shallow className="fRight" href="/page/FF/CTGY/FashionCraft-Favors" style={{marginTop:"30px",marginRight:"5px"}}>
+                  <Link className="fRight" href="/page/FF/CTGY/FashionCraft-Favors" style={{marginTop:"30px",marginRight:"5px"}}>
                      <a>
                         <Image src="https://www.favorfavor.com/images/buttons/fashioncraftPremier.png" width="110" height="32" alt="Favor Favor is a FashionCraft Wedding Favors Premier Dealer" />
                      </a>

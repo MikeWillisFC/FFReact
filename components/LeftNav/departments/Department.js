@@ -116,7 +116,6 @@ const Department = (props) => {
                         return (
                            <li key={flydown.target}>
                               <Link
-                                 shallow
                                  href={flydown.target}
                                  onClick={()=>{props.setFlyout(false);}}
                               >
@@ -139,7 +138,6 @@ const Department = (props) => {
                         props.flyout.links.map(link=>{
                            return (
                               <Link
-                                 shallow
                                  href={link.target}
                                  key={link.target}
                               >

@@ -48,36 +48,38 @@ const Category = (props) => {
    },[categoryCode]);
 
    //console.log("---category rendering---");
-   useEffect(()=>{
-      // console.log("router.query.code",router.query.code);
-      // console.log("props.categoryCode",props.categoryCode);
-
-      /* state_categoryCode is set on initial page load, passed in from getInitialProps.
-      * Since we're doing shallow routing on our category pages, later clicks
-      * on category links don't run getInitialProps, therefore props.categoryCode
-      * stays the same. So here we check to see if the router query code is different,
-      * and if so, we fetch the new category
-      */
-      // console.log("router.query.code vs state_categoryCode:", router.query.code, state_categoryCode);
-      // if ( router.query.code ) {
-      //    console.log("fetching new category page");
-      //    setState_category( false );
-      //    if ( window ) {
-      //       window.scrollTo(0, 0);
-      //    }
-      //    let getCategory = async () => {
-      //       let response = await _fetchCategory(router.query.code,globalConfig.apiEndpoint_static);
-      //       if ( response.status ) {
-      //          setState_categoryCode( router.query.code );
-      //          setState_category( response.data );
-      //       }
-      //    };
-      //    getCategory();
-      // }
-   },[router.query.code,globalConfig.apiEndpoint_static]);
-   useEffect(()=>{ console.log("router.query.code changed:",router.query.code); },[router.query.code]);
-   useEffect(()=>{ console.log("state_categoryCode changed:",state_categoryCode); },[state_categoryCode]);
-   useEffect(()=>{ console.log("globalConfig.apiEndpoint_static changed:",globalConfig.apiEndpoint_static); },[globalConfig.apiEndpoint_static]);
+   // useEffect(()=>{
+   //    // console.log("router.query.code",router.query.code);
+   //    // console.log("props.categoryCode",props.categoryCode);
+   //
+   //    /* state_categoryCode is set on initial page load, passed in from getInitialProps.
+   //    * Since we're doing shallow routing on our category pages, later clicks
+   //    * on category links don't run getInitialProps, therefore props.categoryCode
+   //    * stays the same. So here we check to see if the router query code is different,
+   //    * and if so, we fetch the new category
+   //    *
+   //    * 2021-12-09: UPDATE: we're no longer doing shallow routing
+   //    */
+   //    console.log("router.query.code vs state_categoryCode:", router.query.code, state_categoryCode);
+   //    if ( router.query.code ) {
+   //       console.log("fetching new category page");
+   //       setState_category( false );
+   //       if ( window ) {
+   //          window.scrollTo(0, 0);
+   //       }
+   //       let getCategory = async () => {
+   //          let response = await _fetchCategory(router.query.code,globalConfig.apiEndpoint_static);
+   //          if ( response.status ) {
+   //             setState_categoryCode( router.query.code );
+   //             setState_category( response.data );
+   //          }
+   //       };
+   //       getCategory();
+   //    }
+   // },[router.query.code,globalConfig.apiEndpoint_static]);
+   // useEffect(()=>{ console.log("router.query.code changed:",router.query.code); },[router.query.code]);
+   // useEffect(()=>{ console.log("state_categoryCode changed:",state_categoryCode); },[state_categoryCode]);
+   // useEffect(()=>{ console.log("globalConfig.apiEndpoint_static changed:",globalConfig.apiEndpoint_static); },[globalConfig.apiEndpoint_static]);
 
    //console.log("router.query",router.query);
 

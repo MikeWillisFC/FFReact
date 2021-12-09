@@ -70,7 +70,6 @@ const Flydown = props => {
                   //console.log("flydown",flydown);
                   return (
                      <Link
-                        shallow
                         href={flydown.target}
                         key={flydown.target}
                      >

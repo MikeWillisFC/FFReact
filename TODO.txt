@@ -1,5 +1,5 @@
 general:
-- disable caching on ff website (use vercel instead)
+- XXXX disable caching on ff website (use vercel instead)
 - XXXX increase cache age on vercel (24 hours? 12?)
 - EFFICIENCY!!
 --- minimize re-renders

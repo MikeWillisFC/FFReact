@@ -268,10 +268,10 @@ const Header = props => {
                <Link href="/page/FF/CTGY/popular-wedding-favors">Most Popular Favors</Link>
             </Box>
             <Box flex="1">
-               <Link shallow href="/page/FF/CTGY/ThemeFavors">Theme Favors</Link>
+               <Link href="/page/FF/CTGY/ThemeFavors">Theme Favors</Link>
             </Box>
             <Box flex="1">
-               <Link shallow href="/page/FF/CTGY/Specials"><a><span className="darkPink">Specials / Clearance</span></a></Link>
+               <Link href="/page/FF/CTGY/Specials"><a><span className="darkPink">Specials / Clearance</span></a></Link>
             </Box>
             <Box flex="1">
                <div

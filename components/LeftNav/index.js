@@ -89,7 +89,6 @@ const LeftNav = props => {
                                     return (
                                        <ListItem key={link.target}>
                                           <Link
-                                             shallow
                                              className="lna"
                                              key={link.target}
                                              href={link.target}
