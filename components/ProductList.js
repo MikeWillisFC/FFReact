@@ -93,7 +93,7 @@ const ProductList = props => {
       setState_products(props.products);
       setState_sortedProducts(props.products);
       setState_sortBy( defaults.sortBy );
-   }, [props.products]);
+   }, [props.products,defaults.sortBy]);
 
    useEffect(()=>{
       //console.log("useEffect 5");

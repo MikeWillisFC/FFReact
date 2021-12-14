@@ -41,7 +41,7 @@ const QuantityDropdown = props => {
       <Select
          placeholder="Quantity"
          value={props.quantity}
-         onChange={props.handleQuantityChange}
+         onChange={props.onChange}
          onBlur={event=>setState_touched(true)}
          isInvalid={!state_valid}
       >

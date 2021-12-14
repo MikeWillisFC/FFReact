@@ -4,9 +4,15 @@ import { Box,Stack } from "@chakra-ui/react";
 import Policies from "./Policies";
 import Checkout from "./Checkout";
 
+import styles from "../../styles/basket.module.scss";
+
 const Footer = props => {
    return (
-      <Stack direction={["column", "row"]} spacing="20px" style={{borderTop:"1px solid #ccc",paddingTop:"10px"}}>
+      <Stack
+         direction={["column", "row"]}
+         spacing="20px"
+         className={styles.footer}
+      >
          <Box width={["100%", "50%","60%"]}>
             <Policies />
          </Box>
@@ -14,6 +20,7 @@ const Footer = props => {
             <Checkout
                basketCharges={props.basketCharges}
                subtotal={props.subtotal}
+               items={props.items}
             />
          </Box>
       </Stack>

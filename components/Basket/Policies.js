@@ -1,17 +1,21 @@
 import { Tabs,TabList,TabPanels,Tab,TabPanel,UnorderedList,ListItem } from "@chakra-ui/react";
 
-import baskStyles from "../../styles/basket.module.scss";
+import styles from "../../styles/basket.module.scss";
 
 const Policies = props => {
    return (
-      <Tabs orientation={["vertical","vertical","vertical"]}>
-         <TabList className={baskStyles.tabList}>
+      <Tabs
+         isFitted
+         className={styles.tabs}
+         orientation={["vertical","vertical","vertical"]}
+      >
+         <TabList className={styles.tabList}>
             <Tab>Shipping Policy</Tab>
             <Tab>Shipping Rates</Tab>
             <Tab>Shopping Cart Support</Tab>
          </TabList>
 
-         <TabPanels className={baskStyles.tabPanel}>
+         <TabPanels className={styles.tabPanel}>
             <TabPanel>
                <UnorderedList>
                   <ListItem><b>Expedited shipments</b>: charged at the carrier&apos;s published rates (those rates are shown in the checkout screen).</ListItem>

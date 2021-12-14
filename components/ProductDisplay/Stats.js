@@ -19,7 +19,7 @@ import ReviewStars from "./ReviewStars";
 import ShippingProduction from "./ShippingProduction";
 import DeliveryEstimate from "./DeliveryEstimate";
 
-import { openMiscModal,scrollTo } from "../../utilities";
+import { openMiscModal,scrollTo,formatPrice } from "../../utilities";
 
 const Stats = props => {
 
@@ -104,7 +104,7 @@ const Stats = props => {
             <Tbody>
                <Tr>
                   {
-                     props.product.volPrices && props.product.volPrices !== "none" && props.product.volPrices.length ?
+                     props.product.volPrices && props.product.volPrices !== "none" && props.product.volPrices.length ? (
                         <Td colSpan="2">
                            <Table className={props.styles.priceTable} variant="simple">
                               <Tbody>
@@ -112,15 +112,25 @@ const Stats = props => {
                                     <Td>QTY</Td>
                                     {
                                        props.product.volPrices.map((price,index)=>{
-                                          return (
-                                             <Td
-                                                key={`qIndex${index}|${price.low}-${price.high}`}
-                                             >
-                                                {
-                                                   price.low === price.high ? price.low : `${price.low} - ${price.high}`
-                                                }
-                                             </Td>
-                                          )
+                                          //if ( price.low >  )
+
+                                          console.log("parseInt(price.high)",parseInt(price.high));
+                                          console.log("props.product",props.product);
+                                          if ( price.high !== "0" && parseInt(price.high) < parseInt(props.product.customFields.MINIMUM) && props.product.customFields.enforceMinimum ) {
+                                             return null;
+                                          } else {
+                                             return (
+                                                <Td
+                                                   key={`qIndex${index}|${price.low}-${price.high}`}
+                                                >
+                                                   {
+                                                      price.high === "0" ? `${price.low}+` : (
+                                                         price.low === price.high ? price.low : `${price.low} - ${price.high}`
+                                                      )
+                                                   }
+                                                </Td>
+                                             );
+                                          }
                                        })
                                     }
                                  </Tr>
@@ -128,23 +138,29 @@ const Stats = props => {
                                     <Td><b>Price</b></Td>
                                     {
                                        props.product.volPrices.map((price,index)=>{
-                                          return (
-                                             <Td
-                                                key={`pIndex${index}|${price.amount}`}
-                                             >
-                                                ${price.amount}
-                                             </Td>
-                                          );
+                                          if ( price.high !== "0" && parseInt(price.high) < parseInt(props.product.customFields.MINIMUM) && props.product.customFields.enforceMinimum ) {
+                                             return null;
+                                          } else {
+                                             return (
+                                                <Td
+                                                   key={`pIndex${index}|${price.amount}`}
+                                                >
+                                                   {formatPrice(price.amount)}
+                                                </Td>
+                                             );
+                                          }
                                        })
                                     }
                                  </Tr>
                               </Tbody>
                            </Table>
                         </Td>
-                     : <Fragment>
-                        <Td>Price</Td>
-                        <Td><b>${props.product.price}</b></Td>
-                     </Fragment>
+                     ) : (
+                        <Fragment>
+                           <Td>Price</Td>
+                           <Td><b>{formatPrice(props.product.price)}</b></Td>
+                        </Fragment>
+                     )
                   }
                </Tr>
                <Tr>

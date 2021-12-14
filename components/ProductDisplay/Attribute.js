@@ -1,12 +1,14 @@
-import {Fragment,useState,useEffect,useRef} from "react";
+import {Fragment,useState,useEffect,useRef,useCallback} from "react";
 import { Box,Button,Select,Icon,HStack,Input } from "@chakra-ui/react";
 import { FaRegCheckCircle,FaAngleDown } from 'react-icons/fa';
 import axios from "axios";
 import Image from 'next/image';
+import _ from "lodash";
 
 import OptionModal from "./OptionModal";
 import IframeModal from "./IframeModal";
 import TagPrompt from "./TagPrompt";
+import FCDesignToolPrompt from "./FCDesignToolPrompt";
 
 const Attribute = props => {
    const [state_modal,setState_modal] = useState(false);
@@ -15,6 +17,7 @@ const Attribute = props => {
    const [state_disabled,setState_disabled] = useState(false);
    const [state_iframeSource,setState_iframeSource] = useState( false );
 
+   //console.log("Attribute rendering, props:",props);
    const elRef = useRef();
    const buttonRef = useRef();
 
@@ -27,8 +30,9 @@ const Attribute = props => {
       setState_selectIcon( icon );
    },[state_value,domain]);
 
-   let {attribute,receiveAttributeValue,onChange} = props;
+   let {attribute,receiveAttributeValue,onChange,blockSamples} = props;
    useEffect(()=>{
+      // console.log("Attribute useEffect running");
       /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
       * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
       */
@@ -36,8 +40,18 @@ const Attribute = props => {
       if ( attribute.onChange ) {
          onChange( state_value, attribute.onChange, attribute.code, attribute.templateCode );
       }
-
-   },[state_value,receiveAttributeValue,attribute,onChange]);
+   },[
+      state_value,
+      receiveAttributeValue,
+      attribute.code,
+      attribute.templateCode,
+      attribute.onChange,
+      onChange
+   ]);
+   // useEffect(()=>{console.log("state_value changed",state_value);},[state_value]);
+   // useEffect(()=>{console.log("receiveAttributeValue changed",receiveAttributeValue);},[receiveAttributeValue]);
+   // useEffect(()=>{console.log("attribute changed",attribute);},[attribute]);
+   // useEffect(()=>{console.log("onChange changed",onChange);},[onChange]);
 
    useEffect(()=>{
       if ( typeof( props.attribute.disabled ) === "string" ) {
@@ -86,10 +100,6 @@ const Attribute = props => {
       }
    },[props.product.customFields.MANUFACTURER]);
 
-   let style = {};
-
-   //console.log("attribute props",attribute);
-
    //console.log("attribute.prompt.substr(0,1)",attribute.prompt.substr(0,1));
    if ( attribute.prompt.substr(0,1) === "{" ) {
       attribute.promptDecoded = JSON.parse( attribute.prompt );
@@ -97,7 +107,7 @@ const Attribute = props => {
       attribute.prompt = attribute.promptDecoded.prompt;
    }
 
-   let renderDecodedPrompt = () => {
+   let renderDecodedPrompt = useCallback(() => {
       //console.log("prompt",prompt);
       return (
          <Button
@@ -109,11 +119,14 @@ const Attribute = props => {
             {attribute.prompt}
          </Button>
       );
-   }; // renderDecodedPrompt
+   },[getChoices,attribute.prompt]); // renderDecodedPrompt
 
-   let getChoices = async event => {
+   let _getChoices = _.memoize(async (get) => {
+      return await axios.get(`https://${props.globalConfig.domain}${attribute.previewURL}`);
+   });
+   let getChoices = useCallback(async (event) => {
       event.preventDefault();
-      let response = await axios.get(`https://${props.globalConfig.domain}${attribute.previewURL}`);
+      let response = await _getChoices(`https://${domain}${attribute.previewURL}`);
       if ( response.status ) {
          //console.log("response.data",response.data);
          setState_modal({
@@ -121,24 +134,34 @@ const Attribute = props => {
             title: attribute.prompt
          });
       }
-   };
+   },[
+      domain,
+      attribute.previewURL,
+      _getChoices,
+      attribute.prompt
+   ]); // getChoices
 
-   let setValue = (event,value) => {
-      // console.log("event",event);
-      // console.log("value",value);
+   let setValue = useCallback((event,value) => {
+      console.log("setValue called");
+      console.log("event",event);
+      console.log("value",value);
       setState_value( value || event.target.value );
-   };
+   },[]);
 
-   let handleSelectClick = event => {
+   let handleSelectClick = useCallback(event => {
       if ( !state_disabled ) {
          // nothing to see here
       } else if ( buttonRef.current ) {
          // pretend they clicked the design button
          buttonRef.current.click();
       }
-   }; // handleSelectClick
+   },[
+      state_disabled,
+      //buttonRef.current // Mutable values like 'buttonRef.current' aren't valid dependencies because mutating them doesn't re-render the component.
+   ]); // handleSelectClick
 
-   let renderAttribute = () => {
+   let renderAttribute = useCallback(() => {
+      let style = {};
       switch( attribute.type ) {
       case "checkbox":
          if ( attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
@@ -156,11 +179,22 @@ const Attribute = props => {
             color: state_value.length < maxLength ? "" : "#f00"
          };
 
+         if ( attribute.code === "DesignID" ) {
+            window.FashioncraftDesignIDSelector = "input[data-code='DesignID']";
+         }
+
          return (
             <Box>
-               {attribute.required || attribute.required === "true" || attribute.required === "1" ?
-                  <b>{attribute.prompt}:</b>
-               : <Fragment>{attribute.prompt}</Fragment>
+               {
+                  (
+                     attribute.required ||
+                     attribute.required === "true" ||
+                     attribute.required === "1"
+                  ) ? (
+                     <b>{attribute.prompt}:</b>
+                  ) : (
+                     <Fragment>{attribute.prompt}</Fragment>
+                  )
                }
 
                <HStack
@@ -170,6 +204,7 @@ const Attribute = props => {
                   marginLeft="5%"
                >
                   <Input
+                     data-code={attribute.code}
                      width="58%"
                      ref={elRef}
                      type="text"
@@ -195,15 +230,24 @@ const Attribute = props => {
          return (
             <Box>
                {
-                  attribute.previewURL ?
+                  attribute.previewURL ? (
                      renderDecodedPrompt()
-                  : (
-                     attribute.tagPrompt ?
+                  ) : (
+                     attribute.tagPrompt ? (
                         <TagPrompt
                            attribute={attribute}
                            globalConfig={props.globalConfig}
                         />
-                     : <div style={{display:"inline",margin:"0px",padding:"0px"}} dangerouslySetInnerHTML={{__html: _.unescape(attribute.prompt)}}></div>
+                     ) : (
+                        attribute.FCDesignTool ? (
+                           <FCDesignToolPrompt
+                              attribute={attribute}
+                              globalConfig={props.globalConfig}
+                           />
+                        ) : (
+                           <div style={{display:"inline",margin:"0px",padding:"0px"}} dangerouslySetInnerHTML={{__html: _.unescape(attribute.prompt)}}></div>
+                        )
+                     )
                   )
                }
                <HStack
@@ -225,7 +269,7 @@ const Attribute = props => {
                   >
                      {
                         attribute.options.map(option=>{
-                           if ( props.blockSamples && option.code.toLowerCase() === "sample" ) {
+                           if ( blockSamples && option.code.toLowerCase() === "sample" ) {
                               return "";
                            } else {
                               return ( <option key={option.code} value={option.code}>{option.prompt}</option> );
@@ -239,7 +283,18 @@ const Attribute = props => {
          );
          break;
       }
-   }; // renderAttribute
+   },[
+      attribute,
+      elRef,
+      state_value,
+      renderDecodedPrompt,
+      handleSelectClick,
+      setValue,
+      blockSamples,
+      state_selectIcon,
+      props.globalConfig,
+      state_disabled
+   ]); // renderAttribute
 
    return (
       <Fragment>
@@ -268,8 +323,6 @@ const Attribute = props => {
          }
       </Fragment>
    );
-
-
 }; // Attribute
 
 export default Attribute;

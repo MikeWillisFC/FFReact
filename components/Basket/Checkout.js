@@ -1,14 +1,17 @@
-import {Fragment,useState} from "react";
+import {Fragment,useState,useEffect} from "react";
 import { FaMailBulk,FaLock } from 'react-icons/fa';
 import Link from "next/link";
 import { Box,Stack,Flex,Button } from "@chakra-ui/react";
 
 import {formatPrice} from "../../utilities";
 
-import baskStyles from "../../styles/basket.module.scss";
+import styles from "../../styles/basket.module.scss";
 
 const Checkout = props => {
    const [state_shipping,setState_shipping] = useState(null);
+   const [state_allowCheckout,setState_allowCheckout] = useState(true);
+
+   let {items} = props;
 
    let renderTotal = () => {
       let total = props.subtotal + ( state_shipping ? state_shipping : 0 );
@@ -18,8 +21,19 @@ const Checkout = props => {
       return formatPrice(total);
    };
 
+   useEffect(()=>{
+      let badItems = items.filter(item=>{
+         return !item.quantityIsValid;
+      });
+      if ( badItems.length ) {
+         setState_allowCheckout(false);
+      } else {
+         setState_allowCheckout( true );
+      }
+   },[items]);
+
    return (
-      <Stack spacing="3px" className={baskStyles.checkout}>
+      <Stack spacing="3px" className={styles.checkout}>
          <Flex>
             <Box width="70%">Merchandise Subtotal:</Box>
             <Box width="30%">{formatPrice(parseInt(props.subtotal))}</Box>
@@ -63,21 +77,25 @@ const Checkout = props => {
             </Box>
          </Flex>
 
+         {
+            state_allowCheckout && (
+               <Flex>
+                  <Box width="100%">
+                     <Link href="/checkout/Shipping" passHref>
+                        <Button
+                           leftIcon={<FaLock />}
+                           size="lg"
+                           colorScheme="blue"
+                           width="100%"
+                        >
+                           Proceed to Secure Checkout
+                        </Button>
+                     </Link>
+                  </Box>
+               </Flex>
+            )
+         }
 
-         <Flex>
-            <Box width="100%">
-               <Link href="/checkout/Shipping" passHref>
-                  <Button
-                     leftIcon={<FaLock />}
-                     size="lg"
-                     colorScheme="blue"
-                     width="100%"
-                  >
-                     Proceed to Secure Checkout
-                  </Button>
-               </Link>
-            </Box>
-         </Flex>
       </Stack>
    );
 };

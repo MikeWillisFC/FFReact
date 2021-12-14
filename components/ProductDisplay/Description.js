@@ -56,13 +56,13 @@ const Description = forwardRef((props,ref) => {
 
    let {tabIndex,setTabIndex} = props;
    useEffect(()=>{
-      //console.log("tabIndex useEffect running");
+      // console.log("tabIndex useEffect running");
       if ( tabIndex !== false ) {
-         //console.log("setting state to '" + tabIndex + "'");
+         // console.log("setting state to '" + tabIndex + "'");
          setState_tabIndex( tabIndex );
          setTabIndex(false);
       }
-   },[tabIndex,setTabIndex])
+   },[tabIndex,setTabIndex]);
 
    let showMoreReviews = () => {
       buttonControls.start("collapsed");

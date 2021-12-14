@@ -1,10 +1,11 @@
-import {Fragment,useState,useEffect} from "react";
+import {memo,Fragment,useState,useEffect,useCallback} from "react";
 import axios from "axios";
 import { Box,Button } from "@chakra-ui/react";
 
 import AttributeRow from "./AttributeRow";
 
 const Attributes = props => {
+   //console.log("attributes rendering, props:", props);
    const [state_rowVisibility,setState_rowVisibility] = useState( [] );
    const [state_rowIndex,setState_rowIndex] = useState( props.rowIndex || 0 );
    const [state_attributeRows,setState_attributeRows] = useState( [] );
@@ -44,7 +45,8 @@ const Attributes = props => {
                      tagDetails: prompt.tagDetails || false,
                      tagPrompt: prompt.tagPrompt || false,
                      scripts: prompt.scripts || false,
-                     iframeModal: prompt.iframeModal || false
+                     iframeModal: prompt.iframeModal || false,
+                     FCDesignTool: prompt.FCDesignTool || false
                   });
                });
             } else {
@@ -62,7 +64,8 @@ const Attributes = props => {
                   tagDetails: prompt.tagDetails || false,
                   tagPrompt: prompt.tagPrompt || false,
                   scripts: prompt.scripts || false,
-                  iframeModal: prompt.iframeModal || false
+                  iframeModal: prompt.iframeModal || false,
+                  FCDesignTool: prompt.FCDesignTool || false
                });
             }
          });
@@ -91,7 +94,7 @@ const Attributes = props => {
       }
    }; // getPrompt
 
-   let handleChange = (value,onChange,code,templateCode) => {
+   let handleChange = useCallback((value,onChange,code,templateCode) => {
       // 2021-08-10: this is only called if the attribute has an onChange
       // console.log("handling change");
       // console.log("value",value);
@@ -101,40 +104,37 @@ const Attributes = props => {
       onChange.forEach(change=>{
          let runActions = false;
          if ( typeof(change.values) !== "string" && change.values.includes(value) ) {
-            console.log("VALUE FOUND");
+            // console.log("VALUE FOUND");
             changeHandled = true;
             runActions = true;
          }
 
          if ( !changeHandled && typeof(change.values) === "string" && change.values === "DEFAULT" ) {
-            console.log("handling default");
+            // console.log("handling default");
             runActions = true;
          }
 
          if ( runActions ) {
             change.actions.forEach(action=>{
                action.targets.forEach(target=>{
-                  console.log("target",target);
+                  // console.log("target",target);
                   setState_attributeRows( prevState=>{
                      let newState = prevState.map(attribute=>{
                         if ( attribute ) {
                            if ( attribute.code === target ) {
-                              console.log("..match",action);
+                              // console.log("..match",action);
                               // do whatever the action is..
                               if ( action.action === "hide" ) {
                                  attribute.hiddenSetting = "hiddenOptionRow";
                               } else if ( action.action === "show" ) {
                                  attribute.hiddenSetting = "";
                               }
-
                               attribute.required = action.required === "true";
                            }
                         }
-
                         //console.log("attribute",attribute);
                         return attribute;
                      });
-
                      return newState;
                   });
 
@@ -142,8 +142,7 @@ const Attributes = props => {
             });
          }
       });
-
-   }; // handleChange
+   },[]); // handleChange
 
    let hidingOptions = false;
 
@@ -216,4 +215,4 @@ const Attributes = props => {
    )
 }; // Attributes
 
-export default Attributes;
+export default memo(Attributes);

@@ -1,4 +1,4 @@
-import { Fragment,useState,useEffect,useRef } from "react";
+import { Fragment,useState,useEffect,useRef,useCallback } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Head from "next/head";
@@ -74,7 +74,7 @@ const Product = (props) => {
    /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
    * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
    */
-   let receiveAttributeValue = (value, code, templateCode) => {
+   let receiveAttributeValue = useCallback((value, code, templateCode) => {
       //console.log("receiveAttributeValue",value,code,templateCode);
       let attValue = { value:value, code:code, templateCode:templateCode };
       let atIndex = false;
@@ -90,7 +90,9 @@ const Product = (props) => {
       } else {
          attributeValuesRef.current.push(attValue);
       }
-   }; // receiveAttributeValue
+   },[
+      //attributeValuesRef.current // utable values like 'attributeValuesRef.current' aren't valid dependencies because mutating them doesn't re-render the component.
+   ]); // receiveAttributeValue
 
    let renderSpinner = () => {
       return (
@@ -251,7 +253,8 @@ const Product = (props) => {
                         quantity={quantityRef.current}
                         quantityRef={quantityRef}
                         minimum={state_product.customFields.MINIMUM}
-                        blockSamples={state_product.customFields.blockSamples}
+                        enforceMinimum={state_product.customFields.enforceMinimum.trim() !== ""}
+                        blockSamples={state_product.customFields.blockSamples.trim() === "1" || state_product.customFields.blockSamples.trim() === "yes"}
                      />
                   </form>
                </Box>

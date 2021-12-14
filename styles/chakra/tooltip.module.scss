@@ -1,0 +1,16 @@
+.tooltip {
+   background-color: rgb(190, 227, 248) !important;
+   color: rgb(45, 55, 72) !important;
+   font-weight: normal !important;
+
+   > div div {
+      background-color: rgb(190, 227, 248) !important;
+   }
+
+   &[data-status='error'] {
+      background-color: rgb(254, 215, 215) !important;
+      > div div {
+         background-color: rgb(254, 215, 215) !important;
+      }
+   }
+}

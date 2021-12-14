@@ -1,4 +1,4 @@
-import {useState,useEffect} from "react";
+import {useState,useEffect,useCallback} from "react";
 import { FaCartPlus } from 'react-icons/fa';
 import {
    Box,
@@ -7,11 +7,13 @@ import {
    Icon
 } from "@chakra-ui/react";
 
-import QuantityInput from "./QuantityInput";
+//import QuantityInput from "./QuantityInput";
+import {default as QuantityInput} from "../QuantityEdit/Input";
 import QuantityDropdown from "./QuantityDropdown";
 
 const AddToCart = props => {
    const [state_quantity,setState_quantity] = useState(props.quantity);
+   const [state_disabled,setState_disabled] = useState(props.disabled);
 
    //console.log("AddToCart rendering, props:",props);
 
@@ -19,10 +21,16 @@ const AddToCart = props => {
       setState_quantity(props.quantity);
    },[props.quantity]);
 
-   let handleQuantityChange = value =>{
+   let handleQuantityChange = value => {
+      //console.log("handleQuantityChange", value);
       props.quantityRef.current = value;
       setState_quantity(value);
    }; // handleQuantityChange
+
+   let handleQuantityValidityChange = useCallback(isValid => {
+      // console.log("handleQuantityValidityChange isvalid:",isValid);
+      setState_disabled(!isValid);
+   },[]);
 
    let inputType = props.minimum && props.minimum.indexOf("^") !== -1 ? "dropdown" : "input";
 
@@ -39,14 +47,16 @@ const AddToCart = props => {
                      quantity={state_quantity}
                      onChange={handleQuantityChange}
                      minimum={props.minimum}
+                     enforceMinimum={props.enforceMinimum}
                      blockSamples={props.blockSamples}
-                     isValid={props.isValid}
+                     onValidityChange={handleQuantityValidityChange}
                   />
                ) : (
                   <QuantityDropdown
                      quantity={state_quantity}
                      onChange={handleQuantityChange}
                      minimum={props.minimum}
+                     enforceMinimum={props.enforceMinimum}
                      blockSamples={props.blockSamples}
                      isValid={props.isValid}
                   />
@@ -62,6 +72,7 @@ const AddToCart = props => {
                className="mediumBlueButton_Horizontal"
                width="100%"
                form={props.formID}
+               disabled={state_disabled}
             >
                Add To Cart
             </Button>

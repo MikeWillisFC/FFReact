@@ -24,7 +24,7 @@ import { motion } from "framer-motion";
 const MotionModalContent = motion(ModalContent);
 
 const OptionModal = props => {
-   //console.log("Modal props",props);
+   console.log("Modal props",props);
    const modalDisclosure = useDisclosure();
    const [state_animate,setState_animate] = useState( {} );
    const [state_animationDuration,setState_animationDuration] = useState( 0.4 );
@@ -76,6 +76,8 @@ const OptionModal = props => {
       closeModal();
    };
 
+   let gridChildWidth = (props.modal.options.gridWidth ? props.modal.options.gridWidth : ( props.modal.options.imgWidth ? parseInt(props.modal.options.imgWidth) + 30 : "150" ));
+
    return (
       <Modal
          isOpen={modalDisclosure.isOpen}
@@ -113,7 +115,7 @@ const OptionModal = props => {
                         <Heading className="subHeader yellow">Options</Heading>
                      </Fragment>
                   }
-                  <SimpleGrid className={props.styles.grid} minChildWidth={`${props.modal.options.gridWidth}px`} spacing={6}>
+                  <SimpleGrid className={props.styles.grid} minChildWidth={`${gridChildWidth}px`} spacing={6}>
                      {
                         props.modal.options.options.map((option,index)=>{
                            let style = {};
@@ -131,14 +133,22 @@ const OptionModal = props => {
                               <Box
                                  key={`options|${index}|${option.text}`}
                                  onClick={(event)=>handleClick(option)}
+                                 width={props.modal.options.imgWidth}
                               >
                                  {
-                                    option.img && <Image alt={option.text} src={`https://${props.globalConfig.domain}${option.img}`} />
+                                    option.img && props.modal.options.imgHeight && props.modal.options.imgWidth ? (
+                                       <Image
+                                          width={props.modal.options.imgWidth}
+                                          height={props.modal.options.imgHeight}
+                                          alt={option.text}
+                                          src={`https://${props.globalConfig.domain}${option.img}`}
+                                       />
+                                    ) : ""
                                  }
                                  {
                                     option.bgimg && <Box style={style}></Box>
                                  }
-                                 {option.text}
+                                 <br />{option.text}
                               </Box>
                            );
                         })

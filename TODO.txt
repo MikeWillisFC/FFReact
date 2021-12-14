@@ -37,14 +37,21 @@ product:
 - set link in shipping / production to point to terms / conditions when that page is ready
 - add schema.org stuff
 - XXXX remove red border around large product images, image box, etc
+- XXXX enforce minimums
+- XXXX don't show prices for below minimum
 
 basket:
-- check result of editable attribute update
+- check result of editable attribute update?
 - make quantity a dropdown if needed
 - show mini-cart on header basket click?
+- XXXX enforce minimums
 
 checkout:
 - full review
+- OSEL: browser address autofill is not detected, fields appear to be empty
+- OSEL + OPAY: the OSEL page saves the basket to local storage / cookie (using the store plugin). If
+--- the basket is not available on OPAY, it crashes. We need a fallback in this scenario, not a crash
+- OSEL: the form is slow and laggy due to re-renders when typing. Must fix this
 
 search:
 - do it

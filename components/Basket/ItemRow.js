@@ -1,4 +1,4 @@
-import {Fragment,useState,useEffect,useRef,useMemo} from "react";
+import {Fragment,useState,useEffect,useRef,useMemo,useCallback} from "react";
 import { FaTrashAlt } from 'react-icons/fa';
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import axios from "axios";
@@ -23,17 +23,23 @@ import {
    AlertDialogHeader,
    AlertDialogContent,
    AlertDialogOverlay,
+   Tooltip,
 } from "@chakra-ui/react";
 
 import OptionRow from "./OptionRow";
+import {default as QuantityInput} from "../QuantityEdit/Input";
 
 import {formatPrice} from "../../utilities";
 
-import baskStyles from "../../styles/basket.module.scss";
+import styles from "../../styles/basket.module.scss";
+import tooltipStyles from "../../styles/chakra/tooltip.module.scss";
 
 const ItemRow = props => {
+   const [state_item,setState_item] = useState(props.item);
    const [state_totalRows,setState_totalRows] = useState( 1 );
    const [state_quantity,setState_quantity] = useState( props.item.quantity );
+   const [state_quantityValid,setState_quantityValid] = useState(true);
+   const [state_quantityFocused,setState_quantityFocused] = useState(false);
    const [state_optionWidth,setState_optionWidth] = useState(false);
    const [state_confirmRemoveIsOpen,setState_confirmRemoveIsOpen] = useState(false);
    const [state_rowCollapsing,setState_rowCollapsing] = useState(false);
@@ -41,22 +47,69 @@ const ItemRow = props => {
    const confirmRemoveCancelRef = useRef();
    const controls = useAnimation();
 
-   let {item} = props;
+   let {item,onRemoveItem,quantityIsValid,onQuantityChange} = props;
    let totalRows = 1;
    let optionWidths = useMemo(()=>{
       return [];
    },[]);
 
-   useEffect(()=>{
-      //console.log("item.options",item.options);
-      if ( item.options !== "false" && item.options !== "unknown" ) {
-         setState_totalRows(item.options.length + 1);
+   //console.log("props.item",props.item);
+
+   let minQuantity = useMemo(()=>{
+      return state_item.customFields.minimum && ( state_item.customFields.enforceMinimum === "1" || state_item.customFields.enforceMinimum === "yes" ) ? parseInt(state_item.customFields.minimum) : 1;
+   },[
+      state_item
+   ]);
+   let allowSamples = useMemo(()=>{
+      return minQuantity > 1 && (!state_item.customFields.blockSamples || state_item.customFields.enforceMinimum.trim() === "");
+   },[
+      minQuantity,
+      state_item
+   ]);
+   let minQuantityNote = useMemo(()=>{
+      let result = `The minimum quantity for this item is ${minQuantity}`;
+      if ( minQuantity > 1 && allowSamples ) {
+         result = `${result}, or 1 for samples`;
       }
-   },[item.options]);
+      return result;
+   },[
+      minQuantity,
+      allowSamples
+   ]);
+
+   // console.log("minQuantity",minQuantity);
+   // console.log("allowSamples",allowSamples);
+   // console.log("minQuantityNote",minQuantityNote);
 
    useEffect(()=>{
-      setState_quantity(item.quantity);
-   },[item.quantity]);
+      setState_item(item);
+   },[item]);
+
+   useEffect(()=>{
+      //console.log("item.options",item.options);
+      if ( state_item.options !== "false" && state_item.options !== "unknown" ) {
+         setState_totalRows(state_item.options.length + 1);
+      }
+   },[state_item]);
+
+   useEffect(()=>{
+      //props.onQuantityValidityChange();
+   },[state_quantityValid]);
+
+   useEffect(()=>{
+      // let's wait a bit before doing it, in case they're typing
+      let waitASec = setTimeout(()=>{
+         if ( state_quantity !== state_item.quantity ) {
+            onQuantityChange( state_quantity, state_item.lineID );
+         }
+      },600);
+      return ()=>{clearTimeout(waitASec);}
+   },[
+      state_quantity,
+      state_item,
+      minQuantity,
+      onQuantityChange
+   ]);
 
    useEffect(()=>{
       let timer = setTimeout(()=>{
@@ -76,9 +129,31 @@ const ItemRow = props => {
       return ()=>{clearTimeout(timer);}
    },[optionWidths]);
 
-   let handleQuantityChange = quantity => {
-      props.onQuantityChange( quantity, item.lineID );
-   }; // handleQuantityChange
+   let handleQuantityChange = useCallback(quantity => {
+      setState_quantity(quantity);
+      let price = false;
+      if ( state_item.volPrices.length ) {
+         // console.log("quantity",quantity);
+         // console.log("item.volPrices",state_item.volPrices);
+         let volPrice = state_item.volPrices.filter(price=>{
+            if ( price.high === "0" ) {
+               price.high = "9999";
+            }
+            return parseInt(price.low) <= quantity && parseInt(price.high) >= quantity;
+         });
+         if ( volPrice.length && volPrice.length === 1 ) {
+            price = parseInt(volPrice[0].amount);
+         }
+      }
+      //console.log("price",price);
+      let qValid = quantityIsValid({...state_item,quantity:quantity});
+      setState_quantityValid( qValid );
+      setState_item({
+         ...state_item,
+         quantityIsValid:qValid,
+         price:(price || state_item.price)
+      })
+   },[state_item,quantityIsValid]); // handleQuantityChange
 
    let receiveWidth = width => {
       //console.log("receiving width:",width);
@@ -99,9 +174,9 @@ const ItemRow = props => {
       //props.onRemoveItem(item.lineID);
       setState_confirmRemoveIsOpen( false );
    };
-   let handleRowHideCompleted = () => {
-      props.onRemoveItem(item.lineID);
-   };
+   let handleRowHideCompleted = useCallback(() => {
+      onRemoveItem(state_item.lineID);
+   },[onRemoveItem,state_item]);
 
    let cellVariants = {
       open: { opacity: 1, height: "auto", margin: 0, padding: 0, lineHeight: "auto" },
@@ -140,8 +215,12 @@ const ItemRow = props => {
             </AlertDialogOverlay>
          </AlertDialog>
 
-         <Tr key={item.lineID} className={`darkestGrey ${baskStyles.itemRow}`}>
-            <Td rowSpan={state_totalRows} className={`${baskStyles.thumbColumn} ${(state_rowCollapsing ? baskStyles.collapsing : '')}`}>
+         <Tr
+            key={state_item.lineID}
+            className={`darkestGrey ${styles.itemRow}`}
+            data-status={state_item.quantityIsValid ? "" : "error"}
+         >
+            <Td rowSpan={state_totalRows} className={`${styles.thumbColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                <motion.div
                   variants={cellVariants}
                   transition={cellTransition}
@@ -151,23 +230,23 @@ const ItemRow = props => {
                   onAnimationComplete={handleRowHideCompleted}
                >
                   {
-                     item.images &&
-                     <Link href={`/page/FF/PROD/${item.code}`}>
+                     (state_item.images && state_item.images !== "none") &&
+                     <Link href={`/page/FF/PROD/${state_item.code}`}>
                         <a>
                            <Image
-                              src={`https://${props.domain}${item.images.thumb.path}`}
+                              src={`https://${props.domain}${state_item.images.thumb.path}`}
                               width="100"
                               height="100"
-                              alt={item.name}
+                              alt={state_item.name}
                               placeholder="blur"
-                              blurDataURL={item.images.thumb.blur}
+                              blurDataURL={state_item.images.thumb.blur}
                            />
                         </a>
                      </Link>
                   }
                </motion.div>
             </Td>
-            <Td className={`${baskStyles.nameColumn} ${(state_rowCollapsing ? baskStyles.collapsing : '')}`}>
+            <Td className={`${styles.nameColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                <motion.div
                   variants={cellVariants}
                   transition={cellTransition}
@@ -175,15 +254,15 @@ const ItemRow = props => {
                   exit="collapsed"
                   animate={controls}
                >
-                  <Link href={`/page/FF/PROD/${item.code}`}>
+                  <Link href={`/page/FF/PROD/${state_item.code}`}>
                      <a>
-                        {item.name}
-                        <br /><span className="mediumGrey">#{item.code}</span>
+                        {state_item.name}
+                        <br /><span className="mediumGrey">#{state_item.code}</span>
                      </a>
                   </Link>
                </motion.div>
             </Td>
-            <Td className={`${baskStyles.priceColumn} ${(state_rowCollapsing ? baskStyles.collapsing : '')}`}>
+            <Td className={`${styles.priceColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                <motion.div
                   variants={cellVariants}
                   transition={cellTransition}
@@ -191,10 +270,10 @@ const ItemRow = props => {
                   exit="collapsed"
                   animate={controls}
                >
-                  <b>{formatPrice(parseInt(item.price))}</b>
+                  <b>{formatPrice(parseInt(state_item.price))}</b>
                </motion.div>
             </Td>
-            <Td className={`${baskStyles.qtyColumn} ${(state_rowCollapsing ? baskStyles.collapsing : '')}`}>
+            <Td className={`${styles.qtyColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                <motion.div
                   variants={cellVariants}
                   transition={cellTransition}
@@ -204,22 +283,13 @@ const ItemRow = props => {
                >
                   {
                      props.editable ? (
-                        <NumberInput
-                           min={1}
-                           placeholder="Quantity"
-                           value={state_quantity}
+                        <QuantityInput
+                           quantity={state_quantity}
                            onChange={handleQuantityChange}
-                           inputMode="numeric"
-                           width="80px"
-                           size="xs"
-                           margin="0px auto"
-                        >
-                           <NumberInputField placeholder="Quantity" borderRadius="5px" padding="3px" />
-                           <NumberInputStepper>
-                              <NumberIncrementStepper />
-                              <NumberDecrementStepper />
-                           </NumberInputStepper>
-                        </NumberInput>
+                           minimum={state_item.customFields.minimum}
+                           enforceMinimum={state_item.customFields.enforceMinimum}
+                           blockSamples={state_item.customFields.blockSamples}
+                        />
                      ) : (
                         state_quantity
                      )
@@ -227,7 +297,7 @@ const ItemRow = props => {
 
                </motion.div>
             </Td>
-            <Td className={`${baskStyles.totalColumn} ${(state_rowCollapsing ? baskStyles.collapsing : '')}`}>
+            <Td className={`${styles.totalColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                <motion.div
                   variants={cellVariants}
                   transition={cellTransition}
@@ -235,12 +305,12 @@ const ItemRow = props => {
                   exit="collapsed"
                   animate={controls}
                >
-                  {formatPrice(state_quantity * parseInt(item.price))}
+                  {formatPrice(state_quantity * parseInt(state_item.price))}
                </motion.div>
             </Td>
             {
                props.editable && (
-                  <Td rowSpan={state_totalRows} className={`${baskStyles.editColumn} ${(state_rowCollapsing ? baskStyles.collapsing : '')}`}>
+                  <Td rowSpan={state_totalRows} className={`${styles.editColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
                         transition={cellTransition}
@@ -264,10 +334,10 @@ const ItemRow = props => {
          </Tr>
 
          {
-            item.options !== "false" && item.options !== "unknown" &&
+            state_item.options !== "false" && state_item.options !== "unknown" &&
             <Fragment>
                {
-                  item.options.map(option=>{
+                  state_item.options.map(option=>{
                      //console.log("option",option);
                      return (
                         <OptionRow
@@ -285,7 +355,7 @@ const ItemRow = props => {
                            optionWidth={state_optionWidth}
                            receiveWidth={receiveWidth}
                            basketID={props.basketID}
-                           lineID={item.lineID}
+                           lineID={state_item.lineID}
                            domain={props.domain}
                         />
                      )

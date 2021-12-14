@@ -109,16 +109,21 @@ const RotatingBanner = (props) => {
                {
                   state_slides.length ? state_slides.map((slide,index)=>{
                      let loading = index > 0 ? "lazy" : "eager";
-
+                     /* the extra div below is to make NextJS happy. It doesn't like rendering an Image
+                     * inside of an absolute-positioned element
+                     */
                      return (
                         <div key={slide.src} style={{opacity: slide.opacity}} className={styles.banner}>
-                           <Image
-                              key={slide.src}
-                              src={slide.src}
-                              alt={slide.title}
-                              layout="fill"
-                              loading={loading}
-                           />
+                           <div className={styles.makeNextJSHappy}>
+                              <Image
+                                 key={slide.src}
+                                 src={slide.src}
+                                 alt={slide.title}
+                                 layout="fill"
+                                 loading={loading}
+                                 priority={index === 0}
+                              />
+                           </div>
                         </div>
                      );
                   }) : ""

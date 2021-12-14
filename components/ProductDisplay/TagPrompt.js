@@ -79,7 +79,7 @@ const TagPrompt = props => {
             </a>
          </motion.div>
       </Fragment>
-   )
+   );
 };
 
 export default TagPrompt;
