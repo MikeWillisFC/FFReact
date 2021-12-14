@@ -44,6 +44,7 @@ const AttributeRow = props => {
                product={props.product}
                receiveAttributeValue={props.receiveAttributeValue}
                blockSamples={props.blockSamples}
+               rowIndex={props.rowIndex}
             />
          </Box>
       </motion.div>

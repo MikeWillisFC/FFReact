@@ -74,9 +74,9 @@ const Product = (props) => {
    /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
    * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
    */
-   let receiveAttributeValue = useCallback((value, code, templateCode) => {
+   let receiveAttributeValue = useCallback((value, code, templateCode, rowIndex, attemp_id) => {
       //console.log("receiveAttributeValue",value,code,templateCode);
-      let attValue = { value:value, code:code, templateCode:templateCode };
+      let attValue = { value:value, code:code, templateCode:templateCode, rowIndex:rowIndex, attemp_id:attemp_id };
       let atIndex = false;
       if ( attributeValuesRef.current.length ) {
          attributeValuesRef.current.forEach( (attribute,index)=>{
@@ -130,13 +130,14 @@ const Product = (props) => {
       if ( attributeValuesRef.current.length ) {
          attributeValuesRef.current.forEach((attribute,index)=>{
             index++; // Miva doesn't start at 0
-            let attKey = `Product_Attributes[${index}]`;
+            let rowIndex = attribute.rowIndex + 1; // Miva doesn't start at 0
+            let attKey = `Product_Attributes[${rowIndex}]`;
 
-            /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
+            /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field.
             * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
             */
             bodyFormData.set( `${attKey}:value`, attribute.value );
-            if ( attribute.code ) {
+            if ( attribute.attemp_id && attribute.attemp_id !== "0" && attribute.code ) {
                bodyFormData.set( `${attKey}:template_code`, attribute.code );
             }
             if ( attribute.templateCode ) {

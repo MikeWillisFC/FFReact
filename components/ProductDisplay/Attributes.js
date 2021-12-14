@@ -5,7 +5,7 @@ import { Box,Button } from "@chakra-ui/react";
 import AttributeRow from "./AttributeRow";
 
 const Attributes = props => {
-   //console.log("attributes rendering, props:", props);
+   console.log("attributes rendering, props:", props);
    const [state_rowVisibility,setState_rowVisibility] = useState( [] );
    const [state_rowIndex,setState_rowIndex] = useState( props.rowIndex || 0 );
    const [state_attributeRows,setState_attributeRows] = useState( [] );
@@ -35,6 +35,7 @@ const Attributes = props => {
                   attributes.push({
                      ...att,
                      templateCode: attribute.code,
+                     attemp_id: attribute.attemp_id,
                      prompt: prompt.prompt,
                      hiddenSetting: prompt.hidden || "",
                      textLength: prompt.textLength || false,
@@ -54,6 +55,7 @@ const Attributes = props => {
                attributes.push({
                   ...attribute,
                   templateCode: attribute.code,
+                  attemp_id: attribute.attemp_id,
                   prompt: prompt.prompt,
                   hiddenSetting: prompt.hidden || "",
                   textLength: prompt.textLength || false,

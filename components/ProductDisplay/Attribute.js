@@ -30,13 +30,14 @@ const Attribute = props => {
       setState_selectIcon( icon );
    },[state_value,domain]);
 
-   let {attribute,receiveAttributeValue,onChange,blockSamples} = props;
+   let {attribute,receiveAttributeValue,onChange,blockSamples,rowIndex} = props;
    useEffect(()=>{
       // console.log("Attribute useEffect running");
       /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
       * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
       */
-      receiveAttributeValue( state_value, attribute.code, attribute.templateCode );
+      //console.log("attribute",attribute);
+      receiveAttributeValue( state_value, attribute.code, attribute.templateCode, rowIndex, attribute.attemp_id );
       if ( attribute.onChange ) {
          onChange( state_value, attribute.onChange, attribute.code, attribute.templateCode );
       }
@@ -46,7 +47,9 @@ const Attribute = props => {
       attribute.code,
       attribute.templateCode,
       attribute.onChange,
-      onChange
+      attribute.attemp_id,
+      onChange,
+      rowIndex
    ]);
    // useEffect(()=>{console.log("state_value changed",state_value);},[state_value]);
    // useEffect(()=>{console.log("receiveAttributeValue changed",receiveAttributeValue);},[receiveAttributeValue]);
@@ -142,9 +145,9 @@ const Attribute = props => {
    ]); // getChoices
 
    let setValue = useCallback((event,value) => {
-      console.log("setValue called");
-      console.log("event",event);
-      console.log("value",value);
+      // console.log("setValue called");
+      // console.log("event",event);
+      // console.log("value",value);
       setState_value( value || event.target.value );
    },[]);
 
