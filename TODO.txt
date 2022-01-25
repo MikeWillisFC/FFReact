@@ -29,8 +29,8 @@ left nav:
 product:
 - XXXX click on review count to scroll to / open reviews panel
 - XXXX click on estimated delivery, enter zip, get estimate
-- all attributes need review
---- buttons such as click here to design, etc
+- XXXX all attributes need review
+--- XXXX buttons such as click here to design, etc
 - XXXX quantity dropdown menu for items sold as sets
 - main image: peel corner for items that use that
 - recently viewed items list? (under customers also shopped for)
@@ -39,12 +39,22 @@ product:
 - XXXX remove red border around large product images, image box, etc
 - XXXX enforce minimums
 - XXXX don't show prices for below minimum
+- XXXX fix show/hide attribute animation, it jumps at the end, for example http://localhost:3001/page/FF/PROD/CC1009G
+- enforce attribute requirements
+- handle discontinued / deactivated items, for example http://localhost:3001/page/FF/PROD/CCCP3915
+- handle sample dropdown choice
+- handle multi-choice items, for example https://www.favorfavor.com/p-GC837.htm
+- XXXX fix "apply labels what's this" attribute: http://localhost:3001/page/FF/PROD/2014000DD
+- XXXX also add tooltip to "rush production" attribute: http://localhost:3001/page/FF/PROD/4166000
+- remove modal overlay as soon as attribute is chosen: http://localhost:3001/page/FF/PROD/4214000DD
 
 basket:
 - check result of editable attribute update?
 - make quantity a dropdown if needed
 - show mini-cart on header basket click?
 - XXXX enforce minimums
+- enforce text limit on editable attributes
+- items with html in title render wrong (5863CS_Wed)
 
 checkout:
 - full review

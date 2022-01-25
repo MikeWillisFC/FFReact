@@ -1,25 +1,13 @@
 import {useEffect} from "react";
-import {useSelector} from "react-redux";
 import axios from "axios";
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from "next/link";
 import _ from "lodash";
 
-import RotatingBanner from "../components/RotatingBanner";
-import HorizontalProductList from "../components/HorizontalProductList";
+import Home_And_404 from "../components/Home_And_404";
 
-import { createMD5 } from "../utilities/";
+// import { createMD5 } from "../utilities/";
 
-import styles from "../styles/home.module.scss";
-
-let _fetchHome = _.memoize(async (endpoint) => {
-   let request = "&cAction=getHome";
-   let hash = createMD5( request );
-   return await axios.get(`${endpoint}${request}&h=${hash}`);
-}); // _fetchHome
-
-const Home = (props) => {
+const Home = props => {
    //console.log("Home props", props);
 
    let {setNavVisibility} = props;
@@ -28,16 +16,17 @@ const Home = (props) => {
    },[setNavVisibility]);
 
    return (
-      <div>
-         <RotatingBanner slides={props.slides} duration={props.slideDuration} />
-         {
-            props.categories.map((category,index)=>{
-               return <HorizontalProductList key={category.target} rowNumber={index} {...category} />
-            })
-         }
-      </div>
+      <Home_And_404
+         hProps={props}
+      />
    );
 };
+
+// let _fetchHome = _.memoize(async (endpoint) => {
+//    let request = "&cAction=getHome";
+//    let hash = createMD5( request );
+//    return await axios.get(`${endpoint}${request}&h=${hash}`);
+// }); // _fetchHome
 
 // server-side render
 // Home.getInitialProps = async (context) => {

@@ -39,7 +39,7 @@ const Product = (props) => {
       return state.global;
    });
    const router = useRouter();
-   //console.log("Product rendering, props:",props);
+   console.log("Product rendering, props:",props);
 
    const [state_product,setState_product] = useState( props.product || false );
    const [state_productIsSet,setState_productIsSet] = useState( false );
@@ -59,7 +59,7 @@ const Product = (props) => {
    },[setNavVisibility]);
 
    useEffect(()=>{
-      //console.log("PRODUCT USEEFFECT",props.product);
+      console.log("PRODUCT USEEFFECT",props.product);
       setState_product( props.product );
       setState_productIsSet( true );
    },[props.product]);
@@ -170,118 +170,120 @@ const Product = (props) => {
    let formID = "basketAdd";
 
    return (
-      !state_product ? renderSpinner() :
-      <Fragment>
-         <Head>
-            <title>
-               {
-                  state_product.customFields.PAGETITLE ?
-                     state_product.customFields.PAGETITLE
-                  :
-                  `${decodeEntities(state_product.strippedName)} - ${globalConfig.siteName}`
-               }
-            </title>
-         </Head>
+      !state_product ? renderSpinner() : (
+         <Fragment>
+            <Head>
+               <title>
+                  {
+                     state_product.customFields.PAGETITLE ?
+                        state_product.customFields.PAGETITLE
+                     :
+                     `${decodeEntities(state_product.strippedName)} - ${globalConfig.siteName}`
+                  }
+               </title>
+            </Head>
 
-         <Box className={styles.display}>
-            <Heading
-               as="h1"
-               display={["block","block","none"]}
-               dangerouslySetInnerHTML={{__html: _.unescape(state_product.name)}}
-            >
-            </Heading>
-            <Flex className={styles.details} wrap={"wrap"}>
-               <Box
-                  className={styles.mainImage}
-                  w={["100%","100%","325px"]}
+            <Box className={styles.display}>
+               <Heading
+                  as="h1"
+                  display={["block","block","none"]}
+                  dangerouslySetInnerHTML={{__html: _.unescape(state_product.name)}}
                >
-                  <Images
-                     hasLargeImage={state_product.customFields.hasLargeImage}
-                     images={state_product.images}
-                     prodCode={state_product.code}
-                     strippedName={state_product.strippedName}
-                     domain={globalConfig.domain}
-                     modalDisclosure={imageModalDisclosure}
-                     styles={styles}
-                     renderSpinner={renderSpinner}
-                     imageData={state_focusedImageData}
-                     setImageData={setState_focusedImageData}
-                  />
-               </Box>
-               <Box
-                  flex="1"
-                  className={styles.specifics}
-                  w={["100%","100%","325px"]}
-               >
-                  <Heading
-                     as="h1"
-                     display={["none","none","block"]}
-                     dangerouslySetInnerHTML={{__html: _.unescape(state_product.name)}}
-                     itemProp="name"
+               </Heading>
+               <Flex className={styles.details} wrap={"wrap"}>
+                  <Box
+                     className={styles.mainImage}
+                     w={["100%","100%","325px"]}
                   >
-                  </Heading>
-
-                  <Stats
-                     product={state_product}
-                     styles={styles}
-                     globalConfig={globalConfig}
-                     miscModalDisclosure={props.miscModalDisclosure}
-                     setMiscModal={props.setMiscModal}
-                     descriptionRef={descriptionRef}
-                     setTabIndex={setState_descTabIndex}
-                  />
-
-                  <form
-                     method="post"
-                     id={formID}
-                     action={globalConfig.apiEndpoint}
-                     onSubmit={handleSubmit}
+                     <Images
+                        hasLargeImage={state_product.customFields.hasLargeImage}
+                        images={state_product.images}
+                        prodCode={state_product.code}
+                        strippedName={state_product.strippedName}
+                        domain={globalConfig.domain}
+                        modalDisclosure={imageModalDisclosure}
+                        styles={styles}
+                        renderSpinner={renderSpinner}
+                        imageData={state_focusedImageData}
+                        setImageData={setState_focusedImageData}
+                     />
+                  </Box>
+                  <Box
+                     flex="1"
+                     className={styles.specifics}
+                     w={["100%","100%","325px"]}
                   >
-                     <Attributes
+                     <Heading
+                        as="h1"
+                        display={["none","none","block"]}
+                        dangerouslySetInnerHTML={{__html: _.unescape(state_product.name)}}
+                        itemProp="name"
+                     >
+                     </Heading>
+
+                     <Stats
                         product={state_product}
-                        attributes={state_product.attributes}
-                        parentTemplateCode=""
                         styles={styles}
                         globalConfig={globalConfig}
                         miscModalDisclosure={props.miscModalDisclosure}
                         setMiscModal={props.setMiscModal}
-                        receiveAttributeValue={receiveAttributeValue}
-                        blockSamples={state_product.customFields.blockSamples}
+                        descriptionRef={descriptionRef}
+                        setTabIndex={setState_descTabIndex}
                      />
 
-                     <AddToCart
-                        formID={formID}
-                        quantity={quantityRef.current}
-                        quantityRef={quantityRef}
-                        minimum={state_product.customFields.MINIMUM}
-                        enforceMinimum={state_product.customFields.enforceMinimum.trim() !== ""}
-                        blockSamples={state_product.customFields.blockSamples.trim() === "1" || state_product.customFields.blockSamples.trim() === "yes"}
+                     <form
+                        method="post"
+                        id={formID}
+                        action={globalConfig.apiEndpoint}
+                        onSubmit={handleSubmit}
+                        className={styles.basketAddForm}
+                     >
+                        <Attributes
+                           product={state_product}
+                           attributes={state_product.attributes}
+                           parentTemplateCode=""
+                           styles={styles}
+                           globalConfig={globalConfig}
+                           miscModalDisclosure={props.miscModalDisclosure}
+                           setMiscModal={props.setMiscModal}
+                           receiveAttributeValue={receiveAttributeValue}
+                           blockSamples={state_product.customFields.blockSamples}
+                        />
+
+                        <AddToCart
+                           formID={formID}
+                           quantity={quantityRef.current}
+                           quantityRef={quantityRef}
+                           minimum={state_product.customFields.MINIMUM}
+                           enforceMinimum={state_product.customFields.enforceMinimum.trim() !== ""}
+                           blockSamples={state_product.customFields.blockSamples.trim() === "1" || state_product.customFields.blockSamples.trim() === "yes"}
+                        />
+                     </form>
+                  </Box>
+               </Flex>
+
+               <Description
+                  ref={descriptionRef}
+                  product={state_product}
+                  domain={globalConfig.domain}
+                  apiEndpoint_static={globalConfig.apiEndpoint_static}
+                  setImageData={setState_focusedImageData}
+                  tabIndex={state_descTabIndex}
+                  setTabIndex={setState_descTabIndex}
+               />
+
+               {
+                  (state_product.alsoShopped && state_product.alsoShopped.length) && (
+                     <AlsoShopped
+                        prodCode={state_product.code}
+                        items={state_product.alsoShopped}
                      />
-                  </form>
-               </Box>
-            </Flex>
+                  )
+               }
 
-            <Description
-               ref={descriptionRef}
-               product={state_product}
-               domain={globalConfig.domain}
-               apiEndpoint_static={globalConfig.apiEndpoint_static}
-               setImageData={setState_focusedImageData}
-               tabIndex={state_descTabIndex}
-               setTabIndex={setState_descTabIndex}
-            />
-
-            {
-               (state_product.alsoShopped && state_product.alsoShopped.length) && (
-                  <AlsoShopped
-                     prodCode={state_product.code}
-                     items={state_product.alsoShopped}
-                  />
-               )
-            }
-
-         </Box>
-      </Fragment>
+            </Box>
+         </Fragment>
+      )
    );
 };
 
@@ -335,9 +337,14 @@ export async function getStaticProps(context) {
    let axResponse = await axios.get(`${config.default.apiEndpoint}&cAction=getPROD&prodCode=${context.params.code}`);
    //console.log("prod getStaticProps response",axResponse);
    if ( axResponse ) {
-      return {
-         props: axResponse.data,
-         revalidate: config.default.cacheKeepAlive.prod
+      if ( !axResponse.data.result || axResponse.data.result === '0' ) {
+         // deactivated or discontinued
+         return { notFound: true };
+      } else {
+         return {
+            props: axResponse.data,
+            revalidate: config.default.cacheKeepAlive.prod
+         }
       }
    } else {
       return {

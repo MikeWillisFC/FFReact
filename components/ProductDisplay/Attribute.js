@@ -1,6 +1,6 @@
 import {Fragment,useState,useEffect,useRef,useCallback} from "react";
-import { Box,Button,Select,Icon,HStack,Input } from "@chakra-ui/react";
-import { FaRegCheckCircle,FaAngleDown } from 'react-icons/fa';
+import { Box,Button,Select,Icon,HStack,Input,Checkbox,Tag,TagLeftIcon,TagLabel,Textarea } from "@chakra-ui/react";
+import { FaRegCheckCircle,FaAngleDown,FaInfoCircle } from 'react-icons/fa';
 import axios from "axios";
 import Image from 'next/image';
 import _ from "lodash";
@@ -8,7 +8,9 @@ import _ from "lodash";
 import OptionModal from "./OptionModal";
 import IframeModal from "./IframeModal";
 import TagPrompt from "./TagPrompt";
+import CheckboxAttribute from "./AttributeFields/CheckboxAttribute";
 import FCDesignToolPrompt from "./FCDesignToolPrompt";
+import { openMiscModal } from "../../utilities";
 
 const Attribute = props => {
    const [state_modal,setState_modal] = useState(false);
@@ -17,11 +19,21 @@ const Attribute = props => {
    const [state_disabled,setState_disabled] = useState(false);
    const [state_iframeSource,setState_iframeSource] = useState( false );
 
-   //console.log("Attribute rendering, props:",props);
+   console.log("Attribute rendering, props:",props);
    const elRef = useRef();
    const buttonRef = useRef();
 
    let {domain} = props.globalConfig;
+   let {
+      attribute,
+      receiveAttributeValue,
+      onChange,
+      blockSamples,
+      rowIndex,
+      setMiscModal,
+      miscModalDisclosure
+   } = props;
+
    useEffect(()=>{
       let icon;
       if ( state_value ) {
@@ -30,7 +42,6 @@ const Attribute = props => {
       setState_selectIcon( icon );
    },[state_value,domain]);
 
-   let {attribute,receiveAttributeValue,onChange,blockSamples,rowIndex} = props;
    useEffect(()=>{
       // console.log("Attribute useEffect running");
       /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
@@ -97,16 +108,16 @@ const Attribute = props => {
          }
       }
 
-
       return ()=>{
          window.openFashioncraftDesignToolModal = null;
       }
    },[props.product.customFields.MANUFACTURER]);
 
-   //console.log("attribute.prompt.substr(0,1)",attribute.prompt.substr(0,1));
+   // console.log("attribute.prompt",attribute.prompt);
+   // console.log("attribute.prompt.substr(0,1)",attribute.prompt.substr(0,1));
    if ( attribute.prompt.substr(0,1) === "{" ) {
       attribute.promptDecoded = JSON.parse( attribute.prompt );
-      //console.log("attribute.promptDecoded",attribute.promptDecoded);
+      // console.log("attribute.promptDecoded",attribute.promptDecoded);
       attribute.prompt = attribute.promptDecoded.prompt;
    }
 
@@ -148,10 +159,11 @@ const Attribute = props => {
       // console.log("setValue called");
       // console.log("event",event);
       // console.log("value",value);
-      setState_value( value || event.target.value );
+      setState_value( value || (event ? event.target.value : "") );
    },[]);
 
    let handleSelectClick = useCallback(event => {
+      //console.log("handleSelectClick called");
       if ( !state_disabled ) {
          // nothing to see here
       } else if ( buttonRef.current ) {
@@ -164,14 +176,82 @@ const Attribute = props => {
    ]); // handleSelectClick
 
    let renderAttribute = useCallback(() => {
+      //console.log("renderAttribute attribute",attribute);
       let style = {};
+
+      let handleInfoClick = (event,title,url) => {
+         event.preventDefault();
+         openMiscModal({
+            setModal: setMiscModal,
+            disclosure: miscModalDisclosure,
+            title: title,
+            href: url,
+            size: "xl"
+         });
+      };
+
       switch( attribute.type ) {
       case "checkbox":
          if ( attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
             return null;
          } else {
-            return null;
+            return (
+               <CheckboxAttribute
+                  styles={props.styles}
+                  attribute={attribute}
+                  onChange={setValue}
+               />
+            );
          }
+         break;
+      case "textarea":
+      case "memo":
+         let textAreaMaxLength = 30;
+         if ( attribute.textLimit ) {
+            textAreaMaxLength = attribute.textLimit;
+         }
+         let textAreaCharCountStyle = {
+            color: state_value.length < textAreaMaxLength ? "" : "#f00"
+         };
+         return (
+            <Box>
+               { attribute.prePrompt || "" }
+               {
+                  (
+                     attribute.required ||
+                     attribute.required === "true" ||
+                     attribute.required === "1"
+                  ) ? (
+                     <b>{attribute.prompt}:</b>
+                  ) : (
+                     <Fragment>{attribute.prompt}</Fragment>
+                  )
+               }
+
+               <HStack
+                  spacing="4px"
+                  width="90%"
+                  marginRight="5%"
+                  marginLeft="5%"
+               >
+                  <Textarea
+                     data-code={attribute.code}
+                     width="58%"
+                     ref={elRef}
+                     maxLength={textAreaMaxLength}
+                     value={state_value}
+                     onChange={(event)=>setState_value(event.target.value)}
+                  />
+                  <Box>
+                     <span
+                        className="blue"
+                     >
+                        {" "}<span style={textAreaCharCountStyle}>{state_value.length}</span>{` - ${textAreaMaxLength} Characters - Max`}
+                     </span>
+                  </Box>
+               </HStack>
+            </Box>
+         );
          break;
       case "text":
          let maxLength = 30;
@@ -188,6 +268,7 @@ const Attribute = props => {
 
          return (
             <Box>
+               { attribute.prePrompt || "" }
                {
                   (
                      attribute.required ||
@@ -224,14 +305,23 @@ const Attribute = props => {
                   </Box>
                </HStack>
             </Box>
-         )
+         );
          break;
       case "select":
          if ( attribute.hiddenSetting === "hiddenOption" ) {
             style.display = "none";
          }
+         let defaultStyle = {display:"inline",margin:"0px",padding:"0px"};
+         if (
+            attribute.required ||
+            attribute.required === "true" ||
+            attribute.required === "1"
+         ) {
+            defaultStyle.fontWeight = "bold" ;
+         }
          return (
             <Box>
+               { attribute.prePrompt || "" }
                {
                   attribute.previewURL ? (
                      renderDecodedPrompt()
@@ -248,9 +338,25 @@ const Attribute = props => {
                               globalConfig={props.globalConfig}
                            />
                         ) : (
-                           <div style={{display:"inline",margin:"0px",padding:"0px"}} dangerouslySetInnerHTML={{__html: _.unescape(attribute.prompt)}}></div>
+                           <div style={defaultStyle} dangerouslySetInnerHTML={{__html: _.unescape(attribute.prompt)}}></div>
                         )
                      )
+                  )
+               }
+               {
+                  attribute.info && (
+                     <Fragment>
+                        {" "}
+                        <Tag
+                           colorScheme='teal'
+                           className={props.styles.infoLink}
+                           onClick={event=>handleInfoClick(event,attribute.info.title,`https://${props.globalConfig.domain}${attribute.info.url}`)}
+                        >
+                           <Icon as={FaInfoCircle} />
+                           {" "}
+                           <TagLabel>{attribute.info.prompt}</TagLabel>
+                        </Tag>
+                     </Fragment>
                   )
                }
                <HStack
@@ -296,7 +402,10 @@ const Attribute = props => {
       blockSamples,
       state_selectIcon,
       props.globalConfig,
-      state_disabled
+      state_disabled,
+      setMiscModal,
+      miscModalDisclosure,
+      props.styles
    ]); // renderAttribute
 
    return (

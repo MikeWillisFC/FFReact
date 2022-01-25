@@ -1,5 +1,7 @@
 import {Fragment,useState,useEffect,useRef} from "react";
 import Image from 'next/image';
+import { motion } from "framer-motion";
+import _ from "lodash";
 import {
    Modal,
    ModalOverlay,
@@ -13,13 +15,20 @@ import {
    Wrap,
    WrapItem,
    Center,
-   SimpleGrid,
    forwardRef,
    Heading,
+   Tabs,
+   TabList,
+   TabPanels,
+   Tab,
+   TabPanel,
 
    useDisclosure
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
+
+import OptionGrid from "./OptionGrid";
+
+import tabStyles from "../../styles/tabs.module.scss";
 
 const MotionModalContent = motion(ModalContent);
 
@@ -76,7 +85,54 @@ const OptionModal = props => {
       closeModal();
    };
 
-   let gridChildWidth = (props.modal.options.gridWidth ? props.modal.options.gridWidth : ( props.modal.options.imgWidth ? parseInt(props.modal.options.imgWidth) + 30 : "150" ));
+   let gridChildWidth;
+   if ( props.modal.options.gridWidth ) {
+      gridChildWidth = props.modal.options.gridWidth;
+   } else if ( props.modal.options.imgWidth ) {
+      gridChildWidth = parseInt(props.modal.options.imgWidth) + 30;
+   } else if ( props.modal.options.optionWidth ) {
+      gridChildWidth = props.modal.options.optionWidth;
+   } else {
+      // ok then, do the options have widths? If so, grab the widest one
+      let widest = 0;
+
+      console.log("typeof(props.modal.options.options)",typeof props.modal.options.options);
+      console.log("props.modal.options.options",props.modal.options.options);
+      if ( Array.isArray( props.modal.options.options ) ) {
+         props.modal.options.options.forEach(option=>{
+            if ( option.imgWidth && option.imgWidth > widest ) {
+               widest = option.imgWidth;
+            }
+         });
+      } else {
+         // maybe it's a tabbed setup..
+         _.forEach( props.modal.options.options, tabName=>{
+            if ( Array.isArray( props.modal.options.options[tabName] ) ) {
+               props.modal.options.options[tabName].forEach(option=>{
+                  if ( option.imgWidth && option.imgWidth > widest ) {
+                     widest = option.imgWidth;
+                  }
+               });
+            }
+         });
+      }
+
+      if ( widest ) {
+         gridChildWidth = widest + 30;
+      } else {
+         // well shit
+         gridChildWidth = "150";
+      }
+   }
+
+   console.log("typeof([])",typeof([]));
+   console.log("typeof(props.modal.options.options)",typeof(props.modal.options.options));
+   console.log("props.modal.options.options",props.modal.options.options);
+
+   let printTitle = title => {
+      let regEx = new RegExp("click to ", "ig");
+      return title.replace(regEx, "");
+   };
 
    return (
       <Modal
@@ -94,73 +150,85 @@ const OptionModal = props => {
             style={{overflow:"hidden"}}
          >
             <ModalHeader className="blueHeader">
-               {props.modal.title}
+               {printTitle(props.modal.title)}
                <ModalCloseButton />
             </ModalHeader>
             <ModalBody style={{height:"100%",overflowY:"scroll"}}>
                <Fragment>
                   {
-                     props.modal.options.diagram && <Fragment>
-                        <Box>
-                           <Heading className="subHeader yellow">Diagram</Heading>
-                           <Image
-                              alt="diagram"
-                              src={`https://${props.globalConfig.domain}${props.modal.options.diagram.img}`}
-                              width={props.modal.options.diagram.width}
-                              height={props.modal.options.diagram.height}
-                              style={{margin:"0px auto 10px auto"}}
-                           />
-                           { props.modal.options.diagram.note && <p>{props.modal.options.diagram.note}</p> }
-                        </Box>
-                        <Heading className="subHeader yellow">Options</Heading>
-                     </Fragment>
+                     props.modal.options.diagram && (
+                        <Fragment>
+                           <Box>
+                              <Heading className="subHeader yellow">Diagram</Heading>
+                              <Center>
+                                 <Image
+                                    alt="diagram"
+                                    src={`https://${props.globalConfig.domain}${props.modal.options.diagram.img}`}
+                                    width={props.modal.options.diagram.width}
+                                    height={props.modal.options.diagram.height}
+                                    style={{margin:"0px auto 10px auto"}}
+                                 />
+                              </Center>
+                              <Center>
+                                 { props.modal.options.diagram.note && <p>{props.modal.options.diagram.note}</p> }
+                              </Center>
+                           </Box>
+                           <Heading className="subHeader yellow">Options</Heading>
+                        </Fragment>
+                     )
                   }
-                  <SimpleGrid className={props.styles.grid} minChildWidth={`${gridChildWidth}px`} spacing={6}>
-                     {
-                        props.modal.options.options.map((option,index)=>{
-                           let style = {};
-                           if ( option.bgimg ) {
-                              style = {
-                                 backgroundImage: `url(${option.bgimg.url})`,
-                                 backgroundPosition: `${option.bgimg.position}`,
-                                 width: `${option.bgimg.width}`,
-                                 height: `${option.bgimg.height}`,
-                                 margin: '2px auto',
-                                 border: 'none'
-                              };
-                           }
-                           return (
-                              <Box
-                                 key={`options|${index}|${option.text}`}
-                                 onClick={(event)=>handleClick(option)}
-                                 width={props.modal.options.imgWidth}
-                              >
+
+                  {
+                     Array.isArray( props.modal.options.options ) ? (
+                        <OptionGrid
+                           options={props.modal.options.options}
+                           styles={props.styles}
+                           gridChildWidth={gridChildWidth}
+                           gridWidth={props.modal.options.imgWidth || props.modal.options.optionWidth}
+                           handleClick={handleClick}
+                           optionsImageHeight={props.modal.options.imgHeight}
+                           optionsImageWidth={props.modal.options.imgWidth}
+                           domain={props.globalConfig.domain}
+                        />
+                     ) : (
+                        <Fragment>
+                           <Tabs className={tabStyles.container} isFitted variant="enclosed">
+                              <TabList mb="1em" className="blueHeader">
                                  {
-                                    option.img && props.modal.options.imgHeight && props.modal.options.imgWidth ? (
-                                       <Image
-                                          width={props.modal.options.imgWidth}
-                                          height={props.modal.options.imgHeight}
-                                          alt={option.text}
-                                          src={`https://${props.globalConfig.domain}${option.img}`}
-                                       />
-                                    ) : ""
+                                    _.map( props.modal.options.options, (options,key)=>{
+                                       return <Tab key={key}>{key}</Tab>;
+                                    })
                                  }
+                              </TabList>
+
+                              <TabPanels>
                                  {
-                                    option.bgimg && <Box style={style}></Box>
+                                    _.map( props.modal.options.options, (options,key)=>{
+                                       return (
+                                          <TabPanel key={key}>
+                                             <OptionGrid
+                                                options={options}
+                                                styles={props.styles}
+                                                gridChildWidth={gridChildWidth}
+                                                gridWidth={props.modal.options.imgWidth || props.modal.options.optionWidth}
+                                                handleClick={handleClick}
+                                                optionsImageHeight={props.modal.options.imgHeight}
+                                                optionsImageWidth={props.modal.options.imgWidth}
+                                                domain={props.globalConfig.domain}
+                                             />
+                                          </TabPanel>
+                                       );
+                                    })
                                  }
-                                 <br />{option.text}
-                              </Box>
-                           );
-                        })
-                     }
-                  </SimpleGrid>
+                              </TabPanels>
+                           </Tabs>
+                        </Fragment>
+                     )
+                  }
                </Fragment>
-
             </ModalBody>
-
          </MotionModalContent>
       </Modal>
-
    );
 }; // OptionModal
 

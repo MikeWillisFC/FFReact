@@ -1,0 +1,429 @@
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\"> \t(function(){ var jQueryLoading = setInterval( function(){ if ( typeof( $ ) === \"function\" ) { clearInterval( jQueryLoading );\r\n$(document).ready(function(){ \t\t$(\"select[data-attributeCode='LabelColor']\").prop(\"disabled\",true).data(\"disabled\",\"1\"); \t}); } }, 100 ); })();<\/script>  <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/EB\/vintagelabelscolors.php?labelOnly=1&prodCode=xyzProdCode\" title=\"Choose Label Color\"><span class=\"jquiPButton\">Click to View All Label Colors<\/span><\/a><b>",
+    "prompt": "Click to View All Label Colors",
+    "previewURL": "/api/attributes/EB/vintagelabelscolors.php?labelOnly=1&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"#selectdesigns\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/JDS\/RibbonColors.php?prodCode=xyzProdCode\" title=\"Choose Color\"><span class=\"jquiPButtonIcon\">Click to View All Ribbon Colors<\/span> <\/a><b>",
+    "prompt": "Click to View All Ribbon Colors",
+    "previewURL": "/api/attributes/JDS/RibbonColors.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<a class=\"jquiButton fashioncraftDesigner\" href=\"\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css\" target=\"_blank\">Click to Design Your Labels<\/a>",
+    "prompt": "Click to Design Your Labels",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">     window.fashioncraftAllowScrollHide = false; <\/script> <a class=\"jquiButton fashioncraftDesignerLink\" href=\"\/\/www.fashioncraft.com\/Designer\/?PhotoUpload&labelType=xyzProdCode&jquiThemeURL=\/\/www.nicepricefavors.com\/jquery\/UI\/C\/jquery-ui-1.10.3.custom.min.css\" target=\"_blank\">Click here to design this item<\/a>",
+    "prompt": "Click to Design Your Labels",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"#selectdesigns\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/JDS\/PubGlassDesigns.php?prodCode=xyzProdCode\" title=\"Choose Design\"><span class=\"jquiPButtonIcon\">Click to View All Designs<\/span> <\/a><b>",
+    "prompt": "Click to View All Designs",
+    "previewURL": "/api/attributes/JDS/PubGlassDesigns.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"#selectColor\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/JDS\/PubGlassInk.php?prodCode=xyzProdCode\" title=\"Choose Color\"><span class=\"jquiPButtonIcon\">Click to View All Colors<\/span> <\/a><b>",
+    "prompt": "Click to View All Colors",
+    "previewURL": "/api/attributes/JDS/PubGlassInk.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"#selectcolor\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/JDS\/RoyalPillowColors.php?prodCode=xyzProdCode\" title=\"Choose Design\"><span class=\"jquiPButtonIcon\">Click to View All Colors<\/span> <\/a><b>",
+    "prompt": "Click to View All Colors",
+    "previewURL": "/api/attributes/JDS/RoyalPillowColors.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">   $(document).ready(function(){       $(\"input[data-attributeCode='TextLine1'], input[data-attributeCode='TextLine2']\").parents(\".attributeLine\").hide();       attributeNumberUpdate();        $(\"select[data-attributeCode='Design']\").change(function(event) {         $(\"input[data-attributeCode='TextLine1'],input[data-attributeCode='TextLine2']\").show(\"blind\", 200, function() {           attributeNumberUpdate();         });       });     });     window.fashioncraftTransferTo = \"basketAdd\";     window.fashioncraftFormToSubmit = \"basketAdd\";     window.fashioncraftAllowScrollHide = false; <\/script> <a class=\"jquiButton fashioncraftDesigner\" href=\"\/\/www.fashioncraft.com\/Designer\/?labelType=visorSunglasses&itemNumber=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css\" target=\"_blank\">Click here to design this item<\/a>",
+    "prompt": "Click to Design Your Labels",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=visorSunglasses&itemNumber=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">     window.fashioncraftTransferTo = \"basketAdd\";     window.fashioncraftFormToSubmit = \"basketAdd\";     window.fashioncraftAllowScrollHide = false; <\/script> <a class=\"jquiButton fashioncraftDesigner\" href=\"\/\/www.fashioncraft.com\/Designer\/?labelType=foil&itemNumber=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css\" target=\"_blank\">Click here to design this item<\/a>",
+    "prompt": "Click to Design Your Labels",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=foil&itemNumber=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">     window.fashioncraftTransferTo = \"basketAdd\";     window.fashioncraftFormToSubmit = \"basketAdd\";     window.fashioncraftAllowScrollHide = false; <\/script> <a class=\"jquiButton fashioncraftDesigner\" href=\"\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css\" target=\"_blank\">Click here to design this item<\/a>",
+    "prompt": "Click to Design This Item",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     window.fashioncraftTransferTo = \"basketAdd\";                     window.fashioncraftFormToSubmit = \"basketAdd\";                     $(\".fashioncraftDesigner\").click(function() {                         try {                             window.__insp = window.__insp || [];                             __insp.push(['tagSession', \"FC New Label Designer Viewed\"]);                         } catch (error) {}                     });                 });             }         }, 100);     })(); <\/script> <a href=\"\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css\" class=\"fashioncraftDesigner\"><img src=\"\/images\/buttons\/designYourLabels.png\" width=\"329\" height=\"64\" alt=\"Design Your Labels\"><\/a> <b>",
+    "prompt": "Click to Design Your Labels",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<a class=\"jquiButton fashioncraftDesigner\" href=\"\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/www.nicepricefavors.com\/jquery\/UI\/C\/jquery-ui-1.10.3.custom.min.css\" target=\"_blank\" style=\"width: 95%\">Click to Design Your Item<\/a>",
+    "prompt": "Click to Design Your Item",
+    "promptTarget": "\/\/www.fashioncraft.com\/Designer\/?labelType=xyzProdCode&jquiThemeURL=\/\/ajax.googleapis.com\/ajax\/libs\/jqueryui\/1.10.4\/themes\/redmond\/jquery-ui.min.css",
+    "scripts": ["//www.fashioncraft.com/Designer/dist/javaR.js"],
+    "FCDesignTool": "true",
+    "iframeModal": "true",
+    "hidden": "hiddenOption"
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);             $(document).ready(function() {                 $(\"select[data-attributeCode='Design']\").prop(\"disabled\", true).data(\"disabled\", \"1\").addClass(\"required\");                 $(\"select[data-attributeCode='Pattern']\").prop(\"disabled\", true).data(\"disabled\", \"1\").addClass(\"required\");                 $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                 $(\"select[data-attributeCode='PatternOrDesign']\").removeClass(\"required\").parents(\".attributeLine\").hide();                 attributeNumberUpdate();                 switch (window.prodID) {                     case \"DD4027503\":                     case \"DD4217503\":                     case \"DD4257503\":                         $(\"select[data-attributeCode='Design']\").removeClass(\"required\").parents(\".attributeLine\").hide();                         $(\"select[data-attributeCode='Pattern']\").removeClass(\"required\").parents(\".attributeLine\").hide();                         $(\"select[data-attributeCode='PatternOrDesign']\").addClass(\"required\").parents(\".attributeLine\").slideDown();                         attributeNumberUpdate();                         $(\"select[data-attributeCode='PatternOrDesign']\").change(function(e) {                             if ($(this).val() == \"Pattern\") {                                 $(\"select[data-attributeCode='Design']\").removeClass(\"required\").parents(\".attributeLine\").slideUp();                                 $(\"select[data-attributeCode='Design']\").val(\"\");                                 $(\"select[data-attributeCode='Pattern']\").addClass(\"required\").parents(\".attributeLine\").slideDown();                                 attributeNumberUpdate();                             } else {                                 $(\"select[data-attributeCode='Pattern']\").removeClass(\"required\").parents(\".attributeLine\").slideUp();                                 $(\"select[data-attributeCode='Pattern']\").val(\"\");                                 $(\"select[data-attributeCode='Design']\").addClass(\"required\").parents(\".attributeLine\").slideDown();                                 attributeNumberUpdate();                             }                         });                         break;                 }                 $(\"select[data-attributeCode='Design']\").change(function(event) {                     $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                     $(\"input[data-attributeCode='NumberOrMonogram']\").val('');                     attributeNumberUpdate();                     var changedEl = $(this);                     setTimeout(function() {                         switch (changedEl.val()) {                             \/* 2 Lines *\/                             case \"number\":                             case \"celebratenumber\":                             case \"thebignumber\":                             case \"lookwhosnumber\":                             case \"vintageyear\":                             case \"traditionalmonogram\":                             case \"scriptmonogram\":                             case \"branchmonogram\":                             case \"twoinitialsmonogram\":                             case \"vinecirclemonogram\":                             case \"stampinitial\":                             case \"circlemonogram\":                             case \"diamondinitial\":                             case \"anchormonogram\":                             case \"antlermonogram\":                             case \"arrowmonogram\":                             case \"birchwoodinitials\":                             case \"bohomonogram\":                             case \"bracketinitial\":                             case \"floralvinemonogram\":                             case \"leafheartmonogram\":                             case \"plaqueinitial\":                             case \"rusticmonogram\":                             case \"typewriterinitial\":                             case \"vinesmonogram\":                             case \"vintagemonogram\":                             case \"woodeninitial\":                             case \"monogramcirclecap\":                             case \"monogramscriptcap\":                             case \"plaqueinitials\":                             case \"starinitial\":                             case \"countrystarinitials\":                             case \"patrioticmonogram\":                                 $(\"input[data-attributeCode='NumberOrMonogram']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                                     attributeNumberUpdate();                                 });                                 break;                             default:                                 $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                                 attributeNumberUpdate();                                 break;                         }                     }, 100);                 });             });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/designs.php?prodCode=xyzProdCode\" title=\"Choose Design\"><span class=\"jquiPButton\">Click to Choose Design<\/span><\/a>",
+    "prompt": "Click to Choose Design",
+    "disabled": "true",
+    "previewURL": "/api/attributes/DD/personalization/designs.php?prodCode=xyzProdCode",
+    "onLoad": [{
+        "targets": ["NumberOrMonogram", "PatternOrDesign"],
+        "action": "hide", "required": "false"
+    }, {
+        "targets": ["Design", "Pattern"],
+        "action": "show", "required": "true"
+    }, {
+        "prodTargets": ["DD4027503", "DD4217503", "DD4257503"],
+        "targets": ["Designs", "Pattern"],
+        "action": "hide", "required": "false"
+    }, {
+        "prodTargets": ["DD4027503", "DD4217503", "DD4257503"],
+        "targets": ["PatternOrDesign"],
+        "action": "show", "required": "true"
+    }],
+    "onChange": [{
+        "values": ["number", "celebratenumber", "thebignumber", "lookwhosnumber", "vintageyear", "traditionalmonogram", "scriptmonogram", "branchmonogram", "twoinitialsmonogram", "vinecirclemonogram", "stampinitial", "circlemonogram", "diamondinitial", "anchormonogram", "antlermonogram", "arrowmonogram", "birchwoodinitials", "bohomonogram", "bracketinitial", "floralvinemonogram", "leafheartmonogram", "plaqueinitial", "rusticmonogram", "typewriterinitial", "vinesmonogram", "vintagemonogram", "woodeninitial", "monogramcirclecap", "monogramscriptcap", "plaqueinitials", "starinitial", "countrystarinitials", "patrioticmonogram"],
+        "actions": [{
+            "targets": ["NumberOrMonogram"],
+            "action": "show", "required": "true"
+        }]
+    }, {
+        "values": "DEFAULT",
+        "actions": [{
+            "targets": ["NumberOrMonogram"],
+            "action": "hide", "required": "false"
+        }]
+    }]
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);              $(document).ready(function() {                  $(\"select[data-attributeCode='BackgroundColor']\").prop(\"disabled\", true).data(\"disabled\", \"1\");              });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/designsV2.php?designOption=backgroundColor&prodCode=xyzProdCode\" title=\"Choose Background Color\"><span class=\"jquiPButton\">Click to Choose Background Color<\/span><\/a><b>",
+    "prompt": "Click to Choose Background Color",
+    "previewURL": "/api/attributes/DD/designsV2.php?designOption=backgroundColor&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     $(document).ready(function() {         $(\"select[data-attributeCode='AccentColor']\").prop(\"disabled\", true).data(\"disabled\", \"1\");     }); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/designsV2.php?designOption=accentColor&prodCode=xyzProdCode\" title=\"Choose An Accent Color\"><span class=\"jquiPButton\">Click to Choose Accent Color<\/span><\/a><b>",
+    "prompt": "Click to Choose Accent Color",
+    "previewURL": "/api/attributes/DD/designsV2.php?designOption=accentColor&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     $(document).ready(function() {         $(\"select[data-attributeCode='Pattern']\").prop(\"disabled\", true).data(\"disabled\", \"1\");     }); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/designsV2.php?designOption=pattern&prodCode=xyzProdCode\" title=\"Choose A Pattern\"><span class=\"jquiPButton\">Click to Choose Pattern<\/span><\/a><b>",
+    "prompt": "Click to Choose Pattern",
+    "previewURL": "/api/attributes/DD/designsV2.php?designOption=pattern&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"select[data-attributeCode='Designs']\").prop(\"disabled\", true).data(\"disabled\", \"1\");                     $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                     attributeNumberUpdate();                     $(\"select[data-attributeCode='Designs']\").change(function(event) {                         $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                         $(\"input[data-attributeCode='NumberOrMonogram']\").val('');                         attributeNumberUpdate();                         var changedEl = $(this);                         setTimeout(function() {                             switch (changedEl.val()) { \/* 2 Lines *\/                                 case \"number\":                                 case \"celebratenumber\":                                 case \"thebignumber\":                                 case \"lookwhosnumber\":                                 case \"vintageyear\":                                 case \"traditionalmonogram\":                                 case \"scriptmonogram\":                                 case \"circlemonogram\":                                     $(\"input[data-attributeCode='NumberOrMonogram']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                                         attributeNumberUpdate();                                     });                                     break;                                 default:                                     $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                                     attributeNumberUpdate();                                     break;                             }                         }, 100);                     });                 });             }         }, 100);     })(); <\/script><a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/designsV2.php?designOption=design&prodCode=xyzProdCode\" title=\"Choose A Design\"><span class=\"jquiPButton\">Click to Choose Design<\/span><\/a><\/b>",
+    "prompt": "Click to Choose Design",
+    "previewURL": "/api/attributes/DD/designsV2.php?designOption=design&prodCode=xyzProdCode",
+    "disabled": "true",
+    "onLoad": [
+      {
+         "targets": ["NumberOrMonogram"],
+         "action": "hide", "required": "false"
+      }
+   ],
+   "onChange": [
+      {
+         "values": ["number","celebratenumber","thebignumber","lookwhosnumber","vintageyear","traditionalmonogram","scriptmonogram","circlemonogram"],
+         "actions": [
+            {
+               "targets": ["NumberOrMonogram"],
+               "action": "show", "required": "true"
+            }
+         ]
+      },
+      {
+         "values": "DEFAULT",
+         "actions": [
+            {
+               "targets": ["NumberOrMonogram"],
+               "action": "hide", "required": "false"
+            }
+         ]
+      }
+   ]
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);              $(document).ready(function() {                  $(\"select[data-attributeCode='FoilColor']\").prop(\"disabled\", true).data(\"disabled\", \"1\");              });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/foil.php?prodCode=xyzProdCode&designOption=foilColor\" title=\"Foil Color\"><span class=\"jquiPButton\">Click to View Foil Colors<\/span><\/a><b>",
+    "prompt": "Click to View Foil Colors",
+    "previewURL": "/api/attributes/DD/foil.php?designOption=foilColor&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);              $(document).ready(function() {                  $(\"select[data-attributeCode='Pattern']\").prop(\"disabled\", true).data(\"disabled\", \"1\");              });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/foil.php?prodCode=xyzProdCode&designOption=pattern\" title=\"Pattern\"><span class=\"jquiPButton\">Click to View Patterns<\/span><\/a><b>",
+    "prompt": "Click to View Patterns",
+    "previewURL": "/api/attributes/DD/foil.php?designOption=pattern&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);             $(document).ready(function() {                 $(\"select[data-attributeCode='Designs']\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 $(\"input[data-attributeCode='Monogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                 attributeNumberUpdate();                 $(\"select[data-attributeCode='Designs']\").change(function(event) {                     var changedEl = $(this);                     setTimeout(function() {                         switch (changedEl.val()) {                             case \"TraditionalMonogram\":                             case \"ScriptMonogram\":                             case \"BranchMonogram\":                             case \"CircleMonogram\":                             case \"TwoInitialsMonogram\":                             case \"VineCircleInitial\":                             case \"StampInitial\":                             case \"DiamondInitial\":                                 $(\"input[data-attributeCode='Monogram']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                                     attributeNumberUpdate();                                 });                                 break;                             default:                                 $(\"input[data-attributeCode='Monogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                                 attributeNumberUpdate();                                 break;                         }                     }, 100);                 });             });          }       }, 100);    })();      <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/foil.php?prodCode=xyzProdCode&designOption=design\" title=\"Designs\"><span class=\"jquiPButton\">Click to View Designs<\/span><\/a><b><\/b>",
+    "prompt": "Click to View Designs",
+    "previewURL": "/api/attributes/DD/foil.php?designOption=design&prodCode=xyzProdCode",
+    "disabled": "true",
+    "onLoad": [
+      {
+         "targets": ["Designs","Monogram"],
+         "action": "hide", "required": "false"
+      }
+    ],
+    "onChange": [
+      {
+         "values": ["TraditionalMonogram","ScriptMonogram","BranchMonogram","CircleMonogram","TwoInitialsMonogram","VineCircleInitial","StampInitial","DiamondInitial"],
+         "actions": [
+            {
+               "targets": ["Monogram"],
+               "action": "show", "required": "true"
+            }
+         ]
+      },
+      {
+         "values": "DEFAULT",
+         "actions": [
+            {
+               "targets": ["Monogram"],
+               "action": "hide", "required": "false"
+            }
+         ]
+      }
+   ]
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);             $(document).ready(function() {                 $(\"select[data-attributeCode='LabelStyle']\").prop(\"disabled\", true).data(\"disabled\", \"1\").removeClass(\"required\").parents(\".attributeLine\").hide();                 attributeNumberUpdate();                 switch (prodID) {                     case \"DD4027500\":                     case \"DD4037500\":                     case \"DD4257500\":                     case \"DD4307500\":                     case \"DD4217500\":                         $(\"select[data-attributeCode='Designs'], select[data-attributeCode='Pattern']\").removeClass(\"required\").parents(\".attributeLine\").hide();                         $(\"select[data-attributeCode='LabelStyle']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                             attributeNumberUpdate();                         });                         break;                 }                 $(\"select[data-attributeCode='LabelStyle']\").change(function(event) {                     var changedEl = $(this);                     setTimeout(function() {                         switch (changedEl.val()) {                             case \"Design\":                                 $(\"select[data-attributeCode='Pattern']\").val(\"\").removeClass(\"required\").parents(\".attributeLine\").hide();                                 $(\"select[data-attributeCode='Designs']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                                     attributeNumberUpdate();                                 });                                 break;                             case \"Pattern\":                                 $(\"select[data-attributeCode='Designs']\").val(\"\").removeClass(\"required\").parents(\".attributeLine\").hide();                                 $(\"select[data-attributeCode='Pattern']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                                     attributeNumberUpdate();                                 });                                 break;                         }                     }, 100);                 });             });          }       }, 100);    })();      <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/foil.php?prodCode=xyzProdCode&designOption=LabelStyle\" title=\"Label Style\"><span class=\"jquiPButton\">Click to View Label Styles<\/span><\/a>",
+    "prompt": "Click to View Label Styles",
+    "previewURL": "/api/attributes/DD/foil.php?designOption=LabelStyle&prodCode=xyzProdCode",
+    "disabled": "true",
+    "onLoad": [
+      {
+         "targets": ["LabelStyle"],
+         "action": "hide", "required": "false"
+      },
+      {
+         "prodTargets":["DD4027500","DD4037500","DD4257500","DD4307500","DD4217500"],
+         "targets": ["Designs","Pattern"],
+         "action": "hide", "required": "false"
+      },
+      {
+         "prodTargets":["DD4027500","DD4037500","DD4257500","DD4307500","DD4217500"],
+         "targets": ["LabelStyle"],
+         "action": "show", "required": "true"
+      }
+    ],
+    "onChange": [
+      {
+         "values": ["Design"],
+         "actions": [
+            {
+               "targets": ["Pattern"],
+               "action": "hide", "required": "false"
+            },
+            {
+               "targets": ["Designs"],
+               "action": "show", "required": "true"
+            }
+         ]
+      },
+      {
+         "values": ["Pattern"],
+         "actions": [
+            {
+               "targets": ["Designs"],
+               "action": "hide", "required": "false"
+            },
+            {
+               "targets": ["Pattern"],
+               "action": "show", "required": "true"
+            }
+         ]
+      }
+   ]
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"select[data-attributeCode='Pattern']\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/patterns.php?prodCode=xyzProdCode\" title=\"Choose Pattern\"><span class=\"jquiPButton\">Click to Choose Pattern<\/span><\/a>",
+    "prompt": "Click to Choose Pattern",
+    "previewURL": "/api/attributes/DD/personalization/patterns.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);              $(document).ready(function() {                  $(\"select[data-attributeCode='Color']\").prop(\"disabled\", true).data(\"disabled\", \"1\");              });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/colors.php?prodCode=xyzProdCode&designOption=Color\" title=\"Choose Color\"><span class=\"jquiPButton\">Click to Choose Color<\/span><\/a><b>",
+    "prompt": "Click to Choose Color",
+    "previewURL": "/api/attributes/DD/personalization/colors.php?designOption=Color&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);              $(document).ready(function() {                  $(\"select[data-attributeCode='AccentColor']\").prop(\"disabled\", true).data(\"disabled\", \"1\");              });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/colors.php?prodCode=xyzProdCode&designOption=AccentColor\" title=\"Choose Accent Color\"><span class=\"jquiPButton\">Click to Choose Accent Color<\/span><\/a><b>",
+    "prompt": "Click to Choose Accent Color",
+    "previewURL": "/api/attributes/DD/personalization/colors.php?designOption=AccentColor&prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);              $(document).ready(function() {                  $(\"select[data-attributeCode='ClearFavorBox']\").prop(\"disabled\", true).data(\"disabled\", \"1\");              });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/clearFavorBox.php\" title=\"Add a Favor Box\"><span class=\"jquiPButton\">Add a Favor Box?<\/span><\/a><b>",
+    "prompt": "Add a Favor Box?",
+    "previewURL": "/api/attributes/DD/personalization/clearFavorBox.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"select[data-attributeCode='TextColor']\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/colors.php?prodCode=xyzProdCode&designOption=TextColor\" title=\"Choose Color\"><span class=\"jquiPButton\">Click to Choose Text Color<\/span><\/a>",
+    "prompt": "Click to Choose Text Color",
+    "previewURL": "/api/attributes/DD/personalization/colors.php?prodCode=xyzProdCode&designOption=TextColor",
+    "disabled": "true"
+}
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"#selectDesign\").attr(\"disabled\", \"disabled\");                 });             }         }, 100);     })(); <\/script><a href=\"\/includes\/attributes\/DD\/lipBalm\/holidayDesigns.php?prodCode=xyzProdCode\" class=\"showDesignsJQUIv2\" title=\"Lip Balm Designs\"><span class=\"jquiPButton\">Click to View All Designs<\/span><\/a>",
+    "prompt": "Click to View All Designs",
+    "previewURL": "/api/attributes/DD/lipBalm/holidayDesigns.php?prodCode=xyzProdCode",
+    "disabled": "true"
+}
+
+{
+   "jqPrompt": "Pattern or Design",
+   "prompt": "Pattern or Design?",
+   "onLoad": [
+      {
+         "targets": ["Pattern","Design"],
+         "action": "hide", "required": "false"
+      }
+   ],
+   "onChange": [
+      {
+         "values": ["Pattern"],
+         "actions": [
+            {
+               "targets": ["Design"],
+               "action": "hide", "required": "false"
+            },
+            {
+               "targets": ["Pattern"],
+               "action": "show", "required": "true"
+            }
+         ]
+      },
+      {
+         "values": ["Design"],
+         "actions": [
+            {
+               "targets": ["Pattern"],
+               "action": "hide", "required": "false"
+            },
+            {
+               "targets": ["Design"],
+               "action": "show", "required": "true"
+            }
+         ]
+      },
+      {
+         "values": "DEFAULT",
+         "actions": [
+            {
+               "targets": ["Pattern","Design"],
+               "action": "show", "required": "false"
+            }
+         ]
+      }
+   ]
+}
+
+
+{
+    "jqPrompt": "<script type=\"text\/javascript\">    (function() {       var jQueryLoading = setInterval(function() {          if (typeof($) === \"function\") {             clearInterval(jQueryLoading);             $(document).ready(function() {                 $(\"select[data-attributeCode='Design']\").prop(\"disabled\", true).data(\"disabled\", \"1\").addClass(\"required\");                 $(\"select[data-attributeCode='Pattern']\").prop(\"disabled\", true).data(\"disabled\", \"1\").addClass(\"required\");                 $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                 $(\"select[data-attributeCode='PatternOrDesign']\").removeClass(\"required\").parents(\".attributeLine\").hide();                 attributeNumberUpdate();                 switch (window.prodID) {                     case \"DD4027503\":                     case \"DD4217503\":                     case \"DD4257503\":                         $(\"select[data-attributeCode='Design']\").removeClass(\"required\").parents(\".attributeLine\").hide();                         $(\"select[data-attributeCode='Pattern']\").removeClass(\"required\").parents(\".attributeLine\").hide();                         $(\"select[data-attributeCode='PatternOrDesign']\").addClass(\"required\").parents(\".attributeLine\").slideDown();                         attributeNumberUpdate();                         $(\"select[data-attributeCode='PatternOrDesign']\").change(function(e) {                             if ($(this).val() == \"Pattern\") {                                 $(\"select[data-attributeCode='Design']\").removeClass(\"required\").parents(\".attributeLine\").slideUp();                                 $(\"select[data-attributeCode='Design']\").val(\"\");                                 $(\"select[data-attributeCode='Pattern']\").addClass(\"required\").parents(\".attributeLine\").slideDown();                                 attributeNumberUpdate();                             } else {                                 $(\"select[data-attributeCode='Pattern']\").removeClass(\"required\").parents(\".attributeLine\").slideUp();                                 $(\"select[data-attributeCode='Pattern']\").val(\"\");                                 $(\"select[data-attributeCode='Design']\").addClass(\"required\").parents(\".attributeLine\").slideDown();                                 attributeNumberUpdate();                             }                         });                         break;                 }                 $(\"select[data-attributeCode='Design']\").change(function(event) {                     $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                     $(\"input[data-attributeCode='NumberOrMonogram']\").val('');                     attributeNumberUpdate();                     var changedEl = $(this);                     setTimeout(function() {                         switch (changedEl.val()) {                             \/* 2 Lines *\/                             case \"number\":                             case \"celebratenumber\":                             case \"thebignumber\":                             case \"lookwhosnumber\":                             case \"vintageyear\":                             case \"traditionalmonogram\":                             case \"scriptmonogram\":                             case \"branchmonogram\":                             case \"twoinitialsmonogram\":                             case \"vinecirclemonogram\":                             case \"stampinitial\":                             case \"circlemonogram\":                             case \"diamondinitial\":                             case \"anchormonogram\":                             case \"antlermonogram\":                             case \"arrowmonogram\":                             case \"birchwoodinitials\":                             case \"bohomonogram\":                             case \"bracketinitial\":                             case \"floralvinemonogram\":                             case \"leafheartmonogram\":                             case \"plaqueinitial\":                             case \"rusticmonogram\":                             case \"typewriterinitial\":                             case \"vinesmonogram\":                             case \"vintagemonogram\":                             case \"woodeninitial\":                             case \"monogramcirclecap\":                             case \"monogramscriptcap\":                             case \"plaqueinitials\":                             case \"starinitial\":                             case \"countrystarinitials\":                             case \"patrioticmonogram\":                                 $(\"input[data-attributeCode='NumberOrMonogram']\").addClass(\"required\").parents(\".attributeLine:hidden\").show(\"blind\", 200, function() {                                     attributeNumberUpdate();                                 });                                 break;                             default:                                 $(\"input[data-attributeCode='NumberOrMonogram']\").removeClass(\"required\").parents(\".attributeLine\").hide();                                 attributeNumberUpdate();                                 break;                         }                     }, 100);                 });             });          }       }, 100);    })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/DD\/personalization\/designs.php?prodCode=xyzProdCode\" title=\"Choose Design\"><span class=\"jquiPButton\">Click to Choose Design<\/span><\/a>",
+    "prompt": "Click to Choose Design",
+    "disabled": "true",
+    "previewURL": "/api/attributes/DD/personalization/designs.php?prodCode=xyzProdCode",
+    "onLoad": [
+      {
+         "targets": ["NumberOrMonogram","PatternOrDesign"],
+         "action": "hide", "required": "false"
+      },
+      {
+         "targets": ["Design","Pattern"],
+         "action": "show", "required": "true"
+      },
+      {
+         "prodTargets":["DD4027503","DD4217503","DD4257503"],
+         "targets": ["Designs","Pattern"],
+         "action": "hide", "required": "false"
+      },
+      {
+         "prodTargets":["DD4027503","DD4217503","DD4257503"],
+         "targets": ["PatternOrDesign"],
+         "action": "show", "required": "true"
+      }
+    ],
+    "onChange": [
+      {
+         "values": ["number","celebratenumber","thebignumber","lookwhosnumber","vintageyear","traditionalmonogram","scriptmonogram","branchmonogram","twoinitialsmonogram","vinecirclemonogram","stampinitial","circlemonogram","diamondinitial","anchormonogram","antlermonogram","arrowmonogram","birchwoodinitials","bohomonogram","bracketinitial","floralvinemonogram","leafheartmonogram","plaqueinitial","rusticmonogram","typewriterinitial","vinesmonogram","vintagemonogram","woodeninitial","monogramcirclecap","monogramscriptcap","plaqueinitials","starinitial","countrystarinitials","patrioticmonogram"],
+         "actions": [
+            {
+               "targets": ["NumberOrMonogram"],
+               "action": "show", "required": "true"
+            }
+         ]
+      },
+      {
+         "values": "DEFAULT",
+         "actions": [
+            {
+               "targets": ["NumberOrMonogram"],
+               "action": "hide", "required": "false"
+            }
+         ]
+      }
+   ]
+}

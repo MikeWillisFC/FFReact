@@ -5,13 +5,18 @@ import { Box,Button } from "@chakra-ui/react";
 import AttributeRow from "./AttributeRow";
 
 const Attributes = props => {
-   console.log("attributes rendering, props:", props);
-   const [state_rowVisibility,setState_rowVisibility] = useState( [] );
    const [state_rowIndex,setState_rowIndex] = useState( props.rowIndex || 0 );
    const [state_attributeRows,setState_attributeRows] = useState( [] );
    const [state_attributeScripts,setState_attributeScripts] = useState( [] );
+   const [state_visibleRows,setState_visibleRows] = useState(0);
 
-   //console.log("Attributes props",props);
+   console.log("Attributes props",props);
+
+   // destructuring to make useEffect's happy
+   let {
+      attributes,
+      product
+   } = props;
 
    useEffect(()=>{
       // clean up included attribute scripts and whatever crap they might have set
@@ -23,25 +28,62 @@ const Attributes = props => {
    },[]);
 
    useEffect(()=>{
-      let attributes = [];
+      let visibleRows = 0;
+      let hidingOptions;
+      state_attributeRows.forEach(attribute=>{
+         if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
+            // ignore it
+         } else {
+            if ( attribute.hiddenSetting ) {
+               //console.log("hiddenSetting",attribute.hiddenSetting);
+               switch( attribute.hiddenSetting ) {
+                  case "beginHiddenOptions":
+                     hidingOptions = true;
+                     break;
+                  case "endHiddenOptions":
+                     hidingOptions = false;
+                     break;
+               }
+            }
+
+            let isOpen = true;
+            if ( hidingOptions || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
+               isOpen = false;
+            }
+
+            if ( isOpen ) {
+               visibleRows++;
+            }
+         }
+      });
+      setState_visibleRows(visibleRows);
+   },[state_attributeRows]);
+
+   useEffect(()=>{
+      let pAttributes = [...attributes]; // this is props.attributes
+      let newAttributes = [];
       let hiddenSetting = "";
 
-      if ( props.attributes.length ) {
-         props.attributes.forEach(attribute=>{
+      if ( pAttributes.length ) {
+         // console.log("pAttributes",pAttributes);
+         pAttributes.forEach(attribute=>{
             if ( attribute.type && attribute.type === "template" ) {
                attribute.attributes.forEach(att=>{
                   let prompt = getPrompt(att.prompt);
-                  //console.log("prompt",prompt);
-                  attributes.push({
+                  console.log("prompt",prompt);
+                  newAttributes.push({
                      ...att,
                      templateCode: attribute.code,
                      attemp_id: attribute.attemp_id,
                      prompt: prompt.prompt,
+                     prePrompt:prompt.prePrompt || false,
+                     info: prompt.info || false,
                      hiddenSetting: prompt.hidden || "",
-                     textLength: prompt.textLength || false,
+                     textLimit: prompt.textLimit|| false,
                      previewURL: prompt.previewURL || false,
                      disabled: prompt.disabled || false,
                      onChange: prompt.onChange || false,
+                     onLoad: prompt.onLoad || false,
                      promptTarget: prompt.promptTarget || false,
                      tagDetails: prompt.tagDetails || false,
                      tagPrompt: prompt.tagPrompt || false,
@@ -52,16 +94,19 @@ const Attributes = props => {
                });
             } else {
                let prompt = getPrompt(attribute.prompt);
-               attributes.push({
+               newAttributes.push({
                   ...attribute,
                   templateCode: attribute.code,
                   attemp_id: attribute.attemp_id,
                   prompt: prompt.prompt,
+                  prePrompt:prompt.prePrompt || false,
+                  info: prompt.info || false,
                   hiddenSetting: prompt.hidden || "",
-                  textLength: prompt.textLength || false,
+                  textLimit: prompt.textLimit || false,
                   previewURL: prompt.previewURL || false,
                   disabled: prompt.disabled || false,
                   onChange: prompt.onChange || false,
+                  onLoad: prompt.onLoad || false,
                   promptTarget: prompt.promptTarget || false,
                   tagDetails: prompt.tagDetails || false,
                   tagPrompt: prompt.tagPrompt || false,
@@ -73,34 +118,89 @@ const Attributes = props => {
          });
       }
 
-      //console.log("ATTRIBUTES",attributes);
+      // console.log("newAttributes",newAttributes);
 
       let attributeScripts = [];
-      attributes.forEach(att=>{
+      let hideRemainingOptions = false;
+      newAttributes.forEach(att=>{
          if ( att.scripts ) {
             att.scripts.forEach(scrpt=>{
                attributeScripts.push(scrpt);
             });
          }
+         if ( hideRemainingOptions ) {
+            att.hiddenSetting = "hiddenOptionRow";
+         } else if ( att.hiddenSetting ) {
+            switch( att.hiddenSetting ) {
+            case "hideRemainingOptions":
+               hideRemainingOptions = true;
+               break;
+            }
+         }
       });
 
+      // console.log("-----RUNNING ONLOAD ACTIONS----");
+      let attributesAfterOnLoadActions = [...newAttributes];
+      newAttributes.forEach(att=>{
+         // console.log("att",att);
+         if ( att.onLoad ) {
+            att.onLoad.forEach(onLoad=>{
+               if ( onLoad.prodTargets ) {
+                  // console.log("onLoad.prodTargets",onLoad.prodTargets);
+                  // console.log("prodTargets includes?",onLoad.prodTargets.includes(product.code));
+               } else {
+                  // console.log("no prodTargets");
+               }
+
+               if ( !onLoad.prodTargets || onLoad.prodTargets.includes(product.code) ) {
+                  // do it
+                  onLoad.targets.forEach(target=>{
+                     attributesAfterOnLoadActions = attributesAfterOnLoadActions.map(focusedAttribute=>{
+                        if ( focusedAttribute.code === target ) {
+                           // do whatever the action is..
+                           // console.log(`running onLoad.action '${onLoad.action}' on focusedAttribute.code '${focusedAttribute.code}'`);
+                           if ( onLoad.action === "hide" ) {
+                              // console.log("hiding");
+                              focusedAttribute.hiddenSetting = "hiddenOptionRow";
+                           } else if ( onLoad.action === "show" ) {
+                              // console.log("showing");
+                              focusedAttribute.hiddenSetting = "";
+                           }
+                           focusedAttribute.required = onLoad.action.required === "true";
+                        }
+                        // console.log("returning focusedAttribute",focusedAttribute);
+                        // console.log("returning focusedAttribute.hiddenSetting",focusedAttribute.hiddenSetting);
+                        return focusedAttribute;
+                     });
+                  });
+               }
+            });
+         }
+      });
+
+      // console.log("attributesAfterOnLoadActions",attributesAfterOnLoadActions);
+      // console.log("attributesAfterOnLoadActions[0].hiddenSetting",attributesAfterOnLoadActions[0].hiddenSetting);
       setState_attributeScripts(attributeScripts);
-      setState_attributeRows( attributes );
-   },[props.attributes]);
+      setState_attributeRows( attributesAfterOnLoadActions );
+   },[attributes,product]);
 
    let getPrompt = prompt => {
+      //console.log("prompt",prompt);
+      let result;
       if ( prompt.substr(0,1) === "{" ) {
-         return JSON.parse( prompt );
+         result = JSON.parse( prompt );
       } else {
-         return {prompt:prompt};
+         result = {prompt:prompt};
       }
+      //console.log("result",result);
+      return result;
    }; // getPrompt
 
    let handleChange = useCallback((value,onChange,code,templateCode) => {
       // 2021-08-10: this is only called if the attribute has an onChange
-      // console.log("handling change");
-      // console.log("value",value);
-      // console.log("onChange",onChange);
+      console.log("handling change");
+      console.log("value",value);
+      console.log("onChange",onChange);
 
       let changeHandled = false;
       onChange.forEach(change=>{
@@ -139,7 +239,6 @@ const Attributes = props => {
                      });
                      return newState;
                   });
-
                });
             });
          }
@@ -149,13 +248,13 @@ const Attributes = props => {
    let hidingOptions = false;
 
    return (
-      <Box className={props.styles.attributes}>
+      <Box className={props.styles.attributes} data-visibleRows={state_visibleRows}>
          {
             state_attributeRows.map((attribute,index)=>{
                if ( !attribute ) {
                   return null;
                } else {
-                  //console.log("printing attribute",attribute);
+                  console.log("printing attribute",attribute);
                   if ( attribute.hiddenSetting ) {
                      //console.log("hiddenSetting",attribute.hiddenSetting);
                      switch( attribute.hiddenSetting ) {
@@ -172,6 +271,9 @@ const Attributes = props => {
                   if ( hidingOptions || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
                      isOpen = false;
                   }
+
+                  // console.log("hidingOptions",hidingOptions);
+                  // console.log("isOpen",isOpen);
 
                   if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
                      return null; // TODO: handle this
