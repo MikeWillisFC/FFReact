@@ -325,7 +325,8 @@ export async function getStaticPaths() {
    return {
       //paths: [{ params: { code: '3421' } }, { params: { code: '3421s' } }],
       paths: response.data.items.map(item=>({ params: { code: item } })),
-      fallback: true
+      //fallback: true,
+      fallback: 'blocking'
    };
 };
 export async function getStaticProps(context) {
