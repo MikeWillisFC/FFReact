@@ -1,49 +1,45 @@
 import {useState,useEffect,useCallback,useMemo} from "react";
 import {
+   Fragment,
+   InputGroup,
+   InputLeftAddon,
    NumberInput,
    NumberInputField,
    NumberInputStepper,
    NumberIncrementStepper,
    NumberDecrementStepper,
    Tooltip,
+   Input,
+   Box
 } from "@chakra-ui/react";
 
 import tooltipStyles from "../../styles/chakra/tooltip.module.scss";
 
-const Input = props => {
+const MyInput = props => {
    const [state_quantity,setState_quantity] = useState(props.quantity);
    const [state_quantityValid,setState_quantityValid] = useState(true);
    const [state_quantityFocused,setState_quantityFocused] = useState(false);
 
-   let {onValidityChange,quantity,touched,blockSamples,minimum,enforceMinimum,onChange} = props;
+   let {onValidityChange,quantity,touched,samplesPermitted,minimum,enforceMinimum,onChange} = props;
 
-   if ( typeof( blockSamples ) !== "boolean" ) {
-      blockSamples = blockSamples.trim() === "yes" || blockSamples.trim() === "1";
-   }
    if ( typeof( enforceMinimum ) !== "boolean" ) {
       enforceMinimum = enforceMinimum.trim() === "yes" || enforceMinimum.trim() === "1";
    }
 
-   let minQuantity = useMemo(()=>{
-      return minimum && enforceMinimum ? parseInt(minimum) : 1;
+   let allowSamples = useMemo(()=>{
+      return minimum > 1 && samplesPermitted;
    },[
       minimum,
-      enforceMinimum
-   ]);
-   let allowSamples = useMemo(()=>{
-      return minQuantity > 1 && !blockSamples;
-   },[
-      minQuantity,
-      blockSamples
+      samplesPermitted
    ]);
    let minQuantityNote = useMemo(()=>{
-      let result = `The minimum quantity for this item is ${minQuantity}`;
-      if ( minQuantity > 1 && allowSamples ) {
+      let result = `The minimum quantity for this item is ${minimum}`;
+      if ( minimum > 1 && allowSamples ) {
          result = `${result}, or 1 for samples`;
       }
       return result;
    },[
-      minQuantity,
+      minimum,
       allowSamples
    ]);
 
@@ -52,7 +48,7 @@ const Input = props => {
          setState_quantityValid(false);
       } else {
          if ( enforceMinimum && parseInt(quantity) < parseInt(minimum) ) {
-            if ( parseInt(quantity) === 1 && !blockSamples ) {
+            if ( parseInt(quantity) === 1 && samplesPermitted ) {
                // ok then
                setState_quantityValid(true);
             } else {
@@ -62,7 +58,7 @@ const Input = props => {
             setState_quantityValid(true);
          }
       }
-   },[blockSamples,minimum,enforceMinimum]);
+   },[samplesPermitted,minimum,enforceMinimum]);
 
    useEffect(()=>{
       if ( !state_quantity ) {
@@ -74,7 +70,7 @@ const Input = props => {
          }
       } else {
          if ( enforceMinimum && parseInt(state_quantity) < parseInt(minimum) ) {
-            if ( parseInt(state_quantity) === 1 && !blockSamples ) {
+            if ( parseInt(state_quantity) === 1 && samplesPermitted ) {
                // ok then
                setState_quantityValid(true);
             } else {
@@ -84,7 +80,7 @@ const Input = props => {
             setState_quantityValid(true);
          }
       }
-   },[state_quantity,blockSamples,minimum,enforceMinimum]);
+   },[state_quantity,samplesPermitted,minimum,enforceMinimum]);
 
    useEffect(()=>{
       if ( onValidityChange ) {
@@ -101,9 +97,9 @@ const Input = props => {
    useEffect(()=>{
       if ( typeof(state_quantity) === "undefined" ) {
          // just set it to the minimum
-         handleChange(minQuantity);
+         handleChange(minimum);
       }
-   },[minQuantity,state_quantity,handleChange]);
+   },[minimum,state_quantity,handleChange]);
 
    return (
       <Tooltip
@@ -113,8 +109,9 @@ const Input = props => {
          isOpen={!state_quantityValid || state_quantityFocused}
          data-status={(!state_quantityValid ? "error" : "info")}
       >
+
          <NumberInput
-            min={1}
+            min={minimum}
             placeholder="Quantity"
             name="Quantity"
             value={state_quantity}
@@ -125,16 +122,34 @@ const Input = props => {
             onFocus={event=>setState_quantityFocused(true)}
             onBlur={event=>setState_quantityFocused(false)}
          >
-            <NumberInputField
-               placeholder="Quantity"
-            />
-            <NumberInputStepper>
-               <NumberIncrementStepper />
-               <NumberDecrementStepper />
-            </NumberInputStepper>
+            {
+               props.showLabel ? (
+                  <InputGroup>
+                     <InputLeftAddon>Quantity</InputLeftAddon>
+                     <NumberInputField
+                        placeholder="Quantity"
+                     />
+                     <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                     </NumberInputStepper>
+                  </InputGroup>
+               ) : (
+                  <Box>
+                     <NumberInputField
+                        placeholder="Quantity"
+                     />
+                     <NumberInputStepper>
+                        <NumberIncrementStepper />
+                        <NumberDecrementStepper />
+                     </NumberInputStepper>
+                  </Box>
+               )
+            }
          </NumberInput>
+
       </Tooltip>
    );
-}; // Input
+}; // MyInput
 
-export default Input;
+export default MyInput;

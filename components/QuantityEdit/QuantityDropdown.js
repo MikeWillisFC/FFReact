@@ -6,7 +6,7 @@ const QuantityDropdown = props => {
    const [state_touched,setState_touched] = useState(props.touched || false);
    const [state_valid,setState_valid] = useState(true);
 
-   let {isValid,touched} = props;
+   let {isValid,touched,samplesPermitted} = props;
    useEffect(()=>{
       if ( !isValid ) {
          setState_touched(prevState=>{
@@ -21,6 +21,7 @@ const QuantityDropdown = props => {
          setState_valid(true);
       }
    },[isValid]);
+
    useEffect(()=>{
       if ( touched ) {
          setState_touched( true );
@@ -29,7 +30,7 @@ const QuantityDropdown = props => {
 
    console.log("QuantityDropdown rendering, props:",props);
 
-   let [prodMin,quantityIncrement,prodQuantityMax] = props.minimum.split("^");
+   let {prodMin,quantityIncrement,prodQuantityMax} = props.minimum;
    if ( !prodQuantityMax || prodQuantityMax > 600 ) {
       prodQuantityMax = 600;
    }
@@ -45,7 +46,7 @@ const QuantityDropdown = props => {
          onBlur={event=>setState_touched(true)}
          isInvalid={!state_valid}
       >
-         { !props.blockSamples && <option value="1">1 - Sample Orders Only</option> }
+         { samplesPermitted && <option value="1">1 - Sample Orders Only</option> }
          {
             Array.from({length:Math.floor(prodQuantityMax/quantityIncrement)}).map((el,index)=>{
                let val = index * quantityIncrement;
@@ -54,7 +55,7 @@ const QuantityDropdown = props => {
                if ( val < prodMin ) {
                   return "";
                } else {
-                  return <option value={val}>{val}</option>;
+                  return <option key={val} value={val}>{val}</option>;
                }
             })
          }

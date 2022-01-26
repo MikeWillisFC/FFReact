@@ -4,6 +4,7 @@ import { Checkbox,Tag } from "@chakra-ui/react";
 const CheckboxAttribute = props => {
    const [st_checked,sst_checked] = useState(false);
 
+   console.log("CheckboxAttribute, props:",props);
    let {onChange} = props;
    let handleChange = useCallback(event=>{
       if ( event.defaultPrevented ) {

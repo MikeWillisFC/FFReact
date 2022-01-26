@@ -7,6 +7,8 @@ import Image from 'next/image';
 const TagPrompt = props => {
    const [state_detailsVisible,setState_detailsVisible] = useState( false );
 
+   console.log("TagPrompt, props:",props);
+   
    const controls = useAnimation();
 
    let handleDetailsClick = event => {

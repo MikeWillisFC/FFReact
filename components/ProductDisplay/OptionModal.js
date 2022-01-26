@@ -35,6 +35,7 @@ const MotionModalContent = motion(ModalContent);
 const OptionModal = props => {
    console.log("Modal props",props);
    const modalDisclosure = useDisclosure();
+   const [state_showModalOverlay,setState_showModalOverlay] = useState(true);
    const [state_animate,setState_animate] = useState( {} );
    const [state_animationDuration,setState_animationDuration] = useState( 0.4 );
    const modalRef = useRef();
@@ -49,12 +50,12 @@ const OptionModal = props => {
       * itself further to the right to compensate for the smaller width.
       * So we have to compensate for that compensation.
       */
-      console.log("props.elRef",props.elRef);
-      console.log("elRef height",props.elRef.current.clientHeight);
+      // console.log("props.elRef",props.elRef);
+      // console.log("elRef height",props.elRef.current.clientHeight);
       let elRect = props.elRef.current.getBoundingClientRect();
       let modalRect = modalRef.current.getBoundingClientRect();
-      console.log("modalRect",modalRect);
-      console.log("elRect",elRect);
+      // console.log("modalRect",modalRect);
+      // console.log("elRect",elRect);
       let newX = elRect.x - modalRect.x;
 
       // ok great but since we're decreasing the width as well, we have to compensate for that shift
@@ -69,7 +70,8 @@ const OptionModal = props => {
          y: elRect.y,
          opacity: 0
       };
-      console.log("animateTo",animateTo);
+      // console.log("animateTo",animateTo);
+      setState_showModalOverlay(false); // immediately hide the overlay
       setState_animate(animateTo);
       setTimeout(()=>{
          modalDisclosure.onClose();
@@ -80,7 +82,7 @@ const OptionModal = props => {
 
    let handleClick = option => {
       // setValue
-      console.log("clicked option",option);
+      // console.log("clicked option",option);
       props.setValue(null,option.value);
       closeModal();
    };
@@ -96,8 +98,8 @@ const OptionModal = props => {
       // ok then, do the options have widths? If so, grab the widest one
       let widest = 0;
 
-      console.log("typeof(props.modal.options.options)",typeof props.modal.options.options);
-      console.log("props.modal.options.options",props.modal.options.options);
+      // console.log("typeof(props.modal.options.options)",typeof props.modal.options.options);
+      // console.log("props.modal.options.options",props.modal.options.options);
       if ( Array.isArray( props.modal.options.options ) ) {
          props.modal.options.options.forEach(option=>{
             if ( option.imgWidth && option.imgWidth > widest ) {
@@ -125,9 +127,9 @@ const OptionModal = props => {
       }
    }
 
-   console.log("typeof([])",typeof([]));
-   console.log("typeof(props.modal.options.options)",typeof(props.modal.options.options));
-   console.log("props.modal.options.options",props.modal.options.options);
+   // console.log("typeof([])",typeof([]));
+   // console.log("typeof(props.modal.options.options)",typeof(props.modal.options.options));
+   // console.log("props.modal.options.options",props.modal.options.options);
 
    let printTitle = title => {
       let regEx = new RegExp("click to ", "ig");
@@ -140,7 +142,8 @@ const OptionModal = props => {
          onClose={closeModal}
          size="4xl"
       >
-         <ModalOverlay />
+         { state_showModalOverlay && <ModalOverlay /> }
+
          <MotionModalContent
             className={props.styles.optionModal}
 

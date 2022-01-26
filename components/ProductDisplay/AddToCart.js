@@ -1,5 +1,5 @@
-import {useState,useEffect,useCallback} from "react";
-import { FaCartPlus } from 'react-icons/fa';
+import {Fragment,useState,useEffect,useCallback} from "react";
+import { FaCartPlus,FaBoxOpen,FaPaintBrush } from 'react-icons/fa';
 import {
    Box,
    Stack,
@@ -9,22 +9,42 @@ import {
 
 //import QuantityInput from "./QuantityInput";
 import {default as QuantityInput} from "../QuantityEdit/Input";
-import QuantityDropdown from "./QuantityDropdown";
+import QuantityDropdown from "../QuantityEdit/QuantityDropdown";
+import ChooseSeparateOptions from "./ChooseSeparateOptions";
+import { openMiscModal } from "../../utilities";
+
+import styles from "../../styles/product.module.scss";
 
 const AddToCart = props => {
    const [state_quantity,setState_quantity] = useState(props.quantity);
    const [state_disabled,setState_disabled] = useState(props.disabled);
+   const [state_inputType,setState_inputType] = useState("input");
 
    //console.log("AddToCart rendering, props:",props);
+   let {
+      quantity,
+      minimum
+   } = props;
 
    useEffect(()=>{
-      setState_quantity(props.quantity);
-   },[props.quantity]);
+      setState_quantity(quantity);
+   },[quantity]);
 
-   let handleQuantityChange = value => {
-      //console.log("handleQuantityChange", value);
-      props.quantityRef.current = value;
-      setState_quantity(value);
+   useEffect(()=>{
+      if ( minimum.quantityIncrement ) {
+         setState_inputType("dropdown");
+      } else {
+         setState_inputType("input");
+      }
+   },[minimum]);
+
+   let handleQuantityChange = eventOrVal => {
+      //console.log("handleQuantityChange, eventOrVal:", eventOrVal);
+      if ( eventOrVal ) {
+         let quantity = eventOrVal.target ? eventOrVal.target.value : eventOrVal;
+         props.quantityRef.current = quantity;
+         setState_quantity(quantity);
+      }
    }; // handleQuantityChange
 
    let handleQuantityValidityChange = useCallback(isValid => {
@@ -32,52 +52,137 @@ const AddToCart = props => {
       setState_disabled(!isValid);
    },[]);
 
-   let inputType = props.minimum && props.minimum.indexOf("^") !== -1 ? "dropdown" : "input";
+   let handlePersonalizeClick = event => {
+      event.preventDefault();
+      openMiscModal({
+         setModal: props.setMiscModal,
+         disclosure: props.miscModalDisclosure,
+         title: "word",
+         size: "4xl",
+         content: (
+            <ChooseSeparateOptions
+               quantity={state_quantity}
+               renderAttributes={props.renderAttributes}
+               handleSubmit={props.handleSubmit}
+               renderSpinner={props.renderSpinner}
+            />
+         )
+      });
+   }; // handlePersonalizeClick
+
+   let renderQuantity = () => {
+      if ( state_inputType === "input" ) {
+         return (
+            <QuantityInput
+               quantity={state_quantity}
+               onChange={handleQuantityChange}
+               minimum={props.minimum.prodMin}
+               enforceMinimum={props.enforceMinimum}
+               samplesPermitted={props.samplesPermitted}
+               onValidityChange={handleQuantityValidityChange}
+               showLabel={true}
+            />
+         );
+      } else {
+         return (
+            <QuantityDropdown
+               quantity={state_quantity}
+               onChange={handleQuantityChange}
+               minimum={props.minimum}
+               enforceMinimum={props.enforceMinimum}
+               samplesPermitted={props.samplesPermitted}
+               isValid={props.isValid}
+            />
+         );
+      }
+   }; // renderQuantity
+   let renderAddToCart = () => {
+      return (
+         <Button
+            type="submit"
+            leftIcon={<Icon as={FaCartPlus} color="black" />}
+            className="mediumBlueButton_Horizontal"
+            width="100%"
+            form={props.formID}
+            disabled={state_disabled}
+         >
+            Add To Cart
+         </Button>
+      );
+   }; // renderAddToCart
+   let renderOrderSample = () => {
+      return (
+         <Button
+            type="submit"
+            leftIcon={<Icon as={FaBoxOpen} color="black" />}
+            width="100%"
+            form={props.formID}
+            disabled={state_disabled}
+         >
+            Order 1 Sample
+         </Button>
+      );
+   }; // renderOrderSample
+   let renderPersonalizeSeparately = () => {
+      return (
+         <Button
+            leftIcon={<Icon as={FaPaintBrush} color="black" />}
+            className="mediumBlueButton_Horizontal"
+            width="100%"
+            disabled={state_disabled}
+            onClick={handlePersonalizeClick}
+         >
+            Personalize It
+         </Button>
+      );
+   };
+
+   let mainStyle = {padding:"4px"};
+   if ( !props.offerSeparateOptions ) {
+      mainStyle.borderTop = "1px solid #C5DBEC";
+   }
 
    return (
-      <Stack
-         direction={["column", "column", "row"]}
-         spacing="5px"
-         style={{borderTop: "1px solid #C5DBEC", padding:"4px"}}
-      >
-         <Box w={["100%","100%","50%"]} className="darkBlue">
-            {
-               inputType === "input" ? (
-                  <QuantityInput
-                     quantity={state_quantity}
-                     onChange={handleQuantityChange}
-                     minimum={props.minimum}
-                     enforceMinimum={props.enforceMinimum}
-                     blockSamples={props.blockSamples}
-                     onValidityChange={handleQuantityValidityChange}
-                  />
-               ) : (
-                  <QuantityDropdown
-                     quantity={state_quantity}
-                     onChange={handleQuantityChange}
-                     minimum={props.minimum}
-                     enforceMinimum={props.enforceMinimum}
-                     blockSamples={props.blockSamples}
-                     isValid={props.isValid}
-                  />
-               )
-            }
-         </Box>
+      props.samplesPermitted ? (
          <Box
-            width={["100%","100%","50%"]}
+            style={mainStyle}
          >
-            <Button
-               type="submit"
-               leftIcon={<Icon as={FaCartPlus} color="black" />}
-               className="mediumBlueButton_Horizontal"
-               width="100%"
-               form={props.formID}
-               disabled={state_disabled}
+            <Box
+               width={"90%"}
+               className={styles.bigQuantity}
             >
-               Add To Cart
-            </Button>
+               {renderQuantity()}
+            </Box>
+            <Stack
+               direction={["column", "column", "row"]}
+               spacing="5px"
+            >
+               <Box w={["100%","100%","50%"]} className="darkBlue">
+                  {renderOrderSample()}
+               </Box>
+               <Box
+                  width={["100%","100%","50%"]}
+               >
+                  { props.offerSeparateOptions ? renderPersonalizeSeparately() : renderAddToCart() }
+               </Box>
+            </Stack>
          </Box>
-      </Stack>
+      ) : (
+         <Stack
+            direction={["column", "column", "row"]}
+            spacing="5px"
+            style={{borderTop: "1px solid #C5DBEC", padding:"4px"}}
+         >
+            <Box w={["100%","100%","50%"]} className="darkBlue">
+               {renderQuantity()}
+            </Box>
+            <Box
+               width={["100%","100%","50%"]}
+            >
+               { props.offerSeparateOptions ? renderPersonalizeSeparately() : renderAddToCart() }
+            </Box>
+         </Stack>
+      )
    );
 };
 

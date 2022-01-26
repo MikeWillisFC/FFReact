@@ -4,6 +4,8 @@ import { Box,Button } from "@chakra-ui/react";
 
 import AttributeRow from "./AttributeRow";
 
+import styles from "../../styles/product.module.scss";
+
 const Attributes = props => {
    const [state_rowIndex,setState_rowIndex] = useState( props.rowIndex || 0 );
    const [state_attributeRows,setState_attributeRows] = useState( [] );
@@ -248,7 +250,7 @@ const Attributes = props => {
    let hidingOptions = false;
 
    return (
-      <Box className={props.styles.attributes} data-visibleRows={state_visibleRows}>
+      <Box className={styles.attributes} data-visiblerows={state_visibleRows}>
          {
             state_attributeRows.map((attribute,index)=>{
                if ( !attribute ) {
@@ -284,14 +286,14 @@ const Attributes = props => {
                            rowIndex={index}
                            isOpen={isOpen}
                            attribute={attribute}
-                           styles={props.styles}
+                           styles={styles}
                            globalConfig={props.globalConfig}
                            miscModalDisclosure={props.miscModalDisclosure}
                            setMiscModal={props.setMiscModal}
                            onChange={handleChange}
                            product={props.product}
                            receiveAttributeValue={props.receiveAttributeValue}
-                           blockSamples={props.blockSamples}
+                           samplesPermitted={props.samplesPermitted}
                         />
                      )
                   }

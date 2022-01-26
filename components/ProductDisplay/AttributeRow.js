@@ -68,7 +68,7 @@ const AttributeRow = props => {
                onChange={props.onChange}
                product={props.product}
                receiveAttributeValue={props.receiveAttributeValue}
-               blockSamples={props.blockSamples}
+               samplesPermitted={props.samplesPermitted}
                rowIndex={props.rowIndex}
             />
          </Box>

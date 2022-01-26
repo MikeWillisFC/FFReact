@@ -28,7 +28,7 @@ const Attribute = props => {
       attribute,
       receiveAttributeValue,
       onChange,
-      blockSamples,
+      samplesPermitted,
       rowIndex,
       setMiscModal,
       miscModalDisclosure
@@ -378,7 +378,7 @@ const Attribute = props => {
                   >
                      {
                         attribute.options.map(option=>{
-                           if ( blockSamples && option.code.toLowerCase() === "sample" ) {
+                           if ( !samplesPermitted && option.code.toLowerCase() === "sample" ) {
                               return "";
                            } else {
                               return ( <option key={option.code} value={option.code}>{option.prompt}</option> );
@@ -399,7 +399,7 @@ const Attribute = props => {
       renderDecodedPrompt,
       handleSelectClick,
       setValue,
-      blockSamples,
+      samplesPermitted,
       state_selectIcon,
       props.globalConfig,
       state_disabled,

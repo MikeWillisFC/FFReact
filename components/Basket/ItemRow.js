@@ -28,6 +28,7 @@ import {
 
 import OptionRow from "./OptionRow";
 import {default as QuantityInput} from "../QuantityEdit/Input";
+import QuantityDropdown from "../QuantityEdit/QuantityDropdown";
 
 import {formatPrice} from "../../utilities";
 
@@ -43,45 +44,74 @@ const ItemRow = props => {
    const [state_optionWidth,setState_optionWidth] = useState(false);
    const [state_confirmRemoveIsOpen,setState_confirmRemoveIsOpen] = useState(false);
    const [state_rowCollapsing,setState_rowCollapsing] = useState(false);
+   const [state_minimum,setState_minimum] = useState({});
+   const [state_samplesPermitted,setState_samplesPermitted] = useState(true);
+   const [state_inputType,setState_inputType] = useState("input");
 
    const confirmRemoveCancelRef = useRef();
    const controls = useAnimation();
 
    let {item,onRemoveItem,quantityIsValid,onQuantityChange} = props;
+
    let totalRows = 1;
    let optionWidths = useMemo(()=>{
       return [];
    },[]);
 
-   //console.log("props.item",props.item);
+   console.log("props.item",props.item);
 
-   let minQuantity = useMemo(()=>{
-      return state_item.customFields.minimum && ( state_item.customFields.enforceMinimum === "1" || state_item.customFields.enforceMinimum === "yes" ) ? parseInt(state_item.customFields.minimum) : 1;
-   },[
-      state_item
-   ]);
-   let allowSamples = useMemo(()=>{
-      return minQuantity > 1 && (!state_item.customFields.blockSamples || state_item.customFields.enforceMinimum.trim() === "");
-   },[
-      minQuantity,
-      state_item
-   ]);
    let minQuantityNote = useMemo(()=>{
-      let result = `The minimum quantity for this item is ${minQuantity}`;
-      if ( minQuantity > 1 && allowSamples ) {
+      let result = `The minimum quantity for this item is ${state_minimum.prodMin}`;
+      if ( state_minimum.prodMin > 1 && state_samplesPermitted ) {
          result = `${result}, or 1 for samples`;
       }
       return result;
    },[
-      minQuantity,
-      allowSamples
+      state_minimum.prodMin,
+      state_samplesPermitted
    ]);
 
-   // console.log("minQuantity",minQuantity);
-   // console.log("allowSamples",allowSamples);
+   // console.log("state_minimum.prodMin",state_minimum.prodMin);
+   // console.log("state_samplesPermitted",state_samplesPermitted);
    // console.log("minQuantityNote",minQuantityNote);
 
    useEffect(()=>{
+      let min = item.customFields.minimum ? item.customFields.minimum : ( item.customFields.MINIMUM ? item.customFields.MINIMUM : 1 );
+      let minimum = {};
+      if ( min.indexOf("^") !== -1 ) {
+         min = min.split("^");
+         minimum.prodMin = min[0];
+         minimum.quantityIncrement = min[1];
+         minimum.prodQuantityMax = min[2];
+      } else {
+         minimum.prodMin = min;
+         minimum.quantityIncrement = false;
+         minimum.prodQuantityMax = false;
+      }
+      setState_minimum( minimum );
+      if ( minimum.quantityIncrement ) {
+         setState_inputType("dropdown");
+      } else {
+         setState_inputType("input");
+      }
+      setState_samplesPermitted(()=>{
+         if (
+            item.customFields.blockSamples.trim() === "1" ||
+            item.customFields.blockSamples.trim() === "yes" ||
+            (
+               item.customFields.hideSampleButton &&
+               (
+                  item.customFields.hideSampleButton.trim() === "1" ||
+                  item.customFields.hideSampleButton.trim() === "yes"
+               )
+            )
+         ) {
+            return false;
+         } else {
+            return true;
+         }
+      });
+
       setState_item(item);
    },[item]);
 
@@ -107,7 +137,6 @@ const ItemRow = props => {
    },[
       state_quantity,
       state_item,
-      minQuantity,
       onQuantityChange
    ]);
 
@@ -129,7 +158,36 @@ const ItemRow = props => {
       return ()=>{clearTimeout(timer);}
    },[optionWidths]);
 
-   let handleQuantityChange = useCallback(quantity => {
+   let renderQuantity = () => {
+      if ( props.editable ) {
+         if ( state_inputType === "input" ) {
+            return (
+               <QuantityInput
+                  quantity={state_quantity}
+                  onChange={handleQuantityChange}
+                  minimum={state_minimum.prodMin}
+                  enforceMinimum={state_item.customFields.enforceMinimum}
+                  samplesPermitted={state_samplesPermitted}
+               />
+            );
+         } else {
+            return (
+               <QuantityDropdown
+                  quantity={state_quantity}
+                  onChange={handleQuantityChange}
+                  minimum={state_minimum}
+                  enforceMinimum={state_item.customFields.enforceMinimum}
+                  samplesPermitted={state_samplesPermitted}
+               />
+            );
+         }
+      } else {
+         return state_quantity;
+      }
+   }; // renderQuantity
+
+   let handleQuantityChange = useCallback(eventOrVal => {
+      let quantity = eventOrVal.target ? eventOrVal.target.value : eventOrVal;
       setState_quantity(quantity);
       let price = false;
       if ( state_item.volPrices.length ) {
@@ -281,20 +339,7 @@ const ItemRow = props => {
                   exit="collapsed"
                   animate={controls}
                >
-                  {
-                     props.editable ? (
-                        <QuantityInput
-                           quantity={state_quantity}
-                           onChange={handleQuantityChange}
-                           minimum={state_item.customFields.minimum}
-                           enforceMinimum={state_item.customFields.enforceMinimum}
-                           blockSamples={state_item.customFields.blockSamples}
-                        />
-                     ) : (
-                        state_quantity
-                     )
-                  }
-
+                  {renderQuantity()}
                </motion.div>
             </Td>
             <Td className={`${styles.totalColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>

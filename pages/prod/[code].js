@@ -41,11 +41,16 @@ const Product = (props) => {
    const router = useRouter();
    console.log("Product rendering, props:",props);
 
-   const [state_product,setState_product] = useState( props.product || false );
+   let {
+      product
+   } = props;
+
+   const [state_product,setState_product] = useState( product || false );
    const [state_productIsSet,setState_productIsSet] = useState( false );
    const [state_focusedImageData,setState_focusedImageData] = useState( false );
    const [state_descTabIndex,setState_descTabIndex] = useState(false);
-
+   const [state_minimum,setState_minimum] = useState({});
+   const [state_samplesPermitted,setState_samplesPermitted] = useState(true);
 
    let quantityRef = useRef();
    let attributeValuesRef = useRef([]);
@@ -59,10 +64,41 @@ const Product = (props) => {
    },[setNavVisibility]);
 
    useEffect(()=>{
-      console.log("PRODUCT USEEFFECT",props.product);
-      setState_product( props.product );
+      console.log("PRODUCT USEEFFECT",product);
+      let min = product.customFields.minimum ? product.customFields.minimum : ( product.customFields.MINIMUM ? product.customFields.MINIMUM : 1 );
+      let minimum = {};
+      if ( min.indexOf("^") !== -1 ) {
+         min = min.split("^");
+         minimum.prodMin = min[0];
+         minimum.quantityIncrement = min[1];
+         minimum.prodQuantityMax = min[2];
+      } else {
+         minimum.prodMin = min;
+         minimum.quantityIncrement = false;
+         minimum.prodQuantityMax = false;
+      }
+      setState_minimum( minimum );
+      setState_product( product );
+
+      setState_samplesPermitted(()=>{
+         if (
+            product.customFields.blockSamples.trim() !== "" ||
+            product.customFields.blockSamples.trim() === "yes" ||
+            (
+               product.customFields.hideSampleButton &&
+               (
+                  product.customFields.hideSampleButton.trim() === "1" ||
+                  product.customFields.hideSampleButton.trim() === "yes"
+               )
+            )
+         ) {
+            return false;
+         } else {
+            return true;
+         }
+      });
       setState_productIsSet( true );
-   },[props.product]);
+   },[product]);
 
    useEffect(()=>{
       //console.log("PRODUCT USEEFFECT - state_product");
@@ -94,17 +130,23 @@ const Product = (props) => {
       //attributeValuesRef.current // utable values like 'attributeValuesRef.current' aren't valid dependencies because mutating them doesn't re-render the component.
    ]); // receiveAttributeValue
 
-   let renderSpinner = () => {
+   let renderSpinner = (size=false,margin=false) => {
+      if ( !size ) {
+         size = "xl";
+      }
+      if ( !margin ) {
+         margin = "30px 0px";
+      }
       return (
          <Box
-            style={{textAlign: "center", margin: "30px 0px"}}
+            style={{textAlign: "center", margin: margin}}
          >
             <Spinner
                thickness="4px"
                speed="1s"
                emptyColor="gray.200"
                color="blue.500"
-               size="xl"
+               size={size}
             />
          </Box>
       );
@@ -114,18 +156,51 @@ const Product = (props) => {
       return _.unescape(encodedString);
    }; // decodeEntities
 
-   let handleSubmit = async (event) => {
-      event.preventDefault();
-      //console.log("form submitted, attributeValuesRef.current:",attributeValuesRef.current);
-
-      const headers = { 'Content-Type': 'multipart/form-data' };
-
+   let prepFormSubmit = quantityOverride => {
       let bodyFormData = new FormData();
 
       bodyFormData.set( "Action", "ADPR" );
       bodyFormData.set( "Store_Code", "FF" );
       bodyFormData.set( "Product_Code", state_product.code );
-      bodyFormData.set( "Quantity", quantityRef.current );
+      bodyFormData.set( "Quantity", quantityOverride !== false ? quantityOverride : quantityRef.current );
+
+      return bodyFormData;
+   }; prepFormSubmit
+
+   let runFormSubmit = async (bodyFormData,goToBasket,returnResult) => {
+      const headers = { 'Content-Type': 'multipart/form-data' };
+      if ( true ) {
+         const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
+            headers: headers,
+            withCredentials: true
+         });
+         if ( response.status ) {
+            if ( goToBasket ) {
+               props.miscModalDisclosure.onClose();
+               console.log("pushing route");
+               router.push(`/Basket`);
+            } else if ( returnResult ) {
+               return true;
+            }
+         } else if ( returnResult ) {
+            return false;
+         }
+      } else {
+         const response = await fetch( globalConfig.apiEndpoint, {
+            method: 'post',
+            credentials: 'include',
+            mode: 'cors',
+            body: bodyFormData
+         });
+      }
+      //console.log("response",response);
+   }; // runFormSubmit
+
+   let handleSubmit = (event,goToBasket=true,quantityOverride=false,returnResult=false) => {
+      event.preventDefault();
+      //console.log("form submitted, attributeValuesRef.current:",attributeValuesRef.current);
+
+      let bodyFormData = prepFormSubmit(quantityOverride);
 
       if ( attributeValuesRef.current.length ) {
          attributeValuesRef.current.forEach((attribute,index)=>{
@@ -147,27 +222,25 @@ const Product = (props) => {
       }
       //console.log("bodyFormData",bodyFormData);
 
-      if ( true ) {
-         const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
-            headers: headers,
-            withCredentials: true
-         });
-         if ( response.status ) {
-            console.log("pushing route");
-            router.push(`/Basket`);
-         }
-      } else {
-         const response = await fetch( globalConfig.apiEndpoint, {
-            method: 'post',
-            credentials: 'include',
-            mode: 'cors',
-            body: bodyFormData
-         });
-      }
-      //console.log("response",response);
+      return runFormSubmit(bodyFormData,goToBasket,returnResult);
    }; // handleSubmit
 
    let formID = "basketAdd";
+
+   let renderAttributes = () => {
+      return (
+         <Attributes
+            product={state_product}
+            attributes={state_product.attributes}
+            parentTemplateCode=""
+            globalConfig={globalConfig}
+            miscModalDisclosure={props.miscModalDisclosure}
+            setMiscModal={props.setMiscModal}
+            receiveAttributeValue={receiveAttributeValue}
+            samplesPermitted={state_samplesPermitted}
+         />
+      );
+   };
 
    return (
       !state_product ? renderSpinner() : (
@@ -238,25 +311,25 @@ const Product = (props) => {
                         onSubmit={handleSubmit}
                         className={styles.basketAddForm}
                      >
-                        <Attributes
-                           product={state_product}
-                           attributes={state_product.attributes}
-                           parentTemplateCode=""
-                           styles={styles}
-                           globalConfig={globalConfig}
-                           miscModalDisclosure={props.miscModalDisclosure}
-                           setMiscModal={props.setMiscModal}
-                           receiveAttributeValue={receiveAttributeValue}
-                           blockSamples={state_product.customFields.blockSamples}
-                        />
+                        {
+                           state_product.customFields.offerSeparateOptions.trim() === "" && renderAttributes()
+                        }
 
                         <AddToCart
                            formID={formID}
                            quantity={quantityRef.current}
                            quantityRef={quantityRef}
-                           minimum={state_product.customFields.MINIMUM}
+                           minimum={state_minimum}
                            enforceMinimum={state_product.customFields.enforceMinimum.trim() !== ""}
-                           blockSamples={state_product.customFields.blockSamples.trim() === "1" || state_product.customFields.blockSamples.trim() === "yes"}
+                           samplesPermitted={state_samplesPermitted}
+
+                           // for attribute rendering if offerSeparateOptions is turned on
+                           offerSeparateOptions={state_product.customFields.offerSeparateOptions.trim() !== ""}
+                           renderAttributes={renderAttributes}
+                           miscModalDisclosure={props.miscModalDisclosure}
+                           setMiscModal={props.setMiscModal}
+                           handleSubmit={handleSubmit}
+                           renderSpinner={renderSpinner}
                         />
                      </form>
                   </Box>

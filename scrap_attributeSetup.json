@@ -6,6 +6,38 @@
 }
 
 {
+   "prompt": "Add Personalized Imprints (optional, add $19.99 per bag of 100)?",
+   "onChange": [
+      {
+         "values": ["Yes"],
+         "actions": [
+            {
+               "targets": ["imprintColor", "Text1", "Text2", "RushProduction"],
+               "action": "show",
+               "required": "true"
+            }
+         ]
+      },
+      {
+         "values": ["No",""],
+         "actions": [
+            {
+               "targets": ["imprintColor", "Text1", "Text2", "RushProduction"],
+               "action": "hide",
+               "required": "false"
+            }
+         ]
+      }
+   ],
+   "onLoad": [
+      {
+         "targets": ["imprintColor", "Text1", "Text2", "RushProduction"],
+         "action": "hide", "required": "false"
+      }
+   ]
+}
+
+{
     "jqPrompt": "<\/b> <script type=\"text\/javascript\">     (function() {         var jQueryLoading = setInterval(function() {             if (typeof($) === \"function\") {                 clearInterval(jQueryLoading);                 $(document).ready(function() {                     $(\"#selectdesigns\").prop(\"disabled\", true).data(\"disabled\", \"1\");                 });             }         }, 100);     })(); <\/script> <a class=\"showDesignsJQUIv2\" href=\"\/includes\/attributes\/JDS\/RibbonColors.php?prodCode=xyzProdCode\" title=\"Choose Color\"><span class=\"jquiPButtonIcon\">Click to View All Ribbon Colors<\/span> <\/a><b>",
     "prompt": "Click to View All Ribbon Colors",
     "previewURL": "/api/attributes/JDS/RibbonColors.php?prodCode=xyzProdCode",
