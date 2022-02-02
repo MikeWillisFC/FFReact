@@ -74,76 +74,32 @@ const Form = props => {
    let prepFormSubmit = quantityOverride => {
       let bodyFormData = new FormData();
 
-
       bodyFormData.set( "Action", "ADPR" );
       bodyFormData.set( "Store_Code", "FF" );
       bodyFormData.set( "Product_Code", product.code );
       bodyFormData.set( "Quantity", quantityOverride !== false ? quantityOverride : quantityRef.current );
 
-      /* 2022-02-02: Miva uses application/x-www-form-urlencoded instead of multipart/form-data, so we have to use query strings
-      */
-      let params = {
-         Action: "ADPR",
-         Store_Code: "FF",
-         Product_Code: product.code,
-         Quantity: quantityOverride !== false ? quantityOverride : quantityRef.current
-      };
-
-      return {
-         bodyFormData:bodyFormData,
-         params:params
-      };
+      return bodyFormData;
    }; prepFormSubmit
 
-   let runFormSubmit = async (bodyFormData,params,goToBasket,returnResult) => {
-      let headers = { 'Content-Type': 'multipart/form-data' };
+   let runFormSubmit = async (bodyFormData,goToBasket,returnResult) => {
+      const headers = { 'Content-Type': 'multipart/form-data' };
       if ( true ) {
-
-
-
-         if ( false ) {
-            const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
-               headers: headers,
-               withCredentials: true
-            });
-            if ( response.status ) {
-               if ( goToBasket ) {
-                  props.miscModalDisclosure.onClose();
-                  console.log("pushing route");
-                  router.push(`/Basket`);
-               } else if ( returnResult ) {
-                  return true;
-               }
+         const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
+            headers: headers,
+            withCredentials: true
+         });
+         if ( response.status ) {
+            if ( goToBasket ) {
+               props.miscModalDisclosure.onClose();
+               console.log("pushing route");
+               router.push(`/Basket`);
             } else if ( returnResult ) {
-               return false;
+               return true;
             }
-         } else {
-            headers['Content-Type'] = 'application/x-www-form-urlencoded'; // 2022-02-02: see the note above
-            const data = Object.keys(params).map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`).join('&');
-            let options = {
-               method: 'POST',
-               headers: headers,
-               data,
-               url: globalConfig.apiEndpoint,
-               withCredentials: true
-            };
-            const response = await axios( options );
-            if ( response.status ) {
-               if ( goToBasket ) {
-                  props.miscModalDisclosure.onClose();
-                  console.log("pushing route");
-                  router.push(`/Basket`);
-               } else if ( returnResult ) {
-                  return true;
-               }
-            } else if ( returnResult ) {
-               return false;
-            }
+         } else if ( returnResult ) {
+            return false;
          }
-
-
-
-
       } else {
          const response = await fetch( globalConfig.apiEndpoint, {
             method: 'post',
@@ -177,7 +133,7 @@ const Form = props => {
       if ( !checkValidity() ) {
          console.log("not valid");
       } else {
-         let {bodyFormData,params} = prepFormSubmit(quantityOverride);
+         let bodyFormData = prepFormSubmit(quantityOverride);
 
          if ( productForm.attributes.length ) {
             console.log("productForm.attributes.length:",productForm.attributes.length);
@@ -191,20 +147,17 @@ const Form = props => {
                * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
                */
                bodyFormData.set( `${attKey}:value`, attribute.value );
-               params[`${attKey}:value`] = attribute.value;
                if ( attribute.templateCode ) {
                   bodyFormData.set( `${attKey}:code`, attribute.templateCode );
-                  params[`${attKey}:code`] = attribute.templateCode;
                }
                if ( attribute.attemp_id && attribute.attemp_id !== "0" && attribute.code ) {
                   bodyFormData.set( `${attKey}:template_code`, attribute.code );
-                  params[`${attKey}:template_code`] = attribute.code;
                }
             });
          }
          //console.log("bodyFormData",bodyFormData);
 
-         return runFormSubmit(bodyFormData,params,goToBasket,returnResult);
+         return runFormSubmit(bodyFormData,goToBasket,returnResult);
       }
 
    }; // handleSubmit
