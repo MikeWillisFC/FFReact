@@ -114,8 +114,8 @@ const Stats = props => {
                                        props.product.volPrices.map((price,index)=>{
                                           //if ( price.low >  )
 
-                                          console.log("parseInt(price.high)",parseInt(price.high));
-                                          console.log("props.product",props.product);
+                                          // console.log("parseInt(price.high)",parseInt(price.high));
+                                          // console.log("props.product",props.product);
                                           if ( price.high !== "0" && parseInt(price.high) < parseInt(props.product.customFields.MINIMUM) && props.product.customFields.enforceMinimum ) {
                                              return null;
                                           } else {

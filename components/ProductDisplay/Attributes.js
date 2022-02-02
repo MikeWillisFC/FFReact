@@ -1,8 +1,10 @@
 import {memo,Fragment,useState,useEffect,useCallback} from "react";
 import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import { Box,Button } from "@chakra-ui/react";
 
 import AttributeRow from "./AttributeRow";
+import {productFormActions} from "../../store/slices/productForm";
 
 import styles from "../../styles/product.module.scss";
 
@@ -11,14 +13,31 @@ const Attributes = props => {
    const [state_attributeRows,setState_attributeRows] = useState( [] );
    const [state_attributeScripts,setState_attributeScripts] = useState( [] );
    const [state_visibleRows,setState_visibleRows] = useState(0);
+   const [state_onChangeVal,setState_onChangeVal] = useState({});
 
-   console.log("Attributes props",props);
+   // console.log("Attributes props",props);
 
    // destructuring to make useEffect's happy
    let {
       attributes,
-      product
+      product,
+      receiveAttributeValue,
+      attributeValidity,
+      adjustAttributeValidity
    } = props;
+
+   const dispatch = useDispatch();
+
+   let productForm = useSelector((state)=>{
+      return state.productForm;
+   });
+   // console.log("productForm",productForm);
+
+   // clear any existing attributes
+   useEffect(()=>{
+      dispatch(productFormActions.clearAttributes());
+      return ()=>{dispatch(productFormActions.clearAttributes());}
+   },[dispatch]);
 
    useEffect(()=>{
       // clean up included attribute scripts and whatever crap they might have set
@@ -29,37 +48,72 @@ const Attributes = props => {
       }
    },[]);
 
-   useEffect(()=>{
-      let visibleRows = 0;
+   let attributeIsOpen = useCallback(attribute => {
+      let result = true;
       let hidingOptions;
-      state_attributeRows.forEach(attribute=>{
+      if ( attribute.hiddenSetting ) {
+         //console.log("hiddenSetting",attribute.hiddenSetting);
+         switch( attribute.hiddenSetting ) {
+            case "beginHiddenOptions":
+               hidingOptions = true;
+               break;
+            case "endHiddenOptions":
+               hidingOptions = false;
+               break;
+         }
+      }
+
+      if ( hidingOptions || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
+         result = false;
+      }
+      return result;
+   },[]); // attributeIsOpen
+
+   useEffect(()=>{
+      // console.log("ATTRIBUTES CHANGED");
+
+      let validateAttributes = () => {
+         // console.log("validating attributes");
+      };
+
+      let visibleRows = 0;
+      state_attributeRows.forEach((attribute,index)=>{
+         // console.log("attribute",attribute);
          if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
             // ignore it
          } else {
-            if ( attribute.hiddenSetting ) {
-               //console.log("hiddenSetting",attribute.hiddenSetting);
-               switch( attribute.hiddenSetting ) {
-                  case "beginHiddenOptions":
-                     hidingOptions = true;
-                     break;
-                  case "endHiddenOptions":
-                     hidingOptions = false;
-                     break;
-               }
-            }
-
-            let isOpen = true;
-            if ( hidingOptions || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
-               isOpen = false;
-            }
-
+            let isOpen = attributeIsOpen(attribute);
             if ( isOpen ) {
                visibleRows++;
             }
          }
+
+         // // now update validity
+         // if ( attribute.required ) {
+         //    console.log("attribute '" + attribute.code + "' is required. It's current value is '" + props.attributeValuesRef.current[index].value + "'");
+         //    console.log("props.attributeValuesRef.current[index]",props.attributeValuesRef.current[index]);
+         // } else {
+         //    console.log("attribute '" + attribute.code + "' is NOT required. It's current value is '" + props.attributeValuesRef.current[index].value + "'");
+         // }
       });
+
+      // console.log("visibleRows",visibleRows);
       setState_visibleRows(visibleRows);
-   },[state_attributeRows]);
+   },[state_attributeRows,attributeIsOpen]);
+
+   let attributeIsRequired = required => {
+      // console.log("attributeIsRequired, required:",required);
+      // console.log("attributeIsRequired type:",typeof(required));
+      let result = (
+         required &&
+         required.trim() !== "" &&
+         required.trim() !== "0" &&
+         required.trim() !== 0 &&
+         required.trim() !== "false"
+      );
+      // console.log("attributeIsRequired, result:",result);
+      return result;
+   };
 
    useEffect(()=>{
       let pAttributes = [...attributes]; // this is props.attributes
@@ -72,9 +126,10 @@ const Attributes = props => {
             if ( attribute.type && attribute.type === "template" ) {
                attribute.attributes.forEach(att=>{
                   let prompt = getPrompt(att.prompt);
-                  console.log("prompt",prompt);
+                  // console.log("prompt",prompt);
                   newAttributes.push({
                      ...att,
+                     required: attributeIsRequired(att.required),
                      templateCode: attribute.code,
                      attemp_id: attribute.attemp_id,
                      prompt: prompt.prompt,
@@ -98,6 +153,7 @@ const Attributes = props => {
                let prompt = getPrompt(attribute.prompt);
                newAttributes.push({
                   ...attribute,
+                  required: attributeIsRequired(attribute.required),
                   templateCode: attribute.code,
                   attemp_id: attribute.attemp_id,
                   prompt: prompt.prompt,
@@ -141,15 +197,16 @@ const Attributes = props => {
          }
       });
 
-      // console.log("-----RUNNING ONLOAD ACTIONS----");
+      // console.log("-----RUNNING onLoad ACTIONS----");
       let attributesAfterOnLoadActions = [...newAttributes];
       newAttributes.forEach(att=>{
          // console.log("att",att);
          if ( att.onLoad ) {
+            // console.log(`${att.code} onLoad:`,att.onLoad);
             att.onLoad.forEach(onLoad=>{
                if ( onLoad.prodTargets ) {
                   // console.log("onLoad.prodTargets",onLoad.prodTargets);
-                  // console.log("prodTargets includes?",onLoad.prodTargets.includes(product.code));
+                  // console.log("onLoad prodTargets includes?",onLoad.prodTargets.includes(product.code));
                } else {
                   // console.log("no prodTargets");
                }
@@ -157,21 +214,24 @@ const Attributes = props => {
                if ( !onLoad.prodTargets || onLoad.prodTargets.includes(product.code) ) {
                   // do it
                   onLoad.targets.forEach(target=>{
+                     // console.log("onLoad target",target);
                      attributesAfterOnLoadActions = attributesAfterOnLoadActions.map(focusedAttribute=>{
                         if ( focusedAttribute.code === target ) {
                            // do whatever the action is..
                            // console.log(`running onLoad.action '${onLoad.action}' on focusedAttribute.code '${focusedAttribute.code}'`);
+                           // console.log("onLoad",onLoad);
                            if ( onLoad.action === "hide" ) {
-                              // console.log("hiding");
+                              // console.log("onLoad hiding");
                               focusedAttribute.hiddenSetting = "hiddenOptionRow";
                            } else if ( onLoad.action === "show" ) {
-                              // console.log("showing");
+                              // console.log("onLoad showing");
                               focusedAttribute.hiddenSetting = "";
                            }
-                           focusedAttribute.required = onLoad.action.required === "true";
+                           focusedAttribute.required = attributeIsRequired(onLoad.required);
                         }
-                        // console.log("returning focusedAttribute",focusedAttribute);
-                        // console.log("returning focusedAttribute.hiddenSetting",focusedAttribute.hiddenSetting);
+                        // console.log("onLoad returning focusedAttribute",focusedAttribute);
+                        // console.log("onLoad returning focusedAttribute.hiddenSetting",focusedAttribute.hiddenSetting);
+                        // console.log("onLoad returning focusedAttribute.required",focusedAttribute.required);
                         return focusedAttribute;
                      });
                   });
@@ -180,11 +240,12 @@ const Attributes = props => {
          }
       });
 
-      // console.log("attributesAfterOnLoadActions",attributesAfterOnLoadActions);
-      // console.log("attributesAfterOnLoadActions[0].hiddenSetting",attributesAfterOnLoadActions[0].hiddenSetting);
+      console.log("attributesAfterOnLoadActions",attributesAfterOnLoadActions);
+      dispatch(productFormActions.setAttributes(attributesAfterOnLoadActions));
+
       setState_attributeScripts(attributeScripts);
       setState_attributeRows( attributesAfterOnLoadActions );
-   },[attributes,product]);
+   },[attributes,product,dispatch]);
 
    let getPrompt = prompt => {
       //console.log("prompt",prompt);
@@ -198,11 +259,29 @@ const Attributes = props => {
       return result;
    }; // getPrompt
 
+   let interceptAttributeValue = useCallback(( value, attributeCode, attributeTemplateCode, rowIndex, attributeAttemp_id ) => {
+      /* we need to know if the attributes are valid or not, so we intercept
+      * their values here before passing to the parent.
+      * We also need to know what the rows are, and we may modify them.
+      * Do NOT put the rows in the dependency array, or you'll create an infinite loop. Instead,
+      * use a setState to get the current value of the rows array, and modify that
+      * via the return if need be.
+      * Note that we need to check ALL rows, not just the one being changed. That's because
+      * changing one row might affect the validity of another row. For example if you choose
+      * a design that includes extra personalization text like a year. Then a new text
+      * field is revealed that also needs to be validated. For example item DD7684050
+      * has a Design option. Some designs include a monogram, and choosing them reveals
+      * a new monogram text field that must be filled in.
+      */
+      receiveAttributeValue( value, attributeCode, attributeTemplateCode, rowIndex, attributeAttemp_id );
+
+   },[receiveAttributeValue]); // interceptAttributeValue
+
    let handleChange = useCallback((value,onChange,code,templateCode) => {
       // 2021-08-10: this is only called if the attribute has an onChange
-      console.log("handling change");
-      console.log("value",value);
-      console.log("onChange",onChange);
+      // console.log("handling change");
+      // console.log("value",value);
+      // console.log("onChange",onChange);
 
       let changeHandled = false;
       onChange.forEach(change=>{
@@ -222,59 +301,40 @@ const Attributes = props => {
             change.actions.forEach(action=>{
                action.targets.forEach(target=>{
                   // console.log("target",target);
-                  setState_attributeRows( prevState=>{
-                     let newState = prevState.map(attribute=>{
-                        if ( attribute ) {
-                           if ( attribute.code === target ) {
-                              // console.log("..match",action);
-                              // do whatever the action is..
-                              if ( action.action === "hide" ) {
-                                 attribute.hiddenSetting = "hiddenOptionRow";
-                              } else if ( action.action === "show" ) {
-                                 attribute.hiddenSetting = "";
-                              }
-                              attribute.required = action.required === "true";
+
+                  productForm.attributes.forEach((attribute,index)=>{
+                     if ( attribute ) {
+                        if ( attribute.code === target ) {
+                           if ( action.action === "hide" ) {
+                              dispatch(productFormActions.setHiddenSetting({index:index,hiddenSetting:"hiddenOptionRow"}));
+                           } else if ( action.action === "show" ) {
+                              dispatch(productFormActions.setHiddenSetting({index:index,hiddenSetting:""}));
                            }
+
+                           // blank out any existing value by setting state_onChangeVal, which gets passed down to the attribute
+                           setState_onChangeVal({code:attribute.code, val: ""});
+                           // and manually trigger our intercept
+                           interceptAttributeValue( "", attribute.code, attribute.templateCode, index, attribute.attemp_id );
+                           dispatch(productFormActions.setRequired({index:index,required:attributeIsRequired(action.required)}));
                         }
-                        //console.log("attribute",attribute);
-                        return attribute;
-                     });
-                     return newState;
+                     }
                   });
                });
             });
          }
       });
-   },[]); // handleChange
-
-   let hidingOptions = false;
+   },[dispatch,productForm.attributes,interceptAttributeValue]); // handleChange
 
    return (
       <Box className={styles.attributes} data-visiblerows={state_visibleRows}>
          {
-            state_attributeRows.map((attribute,index)=>{
+            productForm.attributes.length && productForm.attributes.map((attribute,index)=>{
                if ( !attribute ) {
                   return null;
                } else {
-                  console.log("printing attribute",attribute);
-                  if ( attribute.hiddenSetting ) {
-                     //console.log("hiddenSetting",attribute.hiddenSetting);
-                     switch( attribute.hiddenSetting ) {
-                        case "beginHiddenOptions":
-                           hidingOptions = true;
-                           break;
-                        case "endHiddenOptions":
-                           hidingOptions = false;
-                           break;
-                     }
-                  }
-
-                  let isOpen = true;
-                  if ( hidingOptions || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
-                     isOpen = false;
-                  }
-
-                  // console.log("hidingOptions",hidingOptions);
+                  // console.log("printing attribute",attribute);
+                  // console.log("attribute.required",attribute.required);
+                  let isOpen = attributeIsOpen(attribute);
                   // console.log("isOpen",isOpen);
 
                   if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
@@ -286,14 +346,16 @@ const Attributes = props => {
                            rowIndex={index}
                            isOpen={isOpen}
                            attribute={attribute}
-                           styles={styles}
                            globalConfig={props.globalConfig}
                            miscModalDisclosure={props.miscModalDisclosure}
                            setMiscModal={props.setMiscModal}
                            onChange={handleChange}
                            product={props.product}
-                           receiveAttributeValue={props.receiveAttributeValue}
+                           receiveAttributeValue={interceptAttributeValue}
                            samplesPermitted={props.samplesPermitted}
+                           onChangeVal={state_onChangeVal}
+                           highlightInvalids={props.highlightInvalids}
+                           attributeValidity={attributeValidity}
                         />
                      )
                   }

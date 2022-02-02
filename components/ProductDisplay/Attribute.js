@@ -15,11 +15,12 @@ import { openMiscModal } from "../../utilities";
 const Attribute = props => {
    const [state_modal,setState_modal] = useState(false);
    const [state_value,setState_value] = useState("");
+   const [state_textValue,setState_textValue] = useState("");
    const [state_selectIcon,setState_selectIcon] = useState(null);
    const [state_disabled,setState_disabled] = useState(false);
    const [state_iframeSource,setState_iframeSource] = useState( false );
 
-   console.log("Attribute rendering, props:",props);
+   //console.log("Attribute rendering, props:",props);
    const elRef = useRef();
    const buttonRef = useRef();
 
@@ -31,13 +32,26 @@ const Attribute = props => {
       samplesPermitted,
       rowIndex,
       setMiscModal,
-      miscModalDisclosure
+      miscModalDisclosure,
+      onChangeVal
    } = props;
+
+   useEffect(()=>{
+      if ( onChangeVal.code === attribute.code ) {
+         // console.log("onChangeVal.val",onChangeVal.val);
+         setState_value( onChangeVal.val );
+         setState_textValue( onChangeVal.val );
+      }
+   },[onChangeVal,attribute.code]);
 
    useEffect(()=>{
       let icon;
       if ( state_value ) {
-         icon = <Image src={`https://${domain}/images/misc/greencheck.gif`} alt="check" width="18" height="18" />;
+         icon = (
+            <span style={{display:"inline-block",marginLeft:"5px"}}>
+               <Image src={`https://${domain}/images/misc/greencheck.gif`} alt="check" width="18" height="18" />
+            </span>
+         );
       }
       setState_selectIcon( icon );
    },[state_value,domain]);
@@ -48,10 +62,10 @@ const Attribute = props => {
       * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
       */
       //console.log("attribute",attribute);
-      receiveAttributeValue( state_value, attribute.code, attribute.templateCode, rowIndex, attribute.attemp_id );
-      if ( attribute.onChange ) {
-         onChange( state_value, attribute.onChange, attribute.code, attribute.templateCode );
-      }
+      // receiveAttributeValue( state_value, attribute.code, attribute.templateCode, rowIndex, attribute.attemp_id );
+      // if ( attribute.onChange ) {
+      //    onChange( state_value, attribute.onChange, attribute.code, attribute.templateCode );
+      // }
    },[
       state_value,
       receiveAttributeValue,
@@ -155,12 +169,41 @@ const Attribute = props => {
       attribute.prompt
    ]); // getChoices
 
-   let setValue = useCallback((event,value) => {
-      // console.log("setValue called");
+   let handleTextChange = useCallback(event=>{
+      // console.log("handleTextChange called:",event.target.value);
+      setState_textValue(event.target.value);
+   },[]);
+
+   useEffect(()=>{
+      let timer = setTimeout(()=>{
+         handleChange(false,state_textValue);
+      },[200]);
+      return ()=>{
+         clearTimeout(timer);
+      }
+   },[state_textValue,handleChange]);
+
+   let handleChange = useCallback((event,value=false) => {
+      // console.log("handleChange called");
       // console.log("event",event);
       // console.log("value",value);
-      setState_value( value || (event ? event.target.value : "") );
-   },[]);
+      let newValue = value || (event ? event.target.value : "");
+      // console.log("newValue",newValue);
+      setState_value( newValue );
+
+      receiveAttributeValue( newValue, attribute.code, attribute.templateCode, rowIndex, attribute.attemp_id );
+      if ( attribute.onChange ) {
+         onChange( newValue, attribute.onChange, attribute.code, attribute.templateCode );
+      }
+   },[
+      receiveAttributeValue,
+      attribute.code,
+      attribute.templateCode,
+      attribute.onChange,
+      attribute.attemp_id,
+      onChange,
+      rowIndex
+   ]);
 
    let handleSelectClick = useCallback(event => {
       //console.log("handleSelectClick called");
@@ -199,7 +242,7 @@ const Attribute = props => {
                <CheckboxAttribute
                   styles={props.styles}
                   attribute={attribute}
-                  onChange={setValue}
+                  onChange={handleChange}
                />
             );
          }
@@ -217,12 +260,8 @@ const Attribute = props => {
             <Box>
                { attribute.prePrompt || "" }
                {
-                  (
-                     attribute.required ||
-                     attribute.required === "true" ||
-                     attribute.required === "1"
-                  ) ? (
-                     <b>{attribute.prompt}:</b>
+                  attribute.required ? (
+                     <b>{attribute.prompt}</b>
                   ) : (
                      <Fragment>{attribute.prompt}</Fragment>
                   )
@@ -240,7 +279,7 @@ const Attribute = props => {
                      ref={elRef}
                      maxLength={textAreaMaxLength}
                      value={state_value}
-                     onChange={(event)=>setState_value(event.target.value)}
+                     onChange={handleChange}
                   />
                   <Box>
                      <span
@@ -259,7 +298,7 @@ const Attribute = props => {
             maxLength = attribute.textLimit;
          }
          let charCountStyle = {
-            color: state_value.length < maxLength ? "" : "#f00"
+            color: state_textValue.length < maxLength ? "" : "#f00"
          };
 
          if ( attribute.code === "DesignID" ) {
@@ -270,12 +309,8 @@ const Attribute = props => {
             <Box>
                { attribute.prePrompt || "" }
                {
-                  (
-                     attribute.required ||
-                     attribute.required === "true" ||
-                     attribute.required === "1"
-                  ) ? (
-                     <b>{attribute.prompt}:</b>
+                  attribute.required ? (
+                     <b>{attribute.prompt}</b>
                   ) : (
                      <Fragment>{attribute.prompt}</Fragment>
                   )
@@ -293,14 +328,14 @@ const Attribute = props => {
                      ref={elRef}
                      type="text"
                      maxLength={maxLength}
-                     value={state_value}
-                     onChange={(event)=>setState_value(event.target.value)}
+                     value={state_textValue}
+                     onChange={handleTextChange}
                   />
                   <Box>
                      <span
                         className="blue"
                      >
-                        {" "}<span style={charCountStyle}>{state_value.length}</span>{` - ${maxLength} Characters - Max`}
+                        {" "}<span style={charCountStyle}>{state_textValue.length}</span>{` - ${maxLength} Characters - Max`}
                      </span>
                   </Box>
                </HStack>
@@ -312,11 +347,7 @@ const Attribute = props => {
             style.display = "none";
          }
          let defaultStyle = {display:"inline",margin:"0px",padding:"0px"};
-         if (
-            attribute.required ||
-            attribute.required === "true" ||
-            attribute.required === "1"
-         ) {
+         if ( attribute.required ) {
             defaultStyle.fontWeight = "bold" ;
          }
          return (
@@ -372,7 +403,7 @@ const Attribute = props => {
                      name={attribute.code}
                      value={state_value}
                      placeholder="Please Choose"
-                     onChange={setValue}
+                     onChange={handleChange}
                      ref={elRef}
                      disabled={state_disabled}
                   >
@@ -396,9 +427,11 @@ const Attribute = props => {
       attribute,
       elRef,
       state_value,
+      state_textValue,
+      handleChange,
+      handleTextChange,
       renderDecodedPrompt,
       handleSelectClick,
-      setValue,
       samplesPermitted,
       state_selectIcon,
       props.globalConfig,
@@ -418,7 +451,7 @@ const Attribute = props => {
                styles={props.styles}
                modal={state_modal}
                setModal={setState_modal}
-               setValue={setValue}
+               setValue={handleChange}
                elRef={elRef}
             />
          }

@@ -33,7 +33,7 @@ import tabStyles from "../../styles/tabs.module.scss";
 const MotionModalContent = motion(ModalContent);
 
 const OptionModal = props => {
-   console.log("Modal props",props);
+   // console.log("Modal props",props);
    const modalDisclosure = useDisclosure();
    const [state_showModalOverlay,setState_showModalOverlay] = useState(true);
    const [state_animate,setState_animate] = useState( {} );
@@ -169,7 +169,7 @@ const OptionModal = props => {
                                     src={`https://${props.globalConfig.domain}${props.modal.options.diagram.img}`}
                                     width={props.modal.options.diagram.width}
                                     height={props.modal.options.diagram.height}
-                                    style={{margin:"0px auto 10px auto"}}
+                                    //style={{margin:"0px auto 10px auto"}} // NextJS complains about this
                                  />
                               </Center>
                               <Center>

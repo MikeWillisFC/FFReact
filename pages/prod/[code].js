@@ -25,10 +25,9 @@ import config from "../../config/config";
 
 import Images from "../../components/ProductDisplay/Images";
 import Stats from "../../components/ProductDisplay/Stats";
-import Attributes from "../../components/ProductDisplay/Attributes";
-import AddToCart from "../../components/ProductDisplay/AddToCart";
 import Description from "../../components/ProductDisplay/Description";
 import AlsoShopped from "../../components/ProductDisplay/AlsoShopped";
+import Form from "../../components/ProductDisplay/Form";
 
 import { createMD5, scrollTo } from "../../utilities/";
 
@@ -39,7 +38,7 @@ const Product = (props) => {
       return state.global;
    });
    const router = useRouter();
-   console.log("Product rendering, props:",props);
+   // console.log("Product rendering, props:",props);
 
    let {
       product
@@ -52,11 +51,11 @@ const Product = (props) => {
    const [state_minimum,setState_minimum] = useState({});
    const [state_samplesPermitted,setState_samplesPermitted] = useState(true);
 
-   let quantityRef = useRef();
-   let attributeValuesRef = useRef([]);
    let descriptionRef = useRef();
 
    const imageModalDisclosure = useDisclosure();
+
+
 
    let {setNavVisibility} = props;
    useEffect(()=>{
@@ -64,7 +63,7 @@ const Product = (props) => {
    },[setNavVisibility]);
 
    useEffect(()=>{
-      console.log("PRODUCT USEEFFECT",product);
+      //console.log("PRODUCT USEEFFECT",product);
       let min = product.customFields.minimum ? product.customFields.minimum : ( product.customFields.MINIMUM ? product.customFields.MINIMUM : 1 );
       let minimum = {};
       if ( min.indexOf("^") !== -1 ) {
@@ -107,29 +106,6 @@ const Product = (props) => {
       //console.log("PRODUCT USEEFFECT - state_productIsSet");
    },[state_productIsSet]);
 
-   /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field
-   * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
-   */
-   let receiveAttributeValue = useCallback((value, code, templateCode, rowIndex, attemp_id) => {
-      //console.log("receiveAttributeValue",value,code,templateCode);
-      let attValue = { value:value, code:code, templateCode:templateCode, rowIndex:rowIndex, attemp_id:attemp_id };
-      let atIndex = false;
-      if ( attributeValuesRef.current.length ) {
-         attributeValuesRef.current.forEach( (attribute,index)=>{
-            if ( atIndex === false && attribute.code === code ) {
-               atIndex = index;
-            }
-         });
-      }
-      if ( atIndex !== false ) {
-         attributeValuesRef.current[atIndex] = attValue;
-      } else {
-         attributeValuesRef.current.push(attValue);
-      }
-   },[
-      //attributeValuesRef.current // utable values like 'attributeValuesRef.current' aren't valid dependencies because mutating them doesn't re-render the component.
-   ]); // receiveAttributeValue
-
    let renderSpinner = (size=false,margin=false) => {
       if ( !size ) {
          size = "xl";
@@ -155,92 +131,6 @@ const Product = (props) => {
    let decodeEntities = encodedString => {
       return _.unescape(encodedString);
    }; // decodeEntities
-
-   let prepFormSubmit = quantityOverride => {
-      let bodyFormData = new FormData();
-
-      bodyFormData.set( "Action", "ADPR" );
-      bodyFormData.set( "Store_Code", "FF" );
-      bodyFormData.set( "Product_Code", state_product.code );
-      bodyFormData.set( "Quantity", quantityOverride !== false ? quantityOverride : quantityRef.current );
-
-      return bodyFormData;
-   }; prepFormSubmit
-
-   let runFormSubmit = async (bodyFormData,goToBasket,returnResult) => {
-      const headers = { 'Content-Type': 'multipart/form-data' };
-      if ( true ) {
-         const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
-            headers: headers,
-            withCredentials: true
-         });
-         if ( response.status ) {
-            if ( goToBasket ) {
-               props.miscModalDisclosure.onClose();
-               console.log("pushing route");
-               router.push(`/Basket`);
-            } else if ( returnResult ) {
-               return true;
-            }
-         } else if ( returnResult ) {
-            return false;
-         }
-      } else {
-         const response = await fetch( globalConfig.apiEndpoint, {
-            method: 'post',
-            credentials: 'include',
-            mode: 'cors',
-            body: bodyFormData
-         });
-      }
-      //console.log("response",response);
-   }; // runFormSubmit
-
-   let handleSubmit = (event,goToBasket=true,quantityOverride=false,returnResult=false) => {
-      event.preventDefault();
-      //console.log("form submitted, attributeValuesRef.current:",attributeValuesRef.current);
-
-      let bodyFormData = prepFormSubmit(quantityOverride);
-
-      if ( attributeValuesRef.current.length ) {
-         attributeValuesRef.current.forEach((attribute,index)=>{
-            index++; // Miva doesn't start at 0
-            let rowIndex = attribute.rowIndex + 1; // Miva doesn't start at 0
-            let attKey = `Product_Attributes[${rowIndex}]`;
-
-            /* it's not intuitive, but miva puts the template code in the code field, and the code in the template code field.
-            * wtf?? I guess they think of the code as whatever the template is saying the code is. Jesus.
-            */
-            bodyFormData.set( `${attKey}:value`, attribute.value );
-            if ( attribute.attemp_id && attribute.attemp_id !== "0" && attribute.code ) {
-               bodyFormData.set( `${attKey}:template_code`, attribute.code );
-            }
-            if ( attribute.templateCode ) {
-               bodyFormData.set( `${attKey}:code`, attribute.templateCode );
-            }
-         });
-      }
-      //console.log("bodyFormData",bodyFormData);
-
-      return runFormSubmit(bodyFormData,goToBasket,returnResult);
-   }; // handleSubmit
-
-   let formID = "basketAdd";
-
-   let renderAttributes = () => {
-      return (
-         <Attributes
-            product={state_product}
-            attributes={state_product.attributes}
-            parentTemplateCode=""
-            globalConfig={globalConfig}
-            miscModalDisclosure={props.miscModalDisclosure}
-            setMiscModal={props.setMiscModal}
-            receiveAttributeValue={receiveAttributeValue}
-            samplesPermitted={state_samplesPermitted}
-         />
-      );
-   };
 
    return (
       !state_product ? renderSpinner() : (
@@ -304,34 +194,16 @@ const Product = (props) => {
                         setTabIndex={setState_descTabIndex}
                      />
 
-                     <form
-                        method="post"
-                        id={formID}
-                        action={globalConfig.apiEndpoint}
-                        onSubmit={handleSubmit}
-                        className={styles.basketAddForm}
-                     >
-                        {
-                           state_product.customFields.offerSeparateOptions.trim() === "" && renderAttributes()
-                        }
+                     <Form
+                        globalConfig={globalConfig}
+                        product={state_product}
+                        minimum={state_minimum}
 
-                        <AddToCart
-                           formID={formID}
-                           quantity={quantityRef.current}
-                           quantityRef={quantityRef}
-                           minimum={state_minimum}
-                           enforceMinimum={state_product.customFields.enforceMinimum.trim() !== ""}
-                           samplesPermitted={state_samplesPermitted}
-
-                           // for attribute rendering if offerSeparateOptions is turned on
-                           offerSeparateOptions={state_product.customFields.offerSeparateOptions.trim() !== ""}
-                           renderAttributes={renderAttributes}
-                           miscModalDisclosure={props.miscModalDisclosure}
-                           setMiscModal={props.setMiscModal}
-                           handleSubmit={handleSubmit}
-                           renderSpinner={renderSpinner}
-                        />
-                     </form>
+                        samplesPermitted={state_samplesPermitted}
+                        miscModalDisclosure={props.miscModalDisclosure}
+                        setMiscModal={props.setMiscModal}
+                        renderSpinner={renderSpinner}
+                     />
                   </Box>
                </Flex>
 

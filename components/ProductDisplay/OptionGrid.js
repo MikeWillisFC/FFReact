@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 
 const OptionGrid = props => {
-   console.log("OptionGrid props:",props);
+   // console.log("OptionGrid props:",props);
    return (
       <SimpleGrid className={props.styles.grid} minChildWidth={`${props.gridChildWidth}px`} spacing={6}>
          {

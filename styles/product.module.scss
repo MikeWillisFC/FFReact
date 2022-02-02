@@ -157,6 +157,24 @@
       // border: 1px solid #ccc;
       // background-color: #ffc;
 
+      &.invalid {
+         position: relative;
+
+         input,select,textarea {
+            border: 1px solid #f00;
+            background-color: #FFD7D7;
+         }
+
+         .invalidNotification {
+            position: absolute;
+            top: 3px;
+            left: 10%;
+            padding: 2px 3px 2px 5px;
+            width: 70%;
+            border-radius: 5px;
+         }
+      }
+
       .infoLink {
          cursor: pointer;
          display: inline-block;
