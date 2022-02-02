@@ -1,6 +1,7 @@
 import {useState,useRef,useCallback,useEffect} from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
 
 import Attributes from "../../components/ProductDisplay/Attributes";
 import AddToCart from "../../components/ProductDisplay/AddToCart";
@@ -24,6 +25,7 @@ const Form = props => {
    let attributeValuesRef = useRef([]);
 
    const dispatch = useDispatch();
+   const router = useRouter();
 
    let productForm = useSelector((state)=>{
       return state.productForm;

@@ -4,7 +4,6 @@ import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/router";
 import _ from "lodash";
 import {
    Box,
@@ -37,7 +36,6 @@ const Product = (props) => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
-   const router = useRouter();
    // console.log("Product rendering, props:",props);
 
    let {
