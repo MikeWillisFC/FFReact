@@ -58,7 +58,7 @@ const ItemRow = props => {
       return [];
    },[]);
 
-   console.log("props.item",props.item);
+   //console.log("props.item",props.item);
 
    let minQuantityNote = useMemo(()=>{
       let result = `The minimum quantity for this item is ${state_minimum.prodMin}`;
@@ -237,10 +237,10 @@ const ItemRow = props => {
    },[onRemoveItem,state_item]);
 
    let cellVariants = {
-      open: { opacity: 1, height: "auto", margin: 0, padding: 0, lineHeight: "auto" },
-      collapsed: { opacity: 0, height: 0, margin: 0, padding: 0, lineHeight: 0, overflow:"hidden" }
+      open: { opacity: 1, height: "auto", margin: 0, padding: 0 },
+      collapsed: { opacity: 0, height: 0, margin: 0, padding: 0, overflow:"hidden" }
    };
-   let cellTransition = { duration: .8, ease: [0.04, 0.62, 0.23, 0.98] };
+   let cellTransition = { duration: .8, ease: "easeInOut" };
    //console.log("there are '" + state_totalRows + "' totalRows");
 
    return (

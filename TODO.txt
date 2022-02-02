@@ -40,7 +40,7 @@ product:
 - XXXX enforce minimums
 - XXXX don't show prices for below minimum
 - XXXX fix show/hide attribute animation, it jumps at the end, for example http://localhost:3001/page/FF/PROD/CC1009G
-- enforce attribute requirements http://localhost:3001/page/FF/PROD/DD4027503
+- XXXX enforce attribute requirements http://localhost:3001/page/FF/PROD/DD4027503
 - XXXX handle discontinued / deactivated items, for example http://localhost:3001/page/FF/PROD/CCCP3915
 - handle sample dropdown choice
 - XXXX handle multi-choice items, for example https://www.favorfavor.com/p-GC837.htm
@@ -49,7 +49,7 @@ product:
 - XXXX remove modal overlay as soon as attribute is chosen: http://localhost:3001/page/FF/PROD/4214000DD
 
 basket:
-- check result of editable attribute update?
+- check result of editable attribute update? (cors error)
 - make quantity a dropdown if needed
 - show mini-cart on header basket click?
 - XXXX enforce minimums

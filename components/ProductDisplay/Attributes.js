@@ -1,4 +1,4 @@
-import {memo,Fragment,useState,useEffect,useCallback} from "react";
+import {memo,Fragment,useState,useEffect,useCallback,useRef} from "react";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { Box,Button } from "@chakra-ui/react";
@@ -10,11 +10,12 @@ import styles from "../../styles/product.module.scss";
 
 const Attributes = props => {
    const [state_rowIndex,setState_rowIndex] = useState( props.rowIndex || 0 );
-   const [state_attributeRows,setState_attributeRows] = useState( [] );
    const [state_attributeScripts,setState_attributeScripts] = useState( [] );
    const [state_visibleRows,setState_visibleRows] = useState(0);
    const [state_onChangeVal,setState_onChangeVal] = useState({});
 
+   let hidingOptions = useRef();
+   hidingOptions.current = false;
    // console.log("Attributes props",props);
 
    // destructuring to make useEffect's happy
@@ -48,24 +49,24 @@ const Attributes = props => {
       }
    },[]);
 
-   let attributeIsOpen = useCallback(attribute => {
+   let attributeIsOpen = useCallback((attribute) => {
       let result = true;
-      let hidingOptions;
+      // console.log(`attributeIsOpen code = '${attribute.code}', hiddenSetting = '${attribute.hiddenSetting}'`);
       if ( attribute.hiddenSetting ) {
-         //console.log("hiddenSetting",attribute.hiddenSetting);
          switch( attribute.hiddenSetting ) {
             case "beginHiddenOptions":
-               hidingOptions = true;
+               hidingOptions.current = true;
                break;
             case "endHiddenOptions":
-               hidingOptions = false;
+               hidingOptions.current = false;
                break;
          }
       }
-
-      if ( hidingOptions || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
+      // console.log("attributeIsOpen hidingOptions",hidingOptions.current);
+      if ( hidingOptions.current || (attribute.hiddenSetting && attribute.hiddenSetting === "hiddenOptionRow") ) {
          result = false;
       }
+      // console.log("attributeIsOpen result",result);
       return result;
    },[]); // attributeIsOpen
 
@@ -77,7 +78,8 @@ const Attributes = props => {
       };
 
       let visibleRows = 0;
-      state_attributeRows.forEach((attribute,index)=>{
+      hidingOptions.current = false;
+      productForm.attributes.forEach((attribute,index)=>{
          // console.log("attribute",attribute);
          if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
             // ignore it
@@ -99,7 +101,7 @@ const Attributes = props => {
 
       // console.log("visibleRows",visibleRows);
       setState_visibleRows(visibleRows);
-   },[state_attributeRows,attributeIsOpen]);
+   },[productForm.attributes,attributeIsOpen]);
 
    let attributeIsRequired = required => {
       // console.log("attributeIsRequired, required:",required);
@@ -244,7 +246,6 @@ const Attributes = props => {
       dispatch(productFormActions.setAttributes(attributesAfterOnLoadActions));
 
       setState_attributeScripts(attributeScripts);
-      setState_attributeRows( attributesAfterOnLoadActions );
    },[attributes,product,dispatch]);
 
    let getPrompt = prompt => {
@@ -325,6 +326,7 @@ const Attributes = props => {
       });
    },[dispatch,productForm.attributes,interceptAttributeValue]); // handleChange
 
+   hidingOptions.current = false;
    return (
       <Box className={styles.attributes} data-visiblerows={state_visibleRows}>
          {
