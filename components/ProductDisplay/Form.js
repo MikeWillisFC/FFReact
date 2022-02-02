@@ -119,7 +119,7 @@ const Form = props => {
             }
          } else {
             headers['Content-Type'] = 'application/x-www-form-urlencoded'; // 2022-02-02: see the note above
-            const data = Object.keys(params).map((key) => `${key}=${encodeURIComponent(params[key])}`).join('&');
+            const data = Object.keys(params).map((key) => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`).join('&');
             let options = {
                method: 'POST',
                headers: headers,
@@ -192,13 +192,13 @@ const Form = props => {
                */
                bodyFormData.set( `${attKey}:value`, attribute.value );
                params[`${attKey}:value`] = attribute.value;
-               if ( attribute.attemp_id && attribute.attemp_id !== "0" && attribute.code ) {
-                  bodyFormData.set( `${attKey}:template_code`, attribute.code );
-                  params[`${attKey}:template_code`] = attribute.code;
-               }
                if ( attribute.templateCode ) {
                   bodyFormData.set( `${attKey}:code`, attribute.templateCode );
                   params[`${attKey}:code`] = attribute.templateCode;
+               }
+               if ( attribute.attemp_id && attribute.attemp_id !== "0" && attribute.code ) {
+                  bodyFormData.set( `${attKey}:template_code`, attribute.code );
+                  params[`${attKey}:template_code`] = attribute.code;
                }
             });
          }
