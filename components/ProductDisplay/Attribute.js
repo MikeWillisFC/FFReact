@@ -177,7 +177,7 @@ const Attribute = props => {
    useEffect(()=>{
       let timer = setTimeout(()=>{
          handleChange(false,state_textValue);
-      },[200]);
+      },[100]);
       return ()=>{
          clearTimeout(timer);
       }

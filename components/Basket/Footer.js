@@ -21,6 +21,9 @@ const Footer = props => {
                basketCharges={props.basketCharges}
                subtotal={props.subtotal}
                items={props.items}
+               miscModalDisclosure={props.miscModalDisclosure}
+               setMiscModal={props.setMiscModal}
+               singleSupplier={props.singleSupplier}
             />
          </Box>
       </Stack>

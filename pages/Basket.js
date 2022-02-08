@@ -38,6 +38,7 @@ const Basket = props => {
    const [state_basketID,setState_basketID] = useState(null);
    const [state_basketLoading,setState_basketLoading] = useState(false);
    const [state_itemValidities,setState_itemValidities] = useState([]);
+   const [state_singleSupplier,setState_singleSupplier] = useState("");
 
    let {setNavVisibility} = props;
 
@@ -81,6 +82,7 @@ const Basket = props => {
             }));
             setState_basketCharges( response.data.basketCharges );
             setState_basketID( response.data.basketID );
+            setState_singleSupplier( response.data.singleSupplier );
          }
       };
       setNavVisibility(false);
@@ -294,6 +296,9 @@ const Basket = props => {
                      basketCharges={state_basketCharges}
                      subtotal={state_basketSubtotal}
                      items={state_basketItems}
+                     miscModalDisclosure={props.miscModalDisclosure}
+                     setMiscModal={props.setMiscModal}
+                     singleSupplier={state_singleSupplier}
                   />
                </Fragment>
             ) : (

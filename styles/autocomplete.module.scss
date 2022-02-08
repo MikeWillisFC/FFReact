@@ -1,0 +1,27 @@
+.autocomplete {
+   z-index: 6;
+   position: absolute;
+   top: 38px;
+   right: 0px;
+   background-color: #fff;
+   padding: 3px;
+   border: 1px solid #ccc;
+   border-radius: 3px;
+
+   -webkit-box-shadow: 0px 0px 5px 3px rgba(153,153,153,0.6);
+   box-shadow: 0px 0px 5px 3px rgba(153,153,153,0.6);
+
+   div div {
+      padding: 4px 0px;
+      cursor: pointer;
+      border-bottom: 1px solid #ccc;
+
+      &:hover {
+         background-color: #D8F7FD;
+      }
+
+      &:last-child {
+         border-bottom: none;
+      }
+   }
+}

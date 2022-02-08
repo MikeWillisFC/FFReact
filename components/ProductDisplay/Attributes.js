@@ -5,6 +5,7 @@ import { Box,Button } from "@chakra-ui/react";
 
 import AttributeRow from "./AttributeRow";
 import {productFormActions} from "../../store/slices/productForm";
+import {addScript} from "../../utilities";
 
 import styles from "../../styles/product.module.scss";
 
@@ -330,55 +331,45 @@ const Attributes = props => {
    return (
       <Box className={styles.attributes} data-visiblerows={state_visibleRows}>
          {
-            productForm.attributes.length && productForm.attributes.map((attribute,index)=>{
-               if ( !attribute ) {
-                  return null;
-               } else {
-                  // console.log("printing attribute",attribute);
-                  // console.log("attribute.required",attribute.required);
-                  let isOpen = attributeIsOpen(attribute);
-                  // console.log("isOpen",isOpen);
-
-                  if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
-                     return null; // TODO: handle this
+            productForm.attributes.length ? (
+               productForm.attributes.map((attribute,index)=>{
+                  if ( !attribute ) {
+                     return null;
                   } else {
-                     return (
-                        <AttributeRow
-                           key={`${attribute.templateCode || ""}${attribute.code}`}
-                           rowIndex={index}
-                           isOpen={isOpen}
-                           attribute={attribute}
-                           globalConfig={props.globalConfig}
-                           miscModalDisclosure={props.miscModalDisclosure}
-                           setMiscModal={props.setMiscModal}
-                           onChange={handleChange}
-                           product={props.product}
-                           receiveAttributeValue={interceptAttributeValue}
-                           samplesPermitted={props.samplesPermitted}
-                           onChangeVal={state_onChangeVal}
-                           highlightInvalids={props.highlightInvalids}
-                           attributeValidity={attributeValidity}
-                        />
-                     )
+                     // console.log("printing attribute",attribute);
+                     // console.log("attribute.required",attribute.required);
+                     let isOpen = attributeIsOpen(attribute);
+                     // console.log("isOpen",isOpen);
+
+                     if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
+                        return null; // TODO: handle this
+                     } else {
+                        return (
+                           <AttributeRow
+                              key={`${attribute.templateCode || ""}${attribute.code}`}
+                              rowIndex={index}
+                              isOpen={isOpen}
+                              attribute={attribute}
+                              globalConfig={props.globalConfig}
+                              miscModalDisclosure={props.miscModalDisclosure}
+                              setMiscModal={props.setMiscModal}
+                              onChange={handleChange}
+                              product={props.product}
+                              receiveAttributeValue={interceptAttributeValue}
+                              samplesPermitted={props.samplesPermitted}
+                              onChangeVal={state_onChangeVal}
+                              highlightInvalids={props.highlightInvalids}
+                              attributeValidity={attributeValidity}
+                           />
+                        )
+                     }
                   }
-               }
-            })
+               })
+            ) : ""
          }
          {
             state_attributeScripts.map(scrpt=>{
-               /* 2021-08-11: first check if this script has already been added to the dom, perhaps
-               * by another product page. If so, remove it
-               */
-               let existing = document.getElementById(`attScript|${scrpt}`);
-               if ( existing ) {
-                  existing.remove();
-               }
-
-               const script = document.createElement("script");
-               script.src = scrpt;
-               script.id = `attScript|${scrpt}`;
-               script.async = true;
-               document.body.appendChild(script);
+               addScript(scrpt,`attScript|${scrpt}`);
             })
          }
       </Box>

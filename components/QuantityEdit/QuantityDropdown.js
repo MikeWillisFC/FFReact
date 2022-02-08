@@ -40,7 +40,7 @@ const QuantityDropdown = props => {
 
    return (
       <Select
-         placeholder="Quantity"
+         placeholder={props.placeholder || null}
          value={props.quantity}
          onChange={props.onChange}
          onBlur={event=>setState_touched(true)}

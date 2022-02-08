@@ -126,7 +126,7 @@ const DeliveryEstimate = props => {
       bodyFormData.set( "deliveryDateIncludeTags", "" );
 
       //console.log("globalConfig",globalConfig);
-      let response = await axios.post( `https://${globalConfig.APIdomain}/api/get/deliveryDate.php`, bodyFormData, {
+      let response = await axios.post( `https://${globalConfig.apiDomain}/api/get/deliveryDate.php`, bodyFormData, {
          headers: headers,
          withCredentials: true
       });

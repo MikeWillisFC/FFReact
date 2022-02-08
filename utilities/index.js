@@ -1,10 +1,30 @@
 import axios from "axios";
 
+export const addScript = (source,id,remove=true) => {
+   /* 2021-08-11: first check if this script has already been added to the dom, perhaps
+   * by another product page. If so, remove it
+   */
+   let existing = document.getElementById(id);
+   if ( existing && remove ) {
+      existing.remove();
+   }
+
+   if ( !existing || remove ) {
+      const script = document.createElement("script");
+      script.src = source;
+      script.id = id;
+      script.async = true;
+      document.body.appendChild(script);
+   }
+}; // addScript
+
+
 const openModal = options => {
    options.setModal({
       title: options.title,
       content: options.content,
-      size: options.size
+      size: options.size,
+      minHeight: options.minHeight || false
    });
 }; // openModal
 export const openMiscModal = async (options) => {
@@ -20,7 +40,8 @@ export const openMiscModal = async (options) => {
             setModal: options.setModal,
             title: options.title,
             content: response.data,
-            size: options.size
+            size: options.size,
+            minHeight: options.minHeight || false
          });
       } else {
          // boo
@@ -30,7 +51,8 @@ export const openMiscModal = async (options) => {
          setModal: options.setModal,
          title: options.title,
          content: options.content,
-         size: options.size
+         size: options.size,
+         minHeight: options.minHeight || false
       });
    }
 }; // openMiscModal
@@ -57,6 +79,150 @@ export const formatNumber = number => {
 export const isZipUSorCA = zip => {
    return ( zip.match(/[a-zA-Z][0-9][a-zA-Z](-| |)[0-9][a-zA-Z][0-9]/) || /\d{5}-\d{4}$|^\d{5}$/.test(zip) );
 };
+
+export const getStateByZip = zip => {
+	// v2, returns 'CANADA' if zip appears to be in canada
+	let result = "";
+
+	/* first we have to figure out if it's a canada zip code
+	* these have letters so that's the first test
+	*/
+	if ( !isNaN(zip) ) {
+		zip = zip.replace(/^\s+|\s+$/g, '');
+		let allStates = new Array();
+		allStates["AK"] = "9950099929";
+		allStates["AL"] = "3500036999";
+		allStates["AR"] = "71600729997550275505";
+		allStates["AZ"] = "8500086599";
+		allStates["CA"] = "9000096199";
+		allStates["CO"] = "8000081699";
+		allStates["CT"] = "0600006999";
+		allStates["DC"] = "20000200992020020599";
+		allStates["DE"] = "1970019999";
+		allStates["FL"] = "32000339993410034999";
+		allStates["GA"] = "3000031999";
+		allStates["HI"] = "96700967989680096899";
+		allStates["IA"] = "5000052999";
+		allStates["ID"] = "8320083899";
+		allStates["IL"] = "6000062999";
+		allStates["IN"] = "4600047999";
+		allStates["KS"] = "6600067999";
+		allStates["KY"] = "40000427994527545275";
+		allStates["LA"] = "70000714997174971749";
+		allStates["MA"] = "0100002799";
+		allStates["MD"] = "20331203312060021999";
+		allStates["ME"] = "038010380103804038040390004999";
+		allStates["MI"] = "4800049999";
+		allStates["MN"] = "5500056799";
+		allStates["MO"] = "6300065899";
+		allStates["MS"] = "3860039799";
+		allStates["MT"] = "5900059999";
+		allStates["NC"] = "2700028999";
+		allStates["ND"] = "5800058899";
+		allStates["NE"] = "6800069399";
+		allStates["NH"] = "03000038030380903899";
+		allStates["NJ"] = "0700008999";
+		allStates["NM"] = "8700088499";
+		allStates["NV"] = "8900089899";
+		allStates["NY"] = "004000059906390063900900014999";
+		allStates["OH"] = "4300045999";
+		allStates["OK"] = "73000731997340074999";
+		allStates["OR"] = "9700097999";
+		allStates["PA"] = "1500019699";
+		//allStates["PR"] = "0060000729";
+		allStates["PR"] = "0060000988";
+		allStates["RI"] = "02800029990637906379";
+		allStates["SC"] = "2900029999";
+		allStates["SD"] = "5700057799";
+		allStates["TN"] = "37000385997239572395";
+		allStates["TX"] = "7330073399739497394975000799998850188599";
+		allStates["UT"] = "8400084799";
+		allStates["VA"] = "2010520199203012030120370203702200024699";
+		allStates["VT"] = "0500005999";
+		allStates["WA"] = "9800099499";
+		allStates["WI"] = "49936499365300054999";
+		allStates["WV"] = "2470026899";
+		allStates["WY"] = "8200083199";
+		let zipLength;
+		let segments;
+		for( let i in allStates ) {
+			zipLength = String( allStates[i].length );
+			// the zips will be 10, 20, 30, or 40 in length
+			segments = new Array();
+			switch (zipLength) {
+			case "10":
+				segments[0] = allStates[i].substring( 0, 5 );
+				segments[1] = allStates[i].substring( 5, 10 );
+				break;
+			case "20":
+				segments[0] = allStates[i].substring( 0, 5 );
+				segments[1] = allStates[i].substring( 5, 10 );
+				segments[2] = allStates[i].substring( 10, 15 );
+				segments[3] = allStates[i].substring( 15, 20 );
+				break;
+			case "30":
+				segments[0] = allStates[i].substring( 0, 5 );
+				segments[1] = allStates[i].substring( 5, 10 );
+				segments[2] = allStates[i].substring( 10, 15 );
+				segments[3] = allStates[i].substring( 15, 20 );
+				segments[4] = allStates[i].substring( 20, 25 );
+				segments[5] = allStates[i].substring( 25, 30 );
+				break;
+			case "40":
+				segments[0] = allStates[i].substring( 0, 5 );
+				segments[1] = allStates[i].substring( 5, 10 );
+				segments[2] = allStates[i].substring( 10, 15 );
+				segments[3] = allStates[i].substring( 15, 20 );
+				segments[4] = allStates[i].substring( 20, 25 );
+				segments[5] = allStates[i].substring( 25, 30 );
+				segments[6] = allStates[i].substring( 30, 35 );
+				segments[7] = allStates[i].substring( 35, 40 );
+				break;
+			}
+
+			for ( let j = 0; j <= segments.length; j += 2 ) {
+				if ( zip >= segments[j] && zip <= segments[j+1] ) {
+					result = i;
+				}
+			}
+		}
+	} else {
+		/* it's likely that this is canadian
+		* or that the user entered a letter by mistake
+		*/
+		// now use regex
+		if ( zip.match( /[a-z]\d[a-z]\d[a-z]\d/i ).length ) {
+			// looks like it's canada
+			result = "CANADA";
+		}
+	}
+	return result;
+}; // getStateByZip
+
+// ported from PHP from http://cookbooks.adobe.com/post_Resolve_province_from_Canadian_postal_code__PHP_ve-17899.html
+export const getProvinceCode = postalCode => {
+	switch( postalCode.toUpperCase().substring( 0, 1 ) ) {
+		case "A": return "NL"; // Newfoundland and Labrador
+		case "B": return "NS"; // Nova Scotia
+		case "C": return "PE"; // Prince Edward Island
+		case "E": return "NB"; // New Brunswick
+		case "G":  // Eastern Quebec
+		case "H":  // Metropolitan Montreal
+		case "J": return "QC"; // Western Quebec
+		case "K": // Eastern Ontario
+		case "L": // Central Ontario
+		case "M": // Metropolitan Toronto
+		case "N": // Southwestern Ontario
+		case "P": return "ON"; // Northern Ontario
+		case "R": return "MB"; // Manitoba
+		case "S": return "SK"; // Saskatchewan
+		case "T": return "AB"; // Alberta
+		case "V": return "BC"; // British Columbia
+		case "X": return "NT,NU"; // Northwest Territories and Nunavut
+		case "Y": return "YT"; // Yukon Territory
+		default : return "";
+	}
+}; // getProvinceCode
 
 // see https://stackoverflow.com/a/7719185/1042398
 /* usage:

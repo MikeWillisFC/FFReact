@@ -92,6 +92,7 @@ const AddToCart = props => {
                enforceMinimum={props.enforceMinimum}
                samplesPermitted={props.samplesPermitted}
                isValid={props.isValid}
+               placeholder="Quantity"
             />
          );
       }

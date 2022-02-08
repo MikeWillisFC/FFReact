@@ -22,3 +22,20 @@
    display: block;
    font-weight: bold;
 }
+
+.highlighted {
+   /* without the inline-block, the first word in list view won't
+   * be capitalized, because stupid. See https://stackoverflow.com/a/42960118/1042398
+   */
+   display: inline-block;
+   text-transform: capitalize;
+   em {
+      font-weight: bold;
+   }
+}
+
+.listThumb {
+   border-bottom: 1px solid #ccc;
+   padding-top: 10px;
+   padding-bottom: 5px;
+}

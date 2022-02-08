@@ -122,26 +122,26 @@ const Form = props => {
          }
       });
 
-      console.log("highlightInvalids",highlightInvalids);
+      // console.log("highlightInvalids",highlightInvalids);
       setState_highlightInvalids(highlightInvalids);
       return !highlightInvalids;
    },[productForm.attributes]);
 
    let handleSubmit = (event,goToBasket=true,quantityOverride=false,returnResult=false) => {
       event.preventDefault();
-      console.log("form submitted");
-      console.log("form submitted, attributeValuesRef.current:",attributeValuesRef.current);
+      // console.log("form submitted");
+      // console.log("form submitted, attributeValuesRef.current:",attributeValuesRef.current);
 
       if ( !checkValidity() ) {
-         console.log("not valid");
+         // console.log("not valid");
       } else {
          let bodyFormData = prepFormSubmit(quantityOverride);
 
          if ( productForm.attributes.length ) {
-            console.log("productForm.attributes.length:",productForm.attributes.length);
-            console.log("productForm.attributes:",productForm.attributes);
+            // console.log("productForm.attributes.length:",productForm.attributes.length);
+            // console.log("productForm.attributes:",productForm.attributes);
             productForm.attributes.forEach((attribute,index)=>{
-               console.log(`attribute ${index}`,attribute);
+               //console.log(`attribute ${index}`,attribute);
                index++; // Miva doesn't start at 0
                let attKey = `Product_Attributes[${index}]`;
 
@@ -195,7 +195,7 @@ const Form = props => {
          className={styles.basketAddForm}
       >
          {
-            product.customFields.offerSeparateOptions.trim() === "" && renderAttributes()
+            product.customFields.offerSeparateOptions.trim() === "" ? renderAttributes() : ""
          }
 
          <AddToCart

@@ -10,31 +10,24 @@ import {
    HStack,
    Flex,
    Box,
-   SimpleGrid,
-   Input,
    Button,
-
    Menu,
    MenuButton,
    MenuList,
    MenuItem,
-   MenuItemOption,
-   MenuGroup,
-   MenuOptionGroup,
-   MenuIcon,
-   MenuCommand,
-   MenuDivider,
 
    useBreakpointValue
 } from "@chakra-ui/react";
 
-import Messages from "./Messages";
+import Messages from "../Messages";
+import SearchForm from "./SearchForm";
 
-import { openMiscModal } from "../utilities";
+import { openMiscModal } from "../../utilities";
 
-import headerStyles from "../styles/header.module.scss";
+import headerStyles from "../../styles/header.module.scss";
 
 const Header = props => {
+   console.log("Header rendering");
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
@@ -202,7 +195,7 @@ const Header = props => {
 
             { false && <p className="fRight nomarg darkBlue" id="hPhone"><a href="/contact_us.php">Contact Us</a></p> }
             <a
-               href={`https://${globalConfig.APIdomain}/includes/ajax/freeShipping.php`}
+               href={`https://${globalConfig.apiDomain}/includes/ajax/freeShipping.php`}
                onClick={handleCheapShipping}
                className={headerStyles.headerPromo}
             >
@@ -224,32 +217,8 @@ const Header = props => {
                className={headerStyles.search}
                width={["100%","100%","300px"]}
             >
-               <form className="nomarg" action="/mm5/merchant.mvc?" method="get">
-                  <input type="hidden" name="Screen" value="searchAZ" />
-                  <input type="hidden" name="viewType" value="grid" />
-
-                  { false && <p className="nomarg fLeft"><Image src="/images/misc/header/mag-glass.png" height="35" width="38" alt="magnifying glass" /></p> }
-
-                  <Input
-                     style={{backgroundColor:"#fff",zIndex:"1"}}
-                     maxLength="45"
-                     name="search"
-                     size="sm"
-                     placeholder="Search"
-                     width={["70%","70%","200px"]}
-                     marginRight={["30px","48px"]}
-                  />
-                  <Button
-                     style={{zIndex:"5"}}
-                     size="sm"
-                     colorScheme="blue"
-                     right={["2px","70px","2px"]}
-                  >
-                     Search
-                  </Button>
-
-                  { false && <p className="nomarg fLeft"><input className="search_submit miscSpriteMain search-button" type="submit" value="" /></p> }
-               </form>
+               <SearchForm
+               />
             </Box>
          </Box>
 

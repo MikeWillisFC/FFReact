@@ -7,6 +7,13 @@
    }
 }
 
+.highlightTransition {
+   transition: all .5s;
+   &.highlighted {
+      background-color: #FFFF84 !important;
+   }
+}
+
 .basketTable {
    font-family: Verdana, Geneva, sans-serif;
 

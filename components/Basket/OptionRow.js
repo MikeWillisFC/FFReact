@@ -6,7 +6,8 @@ import {
    Icon,
    Tr,
    Td,
-   Spinner
+   Spinner,
+   Box
 } from "@chakra-ui/react";
 
 import {formatPrice} from "../../utilities";
@@ -35,6 +36,7 @@ const OptionRow = props => {
    const [state_rowCollapsing,setState_rowCollapsing] = useState(props.motion.collapsing);
    const [state_updating,setState_updating] = useState(false);
    const [state_updateResult,setState_updateResult] = useState(null);
+   const [state_focused,setState_focused] = useState(false);
 
    const controls = useAnimation();
 
@@ -43,7 +45,28 @@ const OptionRow = props => {
    let propsOptionValue = props.option.value
    let collapsing = props.motion.collapsing;
 
+   console.log("option",option);
+
    let spanRef = useRef();
+
+   let getPrompt = prompt => {
+      //console.log("prompt",prompt);
+      let result;
+      if ( prompt.substr(0,1) === "{" ) {
+         result = JSON.parse( prompt );
+      } else {
+         result = {prompt:prompt};
+      }
+      //console.log("result",result);
+      return result;
+   }; // getPrompt
+
+   let maxLength = 30;
+   let prompt = getPrompt( option.prompt );
+   console.log("prompt",prompt);
+   if ( prompt.textLimit ) {
+      maxLength = parseInt(prompt.textLimit);
+   }
 
    useEffect(()=>{
       setState_rowCollapsing(collapsing);
@@ -135,6 +158,7 @@ const OptionRow = props => {
       }
    },[state_updateResult]);
    let handleEditableBlur = useCallback(async (event) => {
+      setState_focused(false);
       // console.log("blur",state_optionVal);
       // console.log("option",option);
       // console.log("basketID",props.basketID);
@@ -150,21 +174,33 @@ const OptionRow = props => {
 
       //console.log("globalConfig",globalConfig);
       setState_updating( true );
-      const response = await axios.post( `https://${domain}/pscripts/misc/attEdit.php`, bodyFormData, {
-         headers: headers,
-         withCredentials: true
-      });
-      if ( response.status ) {
-         setState_updating( false );
-         //console.log("response.data",response.data);
-         if ( response.data.status === "1" && response.data.validated ) {
-            setState_updateResult("success");
-            setState_lastOptionVal( state_optionVal );
+
+      try {
+         const response = await axios.post( `https://${domain}/pscripts/misc/attEdit.php`, bodyFormData, {
+            headers: headers,
+            withCredentials: true
+         });
+         if ( response && response.status ) {
+            setState_updating( false );
+            //console.log("response.data",response.data);
+            if ( response.data.status === "1" && response.data.validated ) {
+               setState_updateResult("success");
+               setState_lastOptionVal( state_optionVal );
+            } else {
+               setState_updateResult("error");
+               setState_optionVal( state_lastOptionVal );
+            }
          } else {
+            setState_updating( false );
             setState_updateResult("error");
             setState_optionVal( state_lastOptionVal );
          }
+      } catch (e) {
+         setState_updating( false );
+         setState_updateResult("error");
+         setState_optionVal( state_lastOptionVal );
       }
+
    },[
       basketID,
       lineID,
@@ -174,6 +210,17 @@ const OptionRow = props => {
       state_lastOptionVal,
       attCode
    ]); // handleEditableBlur
+
+   let charCountStyle = {
+      color: state_optionVal.length < maxLength ? "" : "#f00"
+   };
+
+   let handleKeyUp = event => {
+      if ( event.key === 'Enter' || event.keyCode === 13 ) {
+         event.preventDefault();
+         event.target.blur();
+      }
+   }; // handleKeyUp
 
    return (
       <Tr key={option.code} className={baskStyles.optionRow}>
@@ -203,9 +250,19 @@ const OptionRow = props => {
                         <Fragment>
                            <input
                               value={state_optionVal}
+                              onKeyUp={handleKeyUp}
                               onChange={handleEditableChange}
                               onBlur={handleEditableBlur}
+                              onFocus={()=>{setState_focused(true)}}
+                              maxLength={maxLength}
                            />
+                           {
+                              state_focused && (
+                                 <span className="blue">
+                                    {" "}<span style={charCountStyle}>{state_optionVal.length}</span>{` - ${maxLength} Characters - Max`}{" "}
+                                 </span>
+                              )
+                           }
                            { state_updating && <Spinner size="sm" /> }
                            { state_updateResult === "success" && <Icon as={FaCheckCircle} color="#090" boxSize="1.4em" /> }
                            { state_updateResult === "error" && <Icon as={FaTimesCircle} color="#f00" boxSize="1.4em" /> }

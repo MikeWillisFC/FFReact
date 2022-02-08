@@ -448,9 +448,9 @@ const Payment = props => {
       //
       // });
 
-      console.log("bodyFormData",bodyFormData.values());
-      console.log("bodyFormData",bodyFormData.entries());
-      console.log("bodyFormData",Array.from(bodyFormData.entries()))
+      // console.log("bodyFormData",bodyFormData.values());
+      // console.log("bodyFormData",bodyFormData.entries());
+      // console.log("bodyFormData",Array.from(bodyFormData.entries()));
 
       const response = await axios.post( `https://${globalConfig.domain}/mm5/merchant.mvc`, bodyFormData, {
          headers: headers,

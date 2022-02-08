@@ -1,0 +1,11 @@
+.grid {
+   td {
+      border: 1px solid #e3dfdc;
+      padding: 4px 5px;
+
+      &:first-child {
+         background-color: #f4f2f1;
+         text-align: right;
+      }
+   }
+}

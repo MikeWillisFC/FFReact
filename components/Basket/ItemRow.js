@@ -22,8 +22,7 @@ import {
    AlertDialogFooter,
    AlertDialogHeader,
    AlertDialogContent,
-   AlertDialogOverlay,
-   Tooltip,
+   AlertDialogOverlay
 } from "@chakra-ui/react";
 
 import OptionRow from "./OptionRow";
@@ -33,7 +32,6 @@ import QuantityDropdown from "../QuantityEdit/QuantityDropdown";
 import {formatPrice} from "../../utilities";
 
 import styles from "../../styles/basket.module.scss";
-import tooltipStyles from "../../styles/chakra/tooltip.module.scss";
 
 const ItemRow = props => {
    const [state_item,setState_item] = useState(props.item);
@@ -58,7 +56,7 @@ const ItemRow = props => {
       return [];
    },[]);
 
-   //console.log("props.item",props.item);
+   console.log("props.item",props.item);
 
    let minQuantityNote = useMemo(()=>{
       let result = `The minimum quantity for this item is ${state_minimum.prodMin}`;
@@ -314,7 +312,7 @@ const ItemRow = props => {
                >
                   <Link href={`/page/FF/PROD/${state_item.code}`}>
                      <a>
-                        {state_item.name}
+                        <span dangerouslySetInnerHTML={{__html: _.unescape(state_item.name)}} />
                         <br /><span className="mediumGrey">#{state_item.code}</span>
                      </a>
                   </Link>

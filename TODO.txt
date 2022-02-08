@@ -15,6 +15,7 @@ general:
 --- pinterest
 --- facebook
 --- anyone else
+- TEST EVERYTHING ON MOBILE
 
 header:
 - XXXX end date for $9.99 shipping
@@ -49,12 +50,15 @@ product:
 - XXXX remove modal overlay as soon as attribute is chosen: http://localhost:3001/page/FF/PROD/4214000DD
 
 basket:
-- check result of editable attribute update? (cors error)
-- make quantity a dropdown if needed
-- show mini-cart on header basket click?
+- XXXX check result of editable attribute update
+- XXXX make quantity a dropdown if needed http://localhost:3001/page/FF/PROD/12203
 - XXXX enforce minimums
-- enforce text limit on editable attributes
-- items with html in title render wrong (5863CS_Wed)
+- XXXX enforce text limit on editable attributes
+- XXXX items with html in title render wrong http://localhost:3001/page/FF/PROD/5863CS_Wed
+- XXXX estimate shipping
+- show mini-cart on header basket click?
+- handle if quantity change or item removal changes misc fees
+- change remove to not use dialog, confirm right where remove button is
 
 checkout:
 - full review
@@ -64,7 +68,13 @@ checkout:
 - OSEL: the form is slow and laggy due to re-renders when typing. Must fix this
 
 search:
-- do it
+- XXXX do it
+- XXXX autocomplete terms
+- XXXX if search is product code, return set of like-items
+- XXXX ProductList: router.push( url, url, { shallow: true });
+--- this line will remove things like gclid from the query string. Will Google still
+--- track the click? Perhaps best to skip this line on first render, and only run it
+--- on future renders somehow...
 
 saved cart:
 - do it

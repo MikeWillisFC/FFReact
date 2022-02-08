@@ -126,6 +126,7 @@ const Category = (props) => {
                         queryString={props.queryString}
                         products={state_category.products}
                         categoryCode={state_category.code}
+                        sortFields={["price","bestsellers","newest"]}
                      />
                   : ""
                }

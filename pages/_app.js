@@ -40,7 +40,7 @@ import appStyles from "../styles/_app.module.scss";
 function MyApp(props) {
    //console.log("theme",theme);
    const { Component, pageProps } = props;
-   //console.log("MyApp props",props);
+   console.log("MyApp rendering, props:",props);
 
    const [state_mobileNavVisible, setState_mobileNavVisible] = useState( false );
    const [state_navVisible, setState_navVisible] = useState( true );
@@ -117,6 +117,7 @@ function MyApp(props) {
                onClose={miscModalDisclosure.onClose}
                size={state_miscModal.size}
                isCentered
+
             >
                <ModalOverlay />
                <ModalContent
@@ -126,26 +127,28 @@ function MyApp(props) {
                      {state_miscModal.title}
                      <ModalCloseButton />
                   </ModalHeader>
-                  <Box>
+                  <Box
+                     minHeight={state_miscModal.minHeight || ""}
+                  >
                      {
-                        typeof( state_miscModal.content ) === "object" ?
+                        typeof( state_miscModal.content ) === "object" ? (
                            <ModalBody className={appStyles.mmBody}>
                               {state_miscModal.content}
                            </ModalBody>
-                        : <ModalBody
-                           className={appStyles.mmBody}
-                           dangerouslySetInnerHTML={{__html: _.unescape(state_miscModal.content)}}
-                          >
-                        </ModalBody>
+                        ) : (
+                           <ModalBody
+                              className={appStyles.mmBody}
+                              dangerouslySetInnerHTML={{__html: _.unescape(state_miscModal.content)}}
+                           >
+                           </ModalBody>
+                        )
                      }
-
                   </Box>
                </ModalContent>
             </Modal>
-
          </ChakraProvider>
       </Provider>
-   )
+   );
 }
 
 /* 2021-08-24: since we're not importing the leftnav, this block ends up doing nothing.
