@@ -1,5 +1,5 @@
 import {Fragment,useState,useEffect,useRef,useMemo,useCallback} from "react";
-import { FaTrashAlt } from 'react-icons/fa';
+import { FaTrashAlt,FaTimes } from 'react-icons/fa';
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import axios from "axios";
 import Link from "next/link";
@@ -45,6 +45,7 @@ const ItemRow = props => {
    const [state_minimum,setState_minimum] = useState({});
    const [state_samplesPermitted,setState_samplesPermitted] = useState(true);
    const [state_inputType,setState_inputType] = useState("input");
+   const [st_confirmingRemove,sst_confirmingRemove] = useState(false);
 
    const confirmRemoveCancelRef = useRef();
    const controls = useAnimation();
@@ -217,7 +218,12 @@ const ItemRow = props => {
    }; // receiveWidth
 
    let handleRemoveItem = () => {
-      setState_confirmRemoveIsOpen( true );
+      if ( false ) {
+         setState_confirmRemoveIsOpen( true );
+      } else {
+         sst_confirmingRemove(true);
+      }
+
    }; // handleRemoveItem
 
    let handleCancelRemoveItem = () => {
@@ -361,15 +367,43 @@ const ItemRow = props => {
                         exit="collapsed"
                         animate={controls}
                      >
-                        <Button
-                           leftIcon={<FaTrashAlt />}
-                           variant="solid"
-                           onClick={handleRemoveItem}
-                           size="xs"
-                           style={{border: "1px solid #ccc",backgroundColor:"#fff",color:"#f00"}}
-                        >
-                           remove
-                        </Button>
+                        {
+                           !st_confirmingRemove ? (
+                              <Button
+                                 leftIcon={<FaTrashAlt />}
+                                 variant="solid"
+                                 onClick={handleRemoveItem}
+                                 size="xs"
+                                 style={{border: "1px solid #ccc",backgroundColor:"#fff",color:"#f00"}}
+                              >
+                                 remove
+                              </Button>
+                           ) : (
+                              <div style={{textAlign:"center"}}>
+                                 <Button
+                                    leftIcon={<FaTimes />}
+                                    variant="outline"
+                                    onClick={event=>{sst_confirmingRemove(false);}}
+                                    size="xs"
+                                    width="100%"
+                                    colorScheme="green"
+                                 >
+                                    cancel
+                                 </Button>
+                                 <br />
+                                 <Button
+                                    leftIcon={<FaTrashAlt />}
+                                    variant="outline"
+                                    onClick={handleConfirmRemoveItem}
+                                    size="xs"
+                                    width="100%"
+                                    style={{color:"#f00",marginTop:"5px"}}
+                                 >
+                                    confirm
+                                 </Button>
+                              </div>
+                           )
+                        }
                      </motion.div>
                   </Td>
                )

@@ -58,7 +58,7 @@ basket:
 - XXXX estimate shipping
 - show mini-cart on header basket click?
 - handle if quantity change or item removal changes misc fees
-- change remove to not use dialog, confirm right where remove button is
+- XXXX change remove to not use dialog, confirm right where remove button is
 
 checkout:
 - full review

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment,useEffect } from "react";
 import { useSelector } from "react-redux";
 import Link from "next/link";
 import Image from 'next/image';
@@ -37,6 +37,15 @@ const Header = props => {
    const messages = useSelector(state=>{
       return state.messages;
    });
+
+   console.log("messages",messages);
+
+
+   useEffect(()=>{
+      if ( messages.errorMessages.length || messages.informationMessages.length ) {
+         window.scrollTo({ top: 0, behavior: 'smooth'});
+      }
+   },[messages]);
 
    //console.log("Header rendering");
 
@@ -170,7 +179,7 @@ const Header = props => {
                            style={{padding:"0px"}}
                            display={["none","none","none","block"]}
                         >
-                           <a href="/sb-login.htm">
+                           <a href="/SavedBasket">
                               <Icon as={FaCaretRight} color="#F167A8" />
                               <span className="darkPink">View</span>{" "}
                               Saved Cart
@@ -256,13 +265,9 @@ const Header = props => {
             </Box>
          </Flex>
 
-         {
-            (messages.errorMessages.length || messages.generalMessages.length) ?
-               <Messages
-                  messages={messages}
-               />
-            : ""
-         }
+         <Messages
+            messages={messages}
+         />
       </Box>
    );
 };

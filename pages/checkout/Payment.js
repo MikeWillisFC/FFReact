@@ -57,8 +57,8 @@ const Payment = props => {
 
    // clear any existing error messages
    useEffect(()=>{
-      dispatch(messagesActions.setErrors([]));
-      return ()=>{dispatch(messagesActions.setErrors([]));}
+      dispatch(messagesActions.setErrorMessages([]));
+      return ()=>{dispatch(messagesActions.setErrorMessages([]));}
    },[dispatch]);
 
    let {setNavVisibility} = props;
@@ -412,7 +412,7 @@ const Payment = props => {
    }; // placeOrder
 
    let submitForm = async (options) => {
-      dispatch(messagesActions.setErrors([]));
+      dispatch(messagesActions.setErrorMessages([]));
       console.log("submitForm",state_opay);
       // shippingCharges=26.03&taxCharges=34.69&Action=AUTH&Screen=INVC&Store_Code=FF&PaymentMethod=authnet%3AVisa&AuthorizeNet_Method_Type=CC&AuthorizeNet_Data_Descriptor=&AuthorizeNet_Data_Value=&PaymentAuthorizationToken=ea4589530f2943eedeb7cd100e135a57&AuthorizeNet_First_Name=&AuthorizeNet_Last_Name=Willis&AuthorizeNet_Card_Num=4111%201111%201111%201111&AuthorizeNet_CardExp_Month=&AuthorizeNet_CardExp_Year=&AuthorizeNet_Cvv=&question1=&question2=TEST&question3=&question4=1&question5=Yes&maxquestions=5
 
@@ -458,15 +458,14 @@ const Payment = props => {
       });
       if ( response.status ) {
          console.log("response.data",response.data);
-         //messagesActions.setErrors
+         //messagesActions.setErrorMessages
 
-         if ( response.data.errorMessages ) {
+         if ( response.data.errorMessages.length ) {
             // that's not good
-            console.log("dispatching setErrors");
+            console.log("dispatching setErrorMessages");
             store.set( 'opay', response.data );
             setState_opay( response.data );
-            dispatch(messagesActions.setErrors(response.data.errorMessages));
-            window.scrollTo({ top: 0, behavior: 'smooth'});
+            dispatch(messagesActions.setErrorMessages(response.data.errorMessages));
          }
 
       }

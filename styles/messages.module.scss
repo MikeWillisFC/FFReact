@@ -1,15 +1,39 @@
+/* 2022-02-10: not really in use anymore, switched to a drawer for
+* error and notification messages
+*/
+
+
+
+
+
+
+
+
+
+
+
 .errorBox {
-   height: 50%;
-   padding-top: 15%;
-   padding-bottom: 15%;
-   background-color: #FED7D7;
+   overflow: hidden;
+
+   max-height: 800px;
+   padding-top: 5%;
+   padding-bottom: 5%;
+   // background-color: #FED7D7;
+
+   transition: all 0.5s ease;
+
+   &.empty {
+      max-height: 0px;
+      padding: 0px;
+      border: none;
+   }
 
    .errorHeadline {
       width: 100%;
       border-bottom: 1px solid #ccc;
       font-size: 1.2em;
    }
-   .errorMessage {
+   .message {
       padding-left: 10% !important;
    }
 }

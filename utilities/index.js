@@ -1,5 +1,51 @@
 import axios from "axios";
 
+export const parseMessages = (data,dispatch,messagesActions) => {
+   // console.log("parseMessages called");
+   // console.log("data",data);
+   // console.log("dispatch",dispatch);
+   // console.log("messagesActions",messagesActions);
+
+   let errorMessages = [...data.messageList.errorMessages];
+   let informationMessages = [...data.messageList.informationMessages];
+
+   // console.log("errorMessages A",errorMessages);
+   // console.log("informationMessages A",informationMessages);
+
+   if ( data.subMessageList ) {
+      // console.log("data.subMessageList.errorMessages",data.subMessageList.errorMessages);
+      // console.log("data.subMessageList.informationMessages",data.subMessageList.informationMessages);
+
+      errorMessages = [...errorMessages,...data.subMessageList.errorMessages];
+      informationMessages = [...informationMessages,...data.subMessageList.informationMessages];
+
+      // console.log("errorMessages B",errorMessages);
+      // console.log("informationMessages B",informationMessages);
+
+      // de-dupe, see https://stackoverflow.com/a/9229821/1042398
+      errorMessages = errorMessages.filter(function(item, pos) {
+         return errorMessages.indexOf(item) === pos;
+      });
+      informationMessages = informationMessages.filter(function(item, pos) {
+         return informationMessages.indexOf(item) === pos;
+      });
+   }
+
+   // console.log("errorMessages C",errorMessages);
+   // console.log("informationMessages C",informationMessages);
+
+   if ( errorMessages.length ) {
+      // that's not good
+      // console.log("dispatching setErrorMessages");
+      dispatch(messagesActions.setErrorMessages(errorMessages));
+   }
+   if ( informationMessages.length ) {
+      // that's not good
+      // console.log("dispatching setInformationMessages");
+      dispatch(messagesActions.setInformationMessages(informationMessages));
+   }
+}; // parseMessages
+
 export const addScript = (source,id,remove=true) => {
    /* 2021-08-11: first check if this script has already been added to the dom, perhaps
    * by another product page. If so, remove it

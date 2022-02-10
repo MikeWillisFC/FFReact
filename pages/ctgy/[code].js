@@ -158,14 +158,21 @@ export async function getStaticProps(context) {
 
    //console.log("response.data",response.data);
    //console.log("context.params.code",context.params.code);
-   return {
-      props: {
-         categoryCode: context.params.code,
-         category: axResponse.data,
-         queryString: queryString,
-         // pathname: context.asPath
-      }
-   };
+
+   if ( !axResponse.data.result || axResponse.data.result === '0' ) {
+      // deactivated or discontinued
+      return { notFound: true };
+   } else {
+      return {
+         props: {
+            categoryCode: context.params.code,
+            category: axResponse.data,
+            queryString: queryString,
+            // pathname: context.asPath
+         }
+      };
+   }
+
 };
 
 // Category.getInitialProps = async (context) => {

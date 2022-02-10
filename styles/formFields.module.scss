@@ -1,0 +1,35 @@
+.field {
+   position: relative;
+   margin-bottom: 5px;
+
+   label {
+      position: absolute;
+      top: 18px;
+      left: 4px;
+      pointer-events: none;
+      font-size: 1.2em;
+
+      transition: all 0.5s ease;
+   }
+
+   input {
+      padding-top: 20px;
+   }
+
+   &:focus-within,&.filled {
+      label {
+         top: 0px;
+         left: 4px;
+         font-size: 1em;
+      }
+   }
+
+   .errorMessage {
+      position: absolute;
+      right: 5px;
+      top: 0px;
+      pointer-events: none;
+      background-color: #fff;
+      height: 70%;
+   }
+}

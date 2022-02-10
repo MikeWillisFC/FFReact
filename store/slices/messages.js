@@ -4,14 +4,30 @@ const messagesSlice = createSlice({
    name: "messages",
    initialState: {
       errorMessages: [],
-      generalMessages: []
+      informationMessages: []
    },
    reducers: {
-      setErrors(state,action) {
-         console.log("running setErrors");
+      setErrorMessages(state,action) {
+         console.log("running setErrorMessages");
          console.log("state",state);
          console.log("action",action);
          state.errorMessages = action.payload;
+      },
+      setInformationMessages(state,action) {
+         console.log("running setInformationMessages");
+         console.log("state",state);
+         console.log("action",action);
+         state.informationMessages = action.payload;
+      },
+      clearMessages(state) {
+         state.errorMessages = [];
+         state.informationMessages = [];
+      },
+      clearErrorMessages(state) {
+         state.errorMessages = [];
+      },
+      clearInformationMessages(state) {
+         state.informationMessages = [];
       }
    }
 });

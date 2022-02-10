@@ -19,11 +19,16 @@ const AutocompleteInput = props => {
 
    useEffect(() => {
       let handleClick = event => { sst_activeEl(event.target); };
-      document.addEventListener("mouseup", handleClick);
+      if ( st_active ) {
+         document.addEventListener("mouseup", handleClick);
+      } else {
+         document.removeEventListener("mouseup", handleClick);
+      }
+
       return () => {
          document.removeEventListener("mouseup", handleClick);
       };
-   },[]);
+   },[st_active]);
 
    let handleFocus = event => {
       sst_active(true);
