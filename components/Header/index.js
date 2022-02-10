@@ -179,11 +179,13 @@ const Header = props => {
                            style={{padding:"0px"}}
                            display={["none","none","none","block"]}
                         >
-                           <a href="/SavedBasket">
-                              <Icon as={FaCaretRight} color="#F167A8" />
-                              <span className="darkPink">View</span>{" "}
-                              Saved Cart
-                           </a>
+                           <Link href="/SavedBasket">
+                              <a>
+                                 <Icon as={FaCaretRight} color="#F167A8" />
+                                 <span className="darkPink">View</span>{" "}
+                                 Saved Cart
+                              </a>
+                           </Link>
                         </Box>
                         <Box>
                            <Link href="/Basket">

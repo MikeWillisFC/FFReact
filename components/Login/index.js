@@ -103,7 +103,7 @@ const Login = props => {
       }
 
       //console.log("response",response);
-   },[st_forgotPassword,st_fields,globalConfig.apiEndpoint]); // handleSubmit
+   },[st_forgotPassword,st_fields,globalConfig.apiEndpoint,dispatch]); // handleSubmit
 
    let handleChange = (changedField,value) => {
       //console.log("handleChange called for changedField:",changedField);

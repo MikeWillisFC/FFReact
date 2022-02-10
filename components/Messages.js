@@ -31,7 +31,7 @@ const Messages = props => {
       if ( messages.errorMessages.length || messages.informationMessages.length ) {
          drawerDisclosure.onOpen();
       }
-   },[messages]);
+   },[messages,drawerDisclosure]);
 
    return (
       <Drawer

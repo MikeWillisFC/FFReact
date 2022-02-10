@@ -16,18 +16,19 @@ const TextField = props => {
    const [st_value,sst_value] = useState("");
 
    let {
-      name
+      name,
+      onChange
    } = props;
 
    useEffect(()=>{
       let waitASec = setTimeout(()=>{
-         props.onChange(name,st_value);
+         onChange(name,st_value);
       },[200]);
 
       return ()=>{
          clearTimeout(waitASec);
       }
-   },[st_value,name]);
+   },[st_value,name,onChange]);
 
    let handleFocus = event => {
       sst_touched(true);
