@@ -160,56 +160,6 @@ const SavedBasket = props => {
       sst_isLoggedIn(true);
    },[]);
 
-   let handleMoveToBasket = useCallback(async (item)=>{
-      console.log("moving to basket, item:",item);
-
-      /* 2022-02-17: note that even though we're posting to screen MYREG,
-      * Sebenza's module renders the BASK screen.
-      */
-
-      const headers = { 'Content-Type': 'multipart/form-data' };
-      let bodyFormData = new FormData();
-
-      bodyFormData.set( "api", "1" );
-      bodyFormData.set( "Screen", "MYREG" );
-      bodyFormData.set( "Action", "MYREG" );
-      bodyFormData.set( "Store_Code", "FF" );
-      bodyFormData.set( "reg_update_all", "1" );
-      bodyFormData.set( "reg_add2bask", "1" );
-      bodyFormData.set( "Registry:search", "" );
-      //bodyFormData.set( "qty[31701]", "133" );
-
-      bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
-      bodyFormData.set( `add[${item.lineID}]`, "1" );
-
-      bodyFormData.set( "FixAttributes", "1" );
-      //bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
-
-      dispatch(messagesActions.clearMessages());
-      const response = await axios.post( `https://${globalConfig.apiDomain}/mm5/merchant.mvc`, bodyFormData, {
-         headers: headers,
-         withCredentials: true
-      });
-      console.log("response",response);
-      if ( response.status ) {
-         let messages = parseMessages(response.data,dispatch,messagesActions);
-         if (
-            !messages.errorMessages.length &&
-            !messages.informationMessages.length &&
-            response.data.status === "1"
-         ) {
-            console.log("all good");
-
-            // ok now let's remove the item from the saved cart
-            handleRemoveItem(item.lineID);
-         }
-      }
-   },[
-      dispatch,
-      globalConfig.apiDomain,
-      handleRemoveItem
-   ]);
-
    let handleRemoveItem = useCallback(async (lineID)=>{
       console.log("removing from saved  cart, lineID:",lineID);
 
@@ -275,6 +225,56 @@ const SavedBasket = props => {
    },[
       dispatch,
       globalConfig.apiDomain
+   ]);
+
+   let handleMoveToBasket = useCallback(async (item)=>{
+      console.log("moving to basket, item:",item);
+
+      /* 2022-02-17: note that even though we're posting to screen MYREG,
+      * Sebenza's module renders the BASK screen.
+      */
+
+      const headers = { 'Content-Type': 'multipart/form-data' };
+      let bodyFormData = new FormData();
+
+      bodyFormData.set( "api", "1" );
+      bodyFormData.set( "Screen", "MYREG" );
+      bodyFormData.set( "Action", "MYREG" );
+      bodyFormData.set( "Store_Code", "FF" );
+      bodyFormData.set( "reg_update_all", "1" );
+      bodyFormData.set( "reg_add2bask", "1" );
+      bodyFormData.set( "Registry:search", "" );
+      //bodyFormData.set( "qty[31701]", "133" );
+
+      bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
+      bodyFormData.set( `add[${item.lineID}]`, "1" );
+
+      bodyFormData.set( "FixAttributes", "1" );
+      //bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
+
+      dispatch(messagesActions.clearMessages());
+      const response = await axios.post( `https://${globalConfig.apiDomain}/mm5/merchant.mvc`, bodyFormData, {
+         headers: headers,
+         withCredentials: true
+      });
+      console.log("response",response);
+      if ( response.status ) {
+         let messages = parseMessages(response.data,dispatch,messagesActions);
+         if (
+            !messages.errorMessages.length &&
+            !messages.informationMessages.length &&
+            response.data.status === "1"
+         ) {
+            console.log("all good");
+
+            // ok now let's remove the item from the saved cart
+            handleRemoveItem(item.lineID);
+         }
+      }
+   },[
+      dispatch,
+      globalConfig.apiDomain,
+      handleRemoveItem
    ]);
 
    return (
