@@ -40,7 +40,7 @@ import appStyles from "../styles/_app.module.scss";
 function MyApp(props) {
    //console.log("theme",theme);
    const { Component, pageProps } = props;
-   console.log("MyApp rendering, props:",props);
+   //console.log("MyApp rendering, props:",props);
 
    const [state_mobileNavVisible, setState_mobileNavVisible] = useState( false );
    const [state_navVisible, setState_navVisible] = useState( true );
