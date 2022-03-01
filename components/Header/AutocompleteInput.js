@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 
 const AutocompleteInput = props => {
-   console.log("AutocompleteInput props",props);
+   //console.log("AutocompleteInput props",props);
    const [st_activeEl,sst_activeEl] = useState(false);
    const [st_active,sst_active] = useState(false);
 

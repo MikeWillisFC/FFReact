@@ -1,5 +1,5 @@
 import {Fragment,useState,useEffect,useCallback} from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import { useRouter } from "next/router";
@@ -27,8 +27,8 @@ const store = require('store'); // https://github.com/marcuswestin/store.js, for
 import AddressForm from "../../components/Checkout/AddressForm";
 import Field from "../../components/Checkout/Field";
 import ShippingInformation from "../../components/Checkout/ShippingInformation";
-
-import {formatPrice} from "../../utilities";
+import {messagesActions} from "../../store/slices/messages";
+import {formatPrice,parseMessages} from "../../utilities";
 
 import styles from "../../styles/checkout.module.scss";
 
@@ -36,6 +36,7 @@ const Shipping = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+   const dispatch = useDispatch();
 
    const [state_billingAddress,setState_billingAddress] = useState({});
    const [state_shippingAddress,setState_shippingAddress] = useState({});
@@ -67,30 +68,38 @@ const Shipping = props => {
 
    let getAddresses = useCallback(async () => {
       console.log("getAddresses called");
+      dispatch(messagesActions.clearMessages());
       let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getAddresses`,
          {
             withCredentials: true
          }
       );
       console.log("getAddresses response",response);
-      if ( response.status ) {
-         setState_billingAddress( response.data.addresses.billing );
-         setState_shippingAddress( response.data.addresses.shipping );
+      if ( response ) {
+         parseMessages(response.data,dispatch,messagesActions);
+         if ( response.status ) {
+            setState_billingAddress( response.data.addresses.billing );
+            setState_shippingAddress( response.data.addresses.shipping );
+         }
       }
-   },[globalConfig.apiEndpoint]); // getAddresses
+   },[globalConfig.apiEndpoint,dispatch]); // getAddresses
 
    let getStates = useCallback(async () => {
+      dispatch(messagesActions.clearMessages());
       let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getStates`,
          {
             withCredentials: true
          }
       );
       //console.log("response",response);
-      if ( response.status ) {
-         setState_states( response.data.states );
-         setState_countries( response.data.countries );
+      if ( status ) {
+         parseMessages(response.data,dispatch,messagesActions);
+         if ( response.status ) {
+            setState_states( response.data.states );
+            setState_countries( response.data.countries );
+         }
       }
-   },[globalConfig.apiEndpoint]); // getAddresses
+   },[globalConfig.apiEndpoint,dispatch]); // getAddresses
 
    let {setNavVisibility} = props;
    useEffect(()=>{
@@ -210,19 +219,23 @@ const Shipping = props => {
 
             //console.log("globalConfig",globalConfig);
             //`${globalConfig.apiEndpoint}&cAction=getBasePrices`
+            dispatch(messagesActions.clearMessages());
             const response = await axios.post( `https://${globalConfig.domain}/mm5/merchant.mvc?Screen=OSEL_AJAX`, bodyFormData, {
                headers: headers,
                withCredentials: true
             });
-            if ( response.status ) {
-               console.log("response.data",response.data);
-               if ( response.data.shippingMethods ) {
-                  setState_shippingMethods(response.data.shippingMethods);
+            if ( response ) {
+               parseMessages(response.data,dispatch,messagesActions);
+               if ( response.status ) {
+                  console.log("response.data",response.data);
+                  if ( response.data.shippingMethods ) {
+                     setState_shippingMethods(response.data.shippingMethods);
+                  }
+                  if ( response.data.paymentMethods ) {
+                     setState_paymentMethods(response.data.paymentMethods);
+                  }
+                  shippingLoadingControls.start("collapsed");
                }
-               if ( response.data.paymentMethods ) {
-                  setState_paymentMethods(response.data.paymentMethods);
-               }
-               shippingLoadingControls.start("collapsed");
             }
          };
 
@@ -245,7 +258,8 @@ const Shipping = props => {
       shippingLoadingControls,
       shippingProceedControls,
       state_billingAddress,
-      state_shippingAddress
+      state_shippingAddress,
+      dispatch
    ]);
 
    useEffect(()=>{
@@ -334,17 +348,21 @@ const Shipping = props => {
             });
          }
 
+         dispatch(messagesActions.clearMessages());
          const response = await axios.post( `https://${globalConfig.domain}/mm5/merchant.mvc?Screen=api_opay`, bodyFormData, {
             headers: headers,
             withCredentials: true
          });
-         if ( response.status ) {
-            console.log("response.data",response.data);
-            if ( !response.data.errorMessages ) {
-               store.set( 'opay', response.data );
-               router.push(`/checkout/Payment`);
-            } else {
-               alert("error detected, cannot proceed");
+         if ( response ) {
+            parseMessages(response.data,dispatch,messagesActions);
+            if ( response.status ) {
+               console.log("response.data",response.data);
+               if ( !response.data.errorMessages ) {
+                  store.set( 'opay', response.data );
+                  router.push(`/checkout/Payment`);
+               } else {
+                  alert("error detected, cannot proceed");
+               }
             }
          }
       }

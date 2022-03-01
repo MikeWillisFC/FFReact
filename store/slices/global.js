@@ -4,9 +4,14 @@ import config from "../../config/config";
 
 const globalSlice = createSlice({
    name: "global",
-   initialState: {...config},
+   initialState: {
+      ...config,
+      isLoggedIn: false
+   },
    reducers: {
-
+      setLogin(state,action) {
+         state.isLoggedIn = action.payload;
+      }
    }
 });
 

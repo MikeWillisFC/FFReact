@@ -32,7 +32,9 @@ const Policies = props => {
                <p>All shipments will be made via Ground, unless another shipment method is chosen at checkout. All Ground shipments will be charged based on current rates.</p>
             </TabPanel>
             <TabPanel>
-               <p>Having trouble checking out? Call us toll-free at <b>(516) 986-3285</b>, we&apos;ll be glad to help</p>
+               <p>
+                  Call us at <a style={{fontWeight:"bold"}} href="tel:516-986-3285">(516) 986-3285</a>, we&apos;ll be glad to help
+               </p>
             </TabPanel>
          </TabPanels>
       </Tabs>

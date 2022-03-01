@@ -1,11 +1,13 @@
 import {useState,useRef,useCallback,useEffect} from "react";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 
 import Attributes from "../../components/ProductDisplay/Attributes";
 import AddToCart from "../../components/ProductDisplay/AddToCart";
 import {productFormActions} from "../../store/slices/productForm";
+import {messagesActions} from "../../store/slices/messages";
+import {parseMessages} from "../../utilities";
 
 import styles from "../../styles/product.module.scss";
 
@@ -15,6 +17,9 @@ const Form = props => {
       product
    } = props;
 
+   const dispatch = useDispatch();
+   const router = useRouter();
+
    console.log("Form rendering");
 
    const [state_highlightInvalids,setState_highlightInvalids] = useState(false);
@@ -23,9 +28,6 @@ const Form = props => {
    let quantityRef = useRef();
    let ref_attributeValidity = useRef([]);
    let attributeValuesRef = useRef([]);
-
-   const dispatch = useDispatch();
-   const router = useRouter();
 
    let productForm = useSelector((state)=>{
       return state.productForm;
@@ -87,11 +89,13 @@ const Form = props => {
    let runFormSubmit = async (bodyFormData,goToBasket,returnResult) => {
       const headers = { 'Content-Type': 'multipart/form-data' };
       if ( true ) {
+         dispatch(messagesActions.clearMessages());
          const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
             headers: headers,
             withCredentials: true
          });
          if ( response.status ) {
+            parseMessages(response.data,dispatch,messagesActions);
             if ( goToBasket ) {
                props.miscModalDisclosure.onClose();
                console.log("pushing route");

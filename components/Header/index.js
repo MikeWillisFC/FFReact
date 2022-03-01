@@ -1,10 +1,11 @@
 import { Fragment,useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import Link from "next/link";
 import Image from 'next/image';
 import { format,lastDayOfMonth } from 'date-fns';
 import axios from "axios";
 import { FaCaretRight,FaShoppingCart,FaThumbsUp,FaBars } from 'react-icons/fa';
+import { load as loadGoogleRecaptcha } from 'recaptcha-v3';
 import {
    Icon,
    HStack,
@@ -22,15 +23,29 @@ import {
 import Messages from "../Messages";
 import SearchForm from "./SearchForm";
 
+import {globalActions} from "../../store/slices/global";
 import { openMiscModal } from "../../utilities";
 
 import headerStyles from "../../styles/header.module.scss";
 
 const Header = props => {
-   console.log("Header rendering");
+   //console.log("Header rendering");
+   const dispatch = useDispatch();
+
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+   let googleRecaptchaToken = useSelector((state)=>{
+      return state.googleRecaptchaToken;
+   });
+
+   useEffect(()=>{
+      if ( !window.googleRecaptcha ) {
+         loadGoogleRecaptcha('6LeXUcIUAAAAAFgyKzmgoMfJNNHgAlXbpwwZ0-h5').then((recaptcha) => {
+            window.googleRecaptcha = recaptcha;
+         });
+      }
+   },[]);
 
    const breakPoint = useBreakpointValue({ base: "mobile", md: "notMobile" });
 
@@ -38,7 +53,7 @@ const Header = props => {
       return state.messages;
    });
 
-   console.log("messages",messages);
+   //console.log("messages",messages);
 
 
    useEffect(()=>{

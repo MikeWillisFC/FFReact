@@ -35,6 +35,7 @@
     "react-use-hoverintent": "^1.2.6",
     "react-virtuoso": "^2.5.0",
     "react-window": "^1.8.6",
+    "recaptcha-v3": "^1.10.0",
     "responsive-react-window": "^1.0.0",
     "restricted-input": "^3.0.4",
     "sass": "^1.49.0",

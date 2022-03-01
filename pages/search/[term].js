@@ -1,5 +1,5 @@
 import {Fragment,useState,useEffect,useCallback} from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
@@ -14,12 +14,11 @@ import {
 } from "@chakra-ui/react";
 
 import ProductList from "../../components/ProductList";
-
+import {messagesActions} from "../../store/slices/messages";
+import {parseMessages} from "../../utilities";
 import config from "../../config/config";
 
 import catStyles from "../../styles/category.module.scss";
-
-
 
 let defaultSettings = {
    viewType: "list",
@@ -45,6 +44,7 @@ const Search = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+   const dispatch = useDispatch();
 
    const [st_term,sst_term] = useState("");
    const [st_originalTerm,sst_originalTerm] = useState("");
@@ -76,45 +76,45 @@ const Search = props => {
       }
 
       sst_loading( true );
-
+      dispatch(messagesActions.setErrorMessages([]));
       const response = await axios.post( `https://${globalConfig.apiDomain}/api/search/`, bodyFormData, {
          headers: headers,
          withCredentials: true
       });
+      if ( response ) {
+         parseMessages(response.data,dispatch,messagesActions);
+         if ( response.status ) {
+            sst_loading( false );
+            console.log("response.data",response.data);
 
+            // ok then
+            if ( response.data.searchPhrase ) {
+               sst_searchPhrase(response.data.searchPhrase);
+            }
 
+            if ( response.data.resultSet ) {
+               // that's good news..
 
-      if ( response.status ) {
-         sst_loading( false );
-         console.log("response.data",response.data);
-
-         // ok then
-         if ( response.data.searchPhrase ) {
-            sst_searchPhrase(response.data.searchPhrase);
-         }
-
-         if ( response.data.resultSet ) {
-            // that's good news..
-
-            sst_results(
-               response.data.resultSet.resultSet.hits.hit.map(hit=>{
-                  let result = {
-                     ...hit.fields,
-                     thumbnail: hit.fields.thumbpath,
-                     highlightedName:(hit.highlights ? hit.highlights.name : false),
-                     price: (hit.fields.pennyprice ? hit.fields.pennyprice : parseFloat(hit.fields.price) * 100),
-                     basePrice: (hit.fields.pennyprice ? hit.fields.pennyprice : parseFloat(hit.fields.price) * 100),
-                     score: parseFloat(hit.fields._score)
-                  };
-                  if ( hit.exprs && hit.exprs.name_sales ) {
-                     result.boostedScore = parseFloat(hit.exprs.name_sales);
-                  }
-                  return (result);
-               })
-            );
+               sst_results(
+                  response.data.resultSet.resultSet.hits.hit.map(hit=>{
+                     let result = {
+                        ...hit.fields,
+                        thumbnail: hit.fields.thumbpath,
+                        highlightedName:(hit.highlights ? hit.highlights.name : false),
+                        price: (hit.fields.pennyprice ? hit.fields.pennyprice : parseFloat(hit.fields.price) * 100),
+                        basePrice: (hit.fields.pennyprice ? hit.fields.pennyprice : parseFloat(hit.fields.price) * 100),
+                        score: parseFloat(hit.fields._score)
+                     };
+                     if ( hit.exprs && hit.exprs.name_sales ) {
+                        result.boostedScore = parseFloat(hit.exprs.name_sales);
+                     }
+                     return (result);
+                  })
+               );
+            }
          }
       }
-   },[globalConfig.apiDomain]); // runSearch
+   },[globalConfig.apiDomain,dispatch]); // runSearch
 
    useEffect(()=>{
       if ( !term ) {

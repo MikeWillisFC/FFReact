@@ -4,9 +4,18 @@ const messagesSlice = createSlice({
    name: "messages",
    initialState: {
       errorMessages: [],
-      informationMessages: []
+      informationMessages: [],
+      title: "Errors & Notifications"
    },
    reducers: {
+      reset(state) {
+         state.errorMessages = [];
+         state.informationMessages = [];
+         state.title = "Errors & Notifications";
+      },
+      setTitle(state,action) {
+         state.title = action.payload;
+      },
       setErrorMessages(state,action) {
          console.log("running setErrorMessages");
          console.log("state",state);

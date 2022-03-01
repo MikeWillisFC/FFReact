@@ -1,10 +1,12 @@
 import {useEffect,useState,cloneElement,Fragment} from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { Icon,Box,Center,Stack,Grid,List,ListItem,ListIcon,OrderedList,UnorderedList } from "@chakra-ui/react";
 import axios from "axios";
 import Link from "next/link";
 
 import FlyoutContainer from "./FlyoutContainer";
+import {messagesActions} from "../../store/slices/messages";
+import {parseMessages} from "../../utilities";
 
 import styles from "../../styles/leftnav.module.scss";
 
@@ -12,8 +14,12 @@ const LeftNav = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+   const dispatch = useDispatch();
 
    //console.log("LeftNav rendering");
+   let {
+      bestOfferItems
+   } = props;
 
    const [state_openedFlydown,setState_openedFlydown] = useState(false);
 
@@ -24,21 +30,27 @@ const LeftNav = props => {
       let getBasePrices = async () => {
          const headers = { 'Content-Type': 'multipart/form-data' };
          let bodyFormData = new FormData();
-         bodyFormData.set( "items", props.bestOfferItems.join(",") );
+         bodyFormData.set( "items", bestOfferItems.join(",") );
 
          //console.log("globalConfig",globalConfig);
+         dispatch(messagesActions.clearMessages());
          const response = await axios.post( `${globalConfig.apiEndpoint}&cAction=getBasePrices`, bodyFormData, {
             headers: headers
          });
          //console.log( "response",response );
          if ( response.status ) {
+            parseMessages(response.data,dispatch,messagesActions);
             //console.log("response.data.basePrices",response.data.basePrices);
             setState_basePrices( response.data.basePrices );
          }
       }; // getBasePrices
 
       getBasePrices();
-   },[props.bestOfferItems,globalConfig.apiEndpoint]);
+   },[
+      bestOfferItems,
+      globalConfig.apiEndpoint,
+      dispatch
+   ]);
 
    return (
       <Box className={styles.leftnav}>

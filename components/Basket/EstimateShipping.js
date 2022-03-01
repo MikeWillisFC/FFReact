@@ -1,7 +1,7 @@
 import {useState,Fragment} from "react";
 import { FaShippingFast,FaCalculator } from 'react-icons/fa';
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import {
    Box,
    Input,
@@ -21,7 +21,8 @@ import {
    Td
 } from '@chakra-ui/react';
 
-import {formatPrice,openMiscModal,isZipUSorCA,getStateByZip,getProvinceCode} from "../../utilities";
+import {messagesActions} from "../../store/slices/messages";
+import {formatPrice,openMiscModal,isZipUSorCA,getStateByZip,getProvinceCode,parseMessages} from "../../utilities";
 
 import tooltipStyles from "../../styles/chakra/tooltip.module.scss";
 import styles from "../../styles/estimateShipping.module.scss";
@@ -35,6 +36,7 @@ const EstimateShipping = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+   const dispatch = useDispatch();
 
    let validateZip = () => {
       if ( isZipUSorCA( st_zip ) ) {
@@ -96,16 +98,21 @@ const EstimateShipping = props => {
          bodyFormData.set( "singleSupplier", props.singleSupplier );
 
          sst_loading( true );
+         dispatch(messagesActions.clearMessages());
          const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
             headers: headers,
             withCredentials: true
          });
          sst_loading( false );
-         if ( response.status === 200 ) {
-            sst_loading( false );
-            console.log("response",response);
-            sst_rates(response.data.rates);
+         if ( response.status ) {
+            if ( response.status === 200 ) {
+               parseMessages(response.data,dispatch,messagesActions);
+               sst_loading( false );
+               console.log("response",response);
+               sst_rates(response.data.rates);
+            }
          }
+
       }
    }; // calcShipping
 

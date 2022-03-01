@@ -1,10 +1,70 @@
+import {Fragment,useState,useEffect} from "react";
 import {Box,HStack,Center,Flex,Grid,SimpleGrid} from "@chakra-ui/react";
 import Link from "next/link";
 import Image from 'next/image';
+import {useRouter} from 'next/router';
+import { useSelector,useDispatch } from "react-redux";
+
+import {logOut,isLoggedIn} from "../utilities";
+import {globalActions} from "../store/slices/global";
 
 import styles from "../styles/footer.module.scss";
 
-const Footer = (props) => {
+const store = require('store'); // https://github.com/marcuswestin/store.js, for full localStorage support
+
+const Footer = props => {
+   let globalConfig = useSelector((state)=>{
+      return state.global;
+   });
+   const dispatch = useDispatch();
+   const router = useRouter();
+
+   const [st_isLoggedIn,sst_isLoggedIn] = useState(globalConfig.isLoggedIn);
+
+   //console.log("globalConfig.isLoggedIn",globalConfig.isLoggedIn);
+
+   useEffect(()=>{
+      // console.log("Footer useEffect running, globalConfig.isLoggedIn:",globalConfig.isLoggedIn);
+
+      let checkLogin = async () => {
+         /* maybe this is a page reload and the user really is logged in.
+         * check local storage
+         */
+         let loginResult = await isLoggedIn(globalConfig.apiEndpoint);
+         // console.log("loginResult",loginResult);
+         if ( loginResult ) {
+            // console.log("isLoggedIn returned true");
+            // ok, set global config
+            dispatch(globalActions.setLogin(true));
+            sst_isLoggedIn(true);
+         }
+      };
+
+      sst_isLoggedIn(globalConfig.isLoggedIn);
+      if ( !globalConfig.isLoggedIn ) {
+         checkLogin();
+      }
+   },[
+      globalConfig.isLoggedIn,
+      globalConfig.apiEndpoint,
+      dispatch
+   ]);
+
+   let handleLogout = event => {
+      event.preventDefault();
+
+      if ( logOut(globalConfig.apiEndpoint) ) {
+         dispatch(globalActions.setLogin(false));
+         sst_isLoggedIn(false);
+         router.push({
+            pathname: `/`,
+            query: { loggedOut: 1 }
+         });
+      }
+   };
+
+   //console.log("globalConfig",globalConfig);
+
    return (
       <div className={styles.footer}>
          <p className={styles.horizontalLineA}></p>
@@ -70,7 +130,19 @@ const Footer = (props) => {
                <span>•</span><a href="/wedding-planning.html">Wedding Resources</a>
                <span>•</span><a href="/order-favor-samples.php">Samples</a>
                <span>•</span><a href="/terms_etc.php">Terms &amp; Conditions</a>
-               <span>•</span><a href="/sb-login.htm">Log in to View Your Saved Basket</a>
+
+               {
+                  st_isLoggedIn ? (
+                     <Fragment>
+                        <span>•</span>{" "}<span style={{cursor:"pointer"}} onClick={handleLogout}>Log Out</span>
+                     </Fragment>
+                  ) : (
+                     <Fragment>
+                        <span>•</span><Link href="/SavedBasket">Log in to View Your Saved Basket</Link>
+                     </Fragment>
+                  )
+               }
+
                <b className="green" style={{marginLeft: "10px"}}>(516) 986-3285</b>
             </Box>
          </Box>

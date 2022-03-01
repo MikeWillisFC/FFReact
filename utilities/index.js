@@ -1,13 +1,53 @@
 import axios from "axios";
 
+// see https://stackoverflow.com/a/46181/1042398
+export const validateEmail = email => {
+ const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+ return re.test(email);
+}
+
+export const logOut = async (apiEndpoint) => {
+   const response = await axios.get(`${apiEndpoint}&Action=LOGO&LOGO=1`, {
+      withCredentials: true
+   });
+   if ( response && response.status === 200 ) {
+      // console.log("logOut response.data",response.data);
+      return response.data.cli && response.data.cli === "true";
+   } else {
+      return false;
+   }
+};
+
+export const isLoggedIn = async (apiEndpoint) => {
+   const response = await axios.get(`${apiEndpoint}&cAction=checkCLI`, {
+      withCredentials: true
+   });
+   if ( response && response.status === 200 ) {
+      console.log("isLoggedIn response.data",response.data);
+      let result = response.data.cli && response.data.cli === "true";
+      console.log("returning result:",result);
+      return result;
+   } else {
+      return false;
+   }
+}; // checkLogin
+
 export const parseMessages = (data,dispatch,messagesActions) => {
    // console.log("parseMessages called");
    // console.log("data",data);
    // console.log("dispatch",dispatch);
    // console.log("messagesActions",messagesActions);
 
-   let errorMessages = [...data.messageList.errorMessages];
-   let informationMessages = [...data.messageList.informationMessages];
+   let errorMessages;
+   let informationMessages;
+
+   if ( data.messageList ) {
+      errorMessages = [...data.messageList.errorMessages];
+      informationMessages = [...data.messageList.informationMessages];
+   } else {
+      errorMessages = [];
+      informationMessages = [];
+   }
 
    // console.log("errorMessages A",errorMessages);
    // console.log("informationMessages A",informationMessages);
@@ -44,6 +84,11 @@ export const parseMessages = (data,dispatch,messagesActions) => {
       // console.log("dispatching setInformationMessages");
       dispatch(messagesActions.setInformationMessages(informationMessages));
    }
+
+   return {
+      errorMessages: errorMessages,
+      informationMessages: informationMessages
+   };
 }; // parseMessages
 
 export const addScript = (source,id,remove=true) => {

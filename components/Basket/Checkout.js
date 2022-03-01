@@ -90,9 +90,13 @@ const Checkout = props => {
                      }
                      return true;
                   }).map(charge=>{
+                     let description = charge.descrip;
+                     if ( description.indexOf("|") !== -1 ) {
+                        description = description.split("|")[0];
+                     }
                      return (
-                        <Flex key={charge.descrip}>
-                           <Box width="70%">{charge.descrip}:</Box>
+                        <Flex key={description}>
+                           <Box width="70%">{description}:</Box>
                            <Box width="30%">{formatPrice(parseInt(charge.amount))}</Box>
                         </Flex>
                      )

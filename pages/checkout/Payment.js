@@ -1,5 +1,5 @@
 import { Fragment,useState,useEffect,useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
@@ -30,7 +30,7 @@ import Footer from "../../components/Basket/Footer";
 import Field from "../../components/Checkout/Field";
 import Pay from "../../components/Checkout/Pay";
 
-import {formatPrice} from "../../utilities";
+import {formatPrice,parseMessages} from "../../utilities";
 import {messagesActions} from "../../store/slices/messages";
 
 import baskStyles from "../../styles/basket.module.scss";
@@ -452,11 +452,13 @@ const Payment = props => {
       // console.log("bodyFormData",bodyFormData.entries());
       // console.log("bodyFormData",Array.from(bodyFormData.entries()));
 
+      dispatch(messagesActions.clearMessages());
       const response = await axios.post( `https://${globalConfig.domain}/mm5/merchant.mvc`, bodyFormData, {
          headers: headers,
          withCredentials: true
       });
       if ( response.status ) {
+         parseMessages(response.data,dispatch,messagesActions);
          console.log("response.data",response.data);
          //messagesActions.setErrorMessages
 
@@ -465,7 +467,6 @@ const Payment = props => {
             console.log("dispatching setErrorMessages");
             store.set( 'opay', response.data );
             setState_opay( response.data );
-            dispatch(messagesActions.setErrorMessages(response.data.errorMessages));
          }
 
       }

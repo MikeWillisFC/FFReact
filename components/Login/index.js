@@ -8,6 +8,11 @@ import {
 } from '@chakra-ui/react';
 
 import TextInput from "../FormFields/TextInput";
+import {messagesActions} from "../../store/slices/messages";
+import {globalActions} from "../../store/slices/global";
+import {parseMessages} from "../../utilities";
+
+const store = require('store'); // https://github.com/marcuswestin/store.js, for full localStorage support
 
 let fields = {
    username: {
@@ -23,27 +28,41 @@ let fields = {
    }
 };
 
-import {messagesActions} from "../../store/slices/messages";
-import {parseMessages} from "../../utilities";
-
 const Login = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
    const dispatch = useDispatch();
 
+   let {
+      onLogin,
+      returnPath
+   } = props;
+
+   console.log("Login rendering");
+
    const [st_fields,sst_fields] = useState([]);
    const [st_allValid,sst_allValid] = useState(false);
    const [st_submitting,sst_submitting] = useState(false);
    const [st_forgotPassword,sst_forgotPassword] = useState(false);
 
+   useEffect(()=>{console.log("st_fields changed")},[st_fields]);
+   useEffect(()=>{console.log("st_allValid changed")},[st_allValid]);
+   useEffect(()=>{console.log("st_submitting changed")},[st_submitting]);
+   useEffect(()=>{console.log("st_forgotPassword changed")},[st_forgotPassword]);
+
    let setLoginFields = () => {
+      console.log("setLoginFields called");
       sst_fields([fields.username,fields.password]);
    };
 
    useEffect(()=>{
       setLoginFields();
    },[]);
+
+   useEffect(()=>{
+      // are they logged in?
+   },[globalConfig.apiDomain]);
 
    useEffect(()=>{
       if ( st_forgotPassword ) {
@@ -83,10 +102,22 @@ const Login = props => {
             });
             sst_submitting(false);
             if ( response.status ) {
-               parseMessages(response.data,dispatch,messagesActions);
+               let messages = parseMessages(response.data,dispatch,messagesActions);
                console.log("response",response);
                console.log("pushing route");
-               //router.push(props.return);
+               if ( !messages.errorMessages.length && !messages.informationMessages.length ) {
+                  dispatch(globalActions.setLogin(true));
+                  store.set( 'isLoggedIn', true );
+                  if ( onLogin ) {
+                     onLogin();
+                  }
+                  if ( returnPath ) {
+                     router.push(returnPath);
+                  }
+               } else {
+                  dispatch(globalActions.setLogin(false));
+                  store.set( 'isLoggedIn', false );
+               }
             } else {
                console.log("not response status?!");
             }
@@ -103,9 +134,16 @@ const Login = props => {
       }
 
       //console.log("response",response);
-   },[st_forgotPassword,st_fields,globalConfig.apiEndpoint,dispatch]); // handleSubmit
+   },[
+      st_forgotPassword,
+      st_fields,
+      globalConfig.apiEndpoint,
+      dispatch,
+      onLogin,
+      returnPath
+   ]); // handleSubmit
 
-   let handleChange = (changedField,value) => {
+   let handleChange = useCallback((changedField,value) => {
       //console.log("handleChange called for changedField:",changedField);
       let allValid = true;
       sst_fields(prevFields=>{
@@ -123,13 +161,12 @@ const Login = props => {
          });
       });
       sst_allValid(allValid);
-   } // handleChange
+   },[]) // handleChange
 
    return (
       <Center>
          <Box width={["95%","95%","80%"]}>
             <form method="post" onSubmit={handleSubmit}>
-
                {
                   st_fields.map(field=>{
                      return (
@@ -172,8 +209,6 @@ const Login = props => {
             </form>
          </Box>
       </Center>
-
-
    );
 };
 

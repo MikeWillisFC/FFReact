@@ -1,4 +1,5 @@
-import {Fragment,useState,useEffect} from "react";
+import {Fragment,useState,useEffect,useCallback} from "react";
+import { useDispatch } from "react-redux";
 import {
    Box,
    Alert,
@@ -16,28 +17,41 @@ import {
    useDisclosure
 } from "@chakra-ui/react";
 
+import {messagesActions} from "../store/slices/messages";
+
 //import styles from "../styles/messages.module.scss";
 
 const Messages = props => {
    const drawerDisclosure = useDisclosure();
 
-   console.log("Messages rendering, props:",props);
+   //console.log("Messages rendering, props:",props);
 
    let {
       messages
    } = props;
 
+   const dispatch = useDispatch();
+
+   let openDrawer = useCallback(() => {
+      drawerDisclosure.onOpen();
+   },[drawerDisclosure]);
+
    useEffect(()=>{
       if ( messages.errorMessages.length || messages.informationMessages.length ) {
-         drawerDisclosure.onOpen();
+         openDrawer();
       }
-   },[messages,drawerDisclosure]);
+   },[messages,openDrawer]);
+
+   let handleClose = () => {
+      dispatch(messagesActions.reset());
+      drawerDisclosure.onClose();
+   };
 
    return (
       <Drawer
          isOpen={drawerDisclosure.isOpen}
          placement='top'
-         onClose={drawerDisclosure.onClose}
+         onClose={handleClose}
          preserveScrollBarGap={true}
       >
          <DrawerOverlay />
@@ -46,7 +60,7 @@ const Messages = props => {
             <DrawerHeader
                style={{borderBottom:"1px solid #ccc"}}
             >
-               Errors &amp; Notifications
+               {messages.title}
             </DrawerHeader>
 
             <DrawerBody
@@ -63,7 +77,15 @@ const Messages = props => {
                                     key={`errorMessages|${index}`}
                                  >
                                     <AlertIcon />
-                                    <AlertDescription>{message}</AlertDescription>
+                                    <AlertDescription>
+                                       {
+                                          typeof(message) === "string" ? (
+                                             message
+                                          ) : (
+                                             <message />
+                                          )
+                                       }
+                                    </AlertDescription>
                                  </Alert>
                               );
                            })

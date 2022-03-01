@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useRouter } from "next/router";
 import {
    Box,
    Alert,
@@ -13,7 +14,8 @@ import HorizontalProductList from "./HorizontalProductList";
 import styles from "../styles/home.module.scss";
 
 const Home_And_404 = props => {
-   //console.log("Home props", props);
+   console.log("Home props", props);
+   const { query } = useRouter();
 
    let {setNavVisibility} = props.hProps;
 
@@ -28,10 +30,23 @@ const Home_And_404 = props => {
                      <AlertDescription>We&apos;re sorry, that page no longer exists</AlertDescription>
                   </Alert>
                </Box>
-
             )
          }
+
+         {
+            query.loggedOut === "1" && (
+               <Box style={{margin: "75px 30px 10px 30px", paddingBottom: "100px", borderBottom:"1px solid #ccc"}}>
+                  <Alert status='success'>
+                     <AlertIcon />
+                     <AlertTitle mr={2}>Logged Out</AlertTitle>
+                     <AlertDescription>You have been logged out successfully</AlertDescription>
+                  </Alert>
+               </Box>
+            )
+         }
+
          <RotatingBanner slides={props.hProps.slides} duration={props.hProps.slideDuration} />
+
          {
             props.hProps.categories.map((category,index)=>{
                return <HorizontalProductList key={category.target} rowNumber={index} {...category} />

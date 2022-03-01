@@ -1,5 +1,5 @@
 import {Fragment,useState,useEffect,useRef,useMemo,useCallback} from "react";
-import { FaTrashAlt,FaTimes } from 'react-icons/fa';
+import { FaTrashAlt,FaTimes,FaCartPlus } from 'react-icons/fa';
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import axios from "axios";
 import Link from "next/link";
@@ -223,7 +223,6 @@ const ItemRow = props => {
       } else {
          sst_confirmingRemove(true);
       }
-
    }; // handleRemoveItem
 
    let handleCancelRemoveItem = () => {
@@ -239,6 +238,14 @@ const ItemRow = props => {
    let handleRowHideCompleted = useCallback(() => {
       onRemoveItem(state_item.lineID);
    },[onRemoveItem,state_item]);
+
+   let {collapse} = props;
+   useEffect(()=>{
+      if ( collapse ) {
+         controls.start("collapsed");
+         setState_rowCollapsing(true);
+      }
+   },[collapse,controls]);
 
    let cellVariants = {
       open: { opacity: 1, height: "auto", margin: 0, padding: 0 },
@@ -282,83 +289,142 @@ const ItemRow = props => {
             className={`darkestGrey ${styles.itemRow}`}
             data-status={state_item.quantityIsValid ? "" : "error"}
          >
-            <Td rowSpan={state_totalRows} className={`${styles.thumbColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
-               <motion.div
-                  variants={cellVariants}
-                  transition={cellTransition}
-                  initial="open"
-                  exit="collapsed"
-                  animate={controls}
-                  onAnimationComplete={handleRowHideCompleted}
-               >
-                  {
-                     (state_item.images && state_item.images !== "none") &&
-                     <Link href={`/page/FF/PROD/${state_item.code}`}>
-                        <a>
-                           <Image
-                              src={`https://${props.domain}${state_item.images.thumb.path}`}
-                              width="100"
-                              height="100"
-                              alt={state_item.name}
-                              placeholder="blur"
-                              blurDataURL={state_item.images.thumb.blur}
-                           />
-                        </a>
-                     </Link>
-                  }
-               </motion.div>
-            </Td>
-            <Td className={`${styles.nameColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
-               <motion.div
-                  variants={cellVariants}
-                  transition={cellTransition}
-                  initial="open"
-                  exit="collapsed"
-                  animate={controls}
-               >
-                  <Link href={`/page/FF/PROD/${state_item.code}`}>
-                     <a>
-                        <span dangerouslySetInnerHTML={{__html: _.unescape(state_item.name)}} />
-                        <br /><span className="mediumGrey">#{state_item.code}</span>
-                     </a>
-                  </Link>
-               </motion.div>
-            </Td>
-            <Td className={`${styles.priceColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
-               <motion.div
-                  variants={cellVariants}
-                  transition={cellTransition}
-                  initial="open"
-                  exit="collapsed"
-                  animate={controls}
-               >
-                  <b>{formatPrice(parseInt(state_item.price))}</b>
-               </motion.div>
-            </Td>
-            <Td className={`${styles.qtyColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
-               <motion.div
-                  variants={cellVariants}
-                  transition={cellTransition}
-                  initial="open"
-                  exit="collapsed"
-                  animate={controls}
-               >
-                  {renderQuantity()}
-               </motion.div>
-            </Td>
-            <Td className={`${styles.totalColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
-               <motion.div
-                  variants={cellVariants}
-                  transition={cellTransition}
-                  initial="open"
-                  exit="collapsed"
-                  animate={controls}
-               >
-                  {formatPrice(state_quantity * parseInt(state_item.price))}
-               </motion.div>
-            </Td>
             {
-               props.editable && (
+               (props.columns.includes("thumb") && props.columns.includes("name")) && (
+                  <Fragment>
+                     <Td rowSpan={state_totalRows} className={`${styles.thumbColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                        <motion.div
+                           variants={cellVariants}
+                           transition={cellTransition}
+                           initial="open"
+                           exit="collapsed"
+                           animate={controls}
+                           onAnimationComplete={handleRowHideCompleted}
+                        >
+                           {
+                              (state_item.images && state_item.images !== "none") &&
+                              <Link href={`/page/FF/PROD/${state_item.code}`}>
+                                 <a>
+                                    <Image
+                                       src={`https://${props.domain}${state_item.images.thumb.path}`}
+                                       width="100"
+                                       height="100"
+                                       alt={state_item.name}
+                                       placeholder="blur"
+                                       blurDataURL={state_item.images.thumb.blur}
+                                    />
+                                 </a>
+                              </Link>
+                           }
+                        </motion.div>
+                     </Td>
+                     <Td className={`${styles.nameColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                        <motion.div
+                           variants={cellVariants}
+                           transition={cellTransition}
+                           initial="open"
+                           exit="collapsed"
+                           animate={controls}
+                        >
+                           <Link href={`/page/FF/PROD/${state_item.code}`}>
+                              <a>
+                                 <span dangerouslySetInnerHTML={{__html: _.unescape(state_item.name)}} />
+                                 <br /><span className="mediumGrey">#{state_item.code}</span>
+                              </a>
+                           </Link>
+                        </motion.div>
+                     </Td>
+                  </Fragment>
+               )
+            }
+            {
+               props.columns.includes("price") && (
+                  <Td className={`${styles.priceColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                     <motion.div
+                        variants={cellVariants}
+                        transition={cellTransition}
+                        initial="open"
+                        exit="collapsed"
+                        animate={controls}
+                     >
+                        <b>{formatPrice(parseInt(state_item.price))}</b>
+                     </motion.div>
+                  </Td>
+               )
+            }
+            {
+               props.columns.includes("quantity") && (
+                  <Td className={`${styles.qtyColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                     <motion.div
+                        variants={cellVariants}
+                        transition={cellTransition}
+                        initial="open"
+                        exit="collapsed"
+                        animate={controls}
+                     >
+                        {renderQuantity()}
+                     </motion.div>
+                  </Td>
+               )
+            }
+
+            {
+               props.columns.includes("dateAdded") && (
+                  <Td className={`${styles.qtyColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                     <motion.div
+                        variants={cellVariants}
+                        transition={cellTransition}
+                        initial="open"
+                        exit="collapsed"
+                        animate={controls}
+                     >
+                        {props.item.dateAdded}
+                     </motion.div>
+                  </Td>
+               )
+            }
+            {
+               props.columns.includes("total") && (
+                  <Td className={`${styles.totalColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                     <motion.div
+                        variants={cellVariants}
+                        transition={cellTransition}
+                        initial="open"
+                        exit="collapsed"
+                        animate={controls}
+                     >
+                        {formatPrice(state_quantity * parseInt(state_item.price))}
+                     </motion.div>
+                  </Td>
+               )
+            }
+            {
+               props.columns.includes("moveToCart") && (
+                  <Td rowSpan={state_totalRows} className={`${styles.editColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
+                     <motion.div
+                        variants={cellVariants}
+                        transition={cellTransition}
+                        initial="open"
+                        exit="collapsed"
+                        animate={controls}
+                     >
+                        <Button
+                           leftIcon={<FaCartPlus size="17px" />}
+                           variant="solid"
+                           onClick={()=>{
+                              props.onMoveToBasket(state_item);
+                           }}
+                           size="xs"
+                           colorScheme="blue"
+                        >
+                           move to cart
+                        </Button>
+                     </motion.div>
+                  </Td>
+               )
+            }
+            {
+               ((props.editable || props.isSavedBasketItem) && props.columns.includes("remove")) && (
                   <Td rowSpan={state_totalRows} className={`${styles.editColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}

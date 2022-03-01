@@ -1,5 +1,5 @@
 import { Fragment,useState,useEffect,useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
@@ -19,12 +19,18 @@ import {
    Td,
    AlertIcon,
    Alert,
-   Divider
+   Divider,
+   AlertTitle,
+   AlertDescription,
+   Heading
 } from "@chakra-ui/react";
 
 import ItemRow from "../components/Basket/ItemRow";
 import Footer from "../components/Basket/Footer";
 import Login from "../components/Login";
+import {messagesActions} from "../store/slices/messages";
+import {globalActions} from "../store/slices/global";
+import {parseMessages,isLoggedIn} from "../utilities";
 
 import styles from "../styles/basket.module.scss";
 
@@ -32,20 +38,20 @@ const SavedBasket = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
+   const dispatch = useDispatch();
 
    console.log("Saved Basket props",props);
 
-   const [st_loggedIn,sst_loggedIn] = useState(null);
+   const [st_isLoggedIn,sst_isLoggedIn] = useState(null);
 
    const [state_basketItems,setState_basketItems] = useState(null);
    const [state_basketSubtotal,setState_basketSubtotal] = useState(0);
-   const [state_basketCharges,setState_basketCharges] = useState(null);
-   const [state_basketID,setState_basketID] = useState(null);
    const [state_basketLoading,setState_basketLoading] = useState(false);
    const [state_itemValidities,setState_itemValidities] = useState([]);
-   const [state_singleSupplier,setState_singleSupplier] = useState("");
 
-   let {setNavVisibility} = props;
+   let {
+      setNavVisibility
+   } = props;
 
    let quantityIsValid = useCallback(item=>{
       //console.log("quantityIsValid, item:", item);
@@ -68,38 +74,57 @@ const SavedBasket = props => {
       }
    },[]);
 
+   useEffect(()=>{setNavVisibility(false);},[setNavVisibility]);
+
+   useEffect(()=>{
+      let checkLogin = async () => {
+         let result = await isLoggedIn(globalConfig.apiEndpoint);
+         console.log("isLoggedIn result",result);
+         sst_isLoggedIn(result);
+         dispatch(globalActions.setLogin(result));
+      }
+      /* retrieving the saved basket requires login to be true.
+      * But maybe this page has been sitting open for 3000 years, and the login
+      * is no longer valid. Or maybe they have multiple tabs open and they
+      * logged out on another tab. Anyway, we must always revalidate the login
+      */
+      checkLogin();
+   },[globalConfig.apiEndpoint,dispatch]);
+
    useEffect(()=>{
       let getBasket = async () => {
          setState_basketLoading(true);
-         let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getSavedBasket`,
-            {
-               withCredentials: true
-            }
-         );
-         console.log("response",response);
-         if ( response.status ) {
-            setState_basketLoading(false);
+         dispatch(messagesActions.clearMessages());
+         let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getSavedBasket`, {
+            withCredentials: true
+         });
+         if ( response ) {
+            let messages = parseMessages(response.data,dispatch,messagesActions);
+            console.log("response",response);
+            if ( response.status ) {
+               setState_basketLoading(false);
 
-            sst_loggedIn(response.data.loggedIn);
-            if ( response.data.basketItems ) {
-               setState_basketItems( response.data.basketItems.map(item=>{
-                  return {
-                     ...item,
-                     quantityIsValid:quantityIsValid(item)
-                  }
-               }));
-               setState_basketCharges( response.data.basketCharges );
-               setState_basketID( response.data.basketID );
-               setState_singleSupplier( response.data.singleSupplier );
+               if ( response.data.basketItems ) {
+                  setState_basketItems( response.data.basketItems.filter(item=>!item.a).map(item=>{
+                     return {
+                        ...item,
+                        options:item.options.filter(option=>!option.a),
+                        quantityIsValid:quantityIsValid(item)
+                     }
+                  }));
+               }
             }
-
          }
       };
-      setNavVisibility(false);
-      getBasket();
+
+      if ( st_isLoggedIn ) {
+         getBasket();
+      }
+
    },[
       globalConfig.apiEndpoint,
-      setNavVisibility,
+      st_isLoggedIn,
+      dispatch,
       quantityIsValid
    ]);
 
@@ -126,194 +151,155 @@ const SavedBasket = props => {
    },[state_basketItems]);
 
    let handleQuantityChange = useCallback(async (quantity, lineID) => {
-      //console.log("quantity",quantity);
-      /* 2021-09-01: we purposely set the state twice here. First we set the quantity,
-      * which lets the page update quickly with no lag. Then we do the post and
-      * update the price accordingly. If you change the quantity quickly you'll
-      * notice that the price takes a split second longer to update. But at least
-      * the quantity changes immediately so the user isn't annoyed by a laggy interface
-      */
-      if ( !quantity ) {
-         /* maybe they hit backspace or something in prep to
-         * type a new quantity. Anyway, do nothing for now.
-         */
-      } else {
-         /* this change will already have taken place on the ItemRow component,
-         * but we should do it here as well so the Basket has the correct
-         * info stored.
-         */
-         setState_basketItems( prevState=>{
-            return prevState.map(item=>{
-               if ( item.lineID !== lineID ) {
-                  return item;
-               } else {
-                  let price = false;
-                  if ( item.volPrices.length ) {
-                     // console.log("quantity",quantity);
-                     // console.log("item.volPrices",item.volPrices);
-                     let volPrice = item.volPrices.filter(price=>{
-                        if ( price.high === "0" ) {
-                           price.high = "9999";
-                        }
-                        return parseInt(price.low) <= quantity && parseInt(price.high) >= quantity;
-                     });
-                     if ( volPrice.length && volPrice.length === 1 ) {
-                        price = parseInt(volPrice[0].amount);
-                     }
-                  }
-                  // console.log("price",price);
-                  return {
-                     ...item,
-                     quantity:quantity,
-                     quantityIsValid:quantityIsValid({...item,quantity:quantity}),
-                     price:(price || item.price)
-                  };
-               }
-            });
-         });
 
-         /* now make the cart aware of the change. We'll use the return to get the updated
-         * basket charges.
-         */
-         const headers = { 'Content-Type': 'multipart/form-data' };
-         let bodyFormData = new FormData();
-
-         // Action: QNTY
-         // Store_Code: FF
-         // Basket_Line: 3228864
-         // Old_Screen: BASK
-         // Offset:
-         // AllOffset:
-         // CatListingOffset:
-         // RelatedOffset:
-         // SearchOffset:
-         // Quantity: 134
-
-         bodyFormData.set( "Action", "QNTY" );
-         bodyFormData.set( "Store_Code", "FF" );
-         bodyFormData.set( "basketID", state_basketID );
-         bodyFormData.set( "Basket_Line", lineID );
-         bodyFormData.set( "Quantity", quantity );
-
-         //console.log("globalConfig",globalConfig);
-         const response = await axios.post( `${globalConfig.apiEndpoint}`, bodyFormData, {
-            headers: headers,
-            withCredentials: true
-         });
-         if ( response.status ) {
-            //console.log("response.data",response.data);
-            setState_basketCharges( response.data.basketCharges );
-            /* 2021-12-10: I know include volume pricing as part of the item on basket load.
-            * Since we already know the price, the below code is not needed. The price update
-            * on the item line has already been done above.
-            */
-            // setState_basketItems( prevState=>{
-            //    return prevState.map(item=>{
-            //       if ( item.lineID !== lineID ) {
-            //          return item;
-            //       } else {
-            //          //console.log("response.data",response.data);
-            //          // console.log("parseInt(response.data.quantity)",parseInt(response.data.quantity));
-            //          return {...item, price:parseInt(response.data.price)};
-            //       }
-            //    });
-            // });
-         }
-      }
    },[
-      quantityIsValid,
-      globalConfig.apiEndpoint,
-      state_basketID
    ]); // handleQuantityChange
 
-   let handleRemoveItem = async (lineID) => {
-      /* 2021-09-01: we purposely set the state twice here, it makes process feel
-      * quick for the user
+   let handleLogin = useCallback(() => {
+      console.log("log in B");
+      sst_isLoggedIn(true);
+   },[]);
+
+   let handleMoveToBasket = useCallback(async (item)=>{
+      console.log("moving to basket, item:",item);
+
+      /* 2022-02-17: note that even though we're posting to screen MYREG,
+      * Sebenza's module renders the BASK screen.
       */
-      setState_basketItems( prevState=>{
-         return prevState.filter(item=>item.lineID !== lineID);
-      });
 
       const headers = { 'Content-Type': 'multipart/form-data' };
       let bodyFormData = new FormData();
 
-      // Action: RPRD
-      // Store_Code: FF
-      // Basket_Line: 3230336
-
-      bodyFormData.set( "Action", "RPRD" );
+      bodyFormData.set( "api", "1" );
+      bodyFormData.set( "Screen", "MYREG" );
+      bodyFormData.set( "Action", "MYREG" );
       bodyFormData.set( "Store_Code", "FF" );
-      bodyFormData.set( "Basket_Line", lineID );
+      bodyFormData.set( "reg_update_all", "1" );
+      bodyFormData.set( "reg_add2bask", "1" );
+      bodyFormData.set( "Registry:search", "" );
+      //bodyFormData.set( "qty[31701]", "133" );
 
-      //console.log("globalConfig",globalConfig);
-      const response = await axios.post( `${globalConfig.apiEndpoint}`, bodyFormData, {
+      bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
+      bodyFormData.set( `add[${item.lineID}]`, "1" );
+
+      bodyFormData.set( "FixAttributes", "1" );
+      //bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
+
+      dispatch(messagesActions.clearMessages());
+      const response = await axios.post( `https://${globalConfig.apiDomain}/mm5/merchant.mvc`, bodyFormData, {
          headers: headers,
          withCredentials: true
       });
+      console.log("response",response);
       if ( response.status ) {
-         setState_basketCharges( response.data.basketCharges );
-         //console.log("response.data",response.data);
+         let messages = parseMessages(response.data,dispatch,messagesActions);
+         if (
+            !messages.errorMessages.length &&
+            !messages.informationMessages.length &&
+            response.data.status === "1"
+         ) {
+            console.log("all good");
+
+            // ok now let's remove the item from the saved cart
+            handleRemoveItem(item.lineID);
+         }
       }
-   }; // handleRemoveItem
+   },[
+      dispatch,
+      globalConfig.apiDomain,
+      handleRemoveItem
+   ]);
 
+   let handleRemoveItem = useCallback(async (lineID)=>{
+      console.log("removing from saved  cart, lineID:",lineID);
 
+      setState_basketItems( prevState=>{
+         return prevState.map(sItem=>{
+            if ( sItem.lineID === lineID ) {
+               return {...sItem,collapse:true};
+            } else {
+               return sItem;
+            }
+         })
+         //return prevState.filter(sItem=>sItem.lineID !== item.lineID);
+      });
+
+      /* 2022-02-17: note that even though we're posting to screen MYREG,
+      * Sebenza's module renders the BASK screen.
+      */
+
+      const headers = { 'Content-Type': 'multipart/form-data' };
+      let bodyFormData = new FormData();
+
+      bodyFormData.set( "api", "1" );
+      bodyFormData.set( "Screen", "MYREG" );
+      bodyFormData.set( "Action", "MYREG" );
+      bodyFormData.set( "Store_Code", "FF" );
+      bodyFormData.set( "reg_update_all", "1" );
+      // bodyFormData.set( "reg_add2bask", "1" );
+      //bodyFormData.set( "Registry:search", "" );
+      //bodyFormData.set( "qty[31701]", "133" );
+
+      bodyFormData.set( "delete_line", lineID );
+
+      //bodyFormData.set( "FixAttributes", "1" );
+      //bodyFormData.set( `qty[${item.lineID}]`, item.quantity );
+
+      dispatch(messagesActions.clearMessages());
+      const response = await axios.post( `https://${globalConfig.apiDomain}/mm5/merchant.mvc`, bodyFormData, {
+         headers: headers,
+         withCredentials: true
+      });
+      console.log("response",response);
+      if ( response.status ) {
+         let messages = parseMessages(response.data,dispatch,messagesActions);
+         if (
+            !messages.errorMessages.length &&
+            !messages.informationMessages.length &&
+            response.data.status === "1"
+         ) {
+            console.log("all good");
+
+            if ( true ) {
+               /* as of 2022-02-17, the collapse animation is set for .8 seconds
+               * so we can wait 1 full second before deleting the row
+               */
+               setTimeout(()=>{
+                  setState_basketItems( prevState=>{
+                     return prevState.filter(sItem=>sItem.lineID !== lineID);
+                  });
+               }, 1000);
+            }
+         }
+      }
+   },[
+      dispatch,
+      globalConfig.apiDomain
+   ]);
 
    return (
       <Fragment>
          {
-            state_basketItems && state_basketItems.length ? (
-               <Fragment>
-                  <Container maxW="100%">
-                     <HStack spacing="25px" className={`darkGrey ${styles.basketTools}`}>
-                        <Link href="/SavedBasket">View Your Saved Basket</Link>
-                        <Link href="/SaveBasket">Save Your Basket</Link>
-                        <span style={{cursor: "pointer"}}>Need Help With Your Order?</span>
-                     </HStack>
-                     <Table className={styles.basketTable}>
-                        <Thead>
-                           <Tr>
-                              <Th className={styles.thumbColumn}>&nbsp;</Th>
-                              <Th className={styles.nameColumn}>Name</Th>
-                              <Th className={styles.priceColumn}>Price</Th>
-                              <Th className={styles.qtyColumn}>Quantity</Th>
-                              <Th className={styles.totalColumn}>Total</Th>
-                              <Th className={styles.editColumn}>Remove</Th>
-                           </Tr>
-                        </Thead>
-                        <Tbody>
-                           {
-                              state_basketItems.map( item => {
-                                 return (
-                                    <ItemRow
-                                       key={item.lineID}
-                                       item={item}
-                                       domain={globalConfig.domain}
-                                       editable={true}
-                                       apiEndpoint={globalConfig.apiEndpoint}
-                                       basketID={state_basketID}
-                                       onQuantityChange={handleQuantityChange}
-                                       onRemoveItem={handleRemoveItem}
-                                       quantityIsValid={quantityIsValid}
-                                    />
-                                 )
-                              })
-                           }
-                        </Tbody>
-                     </Table>
-                  </Container>
-
-                  <Footer
-                     basketCharges={state_basketCharges}
-                     subtotal={state_basketSubtotal}
-                     items={state_basketItems}
-                     miscModalDisclosure={props.miscModalDisclosure}
-                     setMiscModal={props.setMiscModal}
-                     singleSupplier={state_singleSupplier}
-                  />
-               </Fragment>
+            st_isLoggedIn === null ? (
+               <Stack>
+                  <Box>Checking Login...</Box>
+                  <Skeleton height='20px' />
+                  <Skeleton height='20px' />
+                  <Skeleton height='20px' />
+               </Stack>
             ) : (
-               <Fragment>
-                  {
+               !st_isLoggedIn ? (
+                  <Fragment>
+                     <Heading as='h2' size='lg'  className="darkBlue">
+                        Log in to View Your Saved Basket
+                     </Heading>
+                     <Login
+                        returnPath="/SavedBasket"
+                        onLogin={handleLogin}
+                     />
+                  </Fragment>
+               ) : (
+                  ( !(state_basketItems && state_basketItems.length) ) ? (
                      state_basketLoading ? (
                         <Stack>
                            <Box>Loading your saved basket...</Box>
@@ -322,23 +308,57 @@ const SavedBasket = props => {
                            <Skeleton height='20px' />
                         </Stack>
                      ) : (
-                        st_loggedIn === false ? (
-                           <Login
-                              return="/SavedBasket"
-                           />
-                        ) : (
-                           <Box margin="30px">
-                              <Center>
-                                 <Alert status='info'>
-                                    <AlertIcon />
-                                    Your shopping basket is currently empty.
-                                 </Alert>
-                              </Center>
-                           </Box>
-                        )
+                        <Alert status='info' style={{marginTop: "30px"}}>
+                           <AlertIcon />
+                           Your saved basket is currently empty.
+                        </Alert>
                      )
-                  }
-               </Fragment>
+                  ) : (
+                     <Fragment>
+                        <Container maxW="100%">
+                           <Alert style={{marginBottom:"10px"}} status='info'>
+                              <AlertIcon />
+                              <b>Welcome to Your Saved Item List</b>
+                           </Alert>
+                           <Table className={styles.basketTable}>
+                              <Thead>
+                                 <Tr>
+                                    <Th className={styles.thumbColumn}>&nbsp;</Th>
+                                    <Th className={styles.nameColumn}>Name</Th>
+                                    <Th className={styles.qtyColumn}>Quantity</Th>
+                                    <Th className={styles.editColumn}>Date Added</Th>
+                                    <Th className={styles.editColumn}>Move To Cart</Th>
+                                    <Th className={styles.editColumn}>Remove</Th>
+                                 </Tr>
+                              </Thead>
+                              <Tbody>
+                                 {
+                                    state_basketItems.map( item => {
+                                       return (
+                                          <ItemRow
+                                             columns={["thumb","name","quantity","dateAdded","moveToCart","remove"]}
+                                             key={item.lineID}
+                                             item={item}
+                                             domain={globalConfig.domain}
+                                             editable={false}
+                                             apiEndpoint={globalConfig.apiEndpoint}
+                                             basketID={false}
+                                             onQuantityChange={handleQuantityChange}
+                                             onRemoveItem={handleRemoveItem}
+                                             quantityIsValid={quantityIsValid}
+                                             isSavedBasketItem={true}
+                                             onMoveToBasket={handleMoveToBasket}
+                                             collapse={item.collapse}
+                                          />
+                                       )
+                                    })
+                                 }
+                              </Tbody>
+                           </Table>
+                        </Container>
+                     </Fragment>
+                  )
+               )
             )
          }
       </Fragment>

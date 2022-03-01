@@ -1,6 +1,8 @@
 import {useState,useEffect,useRef,useCallback} from "react";
 import { Select,Input,Textarea,Box,InputGroup,InputRightElement } from "@chakra-ui/react";
 
+import { validateEmail } from "../../utilities";
+
 import styles from "../../styles/checkout.module.scss";
 
 const Field = props => {
@@ -15,13 +17,6 @@ const Field = props => {
    let {onValidityChange,field,required,cardValidator} = props;
 
    let checkValidity = useCallback(value => {
-
-      // see https://stackoverflow.com/a/46181/1042398
-      let validateEmail = email => {
-        const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(email);
-      }
-
       if ( !required ) {
          setState_valid( true );
       } else {

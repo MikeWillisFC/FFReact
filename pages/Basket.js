@@ -1,8 +1,9 @@
 import { Fragment,useState,useEffect,useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
+import {useRouter} from 'next/router';
 import _ from "lodash";
 import {
    HStack,
@@ -19,11 +20,25 @@ import {
    Td,
    AlertIcon,
    Alert,
-   Divider
+   AlertDescription,
+   Divider,
+   Button,
+   Drawer,
+   DrawerBody,
+   DrawerHeader,
+   DrawerOverlay,
+   DrawerContent,
+   DrawerCloseButton,
+
+   useDisclosure
 } from "@chakra-ui/react";
 
 import ItemRow from "../components/Basket/ItemRow";
 import Footer from "../components/Basket/Footer";
+import LoginOrCreate from "../components/LoginOrCreate";
+import {messagesActions} from "../store/slices/messages";
+import {globalActions} from "../store/slices/global";
+import {parseMessages,isLoggedIn} from "../utilities";
 
 import styles from "../styles/basket.module.scss";
 
@@ -32,6 +47,13 @@ const Basket = props => {
       return state.global;
    });
 
+   const dispatch = useDispatch();
+   const router = useRouter();
+   const drawerDisclosure = useDisclosure();
+
+   const [st_drawer,sst_drawer] = useState({header:"",body:""});
+   const [st_isLoggedIn,sst_isLoggedIn] = useState(globalConfig.isLoggedIn);
+   const [st_showLoginOrCreate,sst_showLoginOrCreate] = useState({show:false});
    const [state_basketItems,setState_basketItems] = useState(null);
    const [state_basketSubtotal,setState_basketSubtotal] = useState(0);
    const [state_basketCharges,setState_basketCharges] = useState(null);
@@ -63,16 +85,34 @@ const Basket = props => {
       }
    },[]);
 
+   let getBasketCharges = useCallback(async ()=>{
+      let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getBasketCharges&action=factnitdn&saction=mf_rcmf`,
+         {
+            withCredentials: true
+         }
+      );
+
+      console.log("getBasketCharges response",response);
+      if ( response.status && response.data.basketCharges ) {
+         setState_basketCharges( response.data.basketCharges );
+      }
+   },[
+      globalConfig.apiEndpoint
+   ]);
+
    useEffect(()=>{
       let getBasket = async () => {
          setState_basketLoading(true);
+         dispatch(messagesActions.clearMessages());
+         // factnitdn = fake action ignore this do nothing
          let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getBASK`,
             {
                withCredentials: true
             }
          );
-         //console.log("response",response);
+         console.log("getBasket response",response);
          if ( response.status ) {
+            parseMessages(response.data,dispatch,messagesActions);
             setState_basketLoading(false);
             setState_basketItems( response.data.basketItems.map(item=>{
                return {
@@ -80,9 +120,9 @@ const Basket = props => {
                   quantityIsValid:quantityIsValid(item)
                }
             }));
-            setState_basketCharges( response.data.basketCharges );
             setState_basketID( response.data.basketID );
             setState_singleSupplier( response.data.singleSupplier );
+            getBasketCharges();
          }
       };
       setNavVisibility(false);
@@ -90,7 +130,9 @@ const Basket = props => {
    },[
       globalConfig.apiEndpoint,
       setNavVisibility,
-      quantityIsValid
+      quantityIsValid,
+      getBasketCharges,
+      dispatch
    ]);
 
    useEffect(()=>{
@@ -186,13 +228,15 @@ const Basket = props => {
          bodyFormData.set( "Quantity", quantity );
 
          //console.log("globalConfig",globalConfig);
-         const response = await axios.post( `${globalConfig.apiEndpoint}`, bodyFormData, {
+         dispatch(messagesActions.clearMessages());
+         const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
             headers: headers,
             withCredentials: true
          });
          if ( response.status ) {
+            parseMessages(response.data,dispatch,messagesActions);
             //console.log("response.data",response.data);
-            setState_basketCharges( response.data.basketCharges );
+            getBasketCharges();
             /* 2021-12-10: I know include volume pricing as part of the item on basket load.
             * Since we already know the price, the below code is not needed. The price update
             * on the item line has already been done above.
@@ -213,7 +257,9 @@ const Basket = props => {
    },[
       quantityIsValid,
       globalConfig.apiEndpoint,
-      state_basketID
+      state_basketID,
+      getBasketCharges,
+      dispatch
    ]); // handleQuantityChange
 
    let handleRemoveItem = async (lineID) => {
@@ -236,28 +282,165 @@ const Basket = props => {
       bodyFormData.set( "Basket_Line", lineID );
 
       //console.log("globalConfig",globalConfig);
-      const response = await axios.post( `${globalConfig.apiEndpoint}`, bodyFormData, {
+      dispatch(messagesActions.clearMessages());
+      const response = await axios.post( globalConfig.apiEndpoint, bodyFormData, {
          headers: headers,
          withCredentials: true
       });
       if ( response.status ) {
-         setState_basketCharges( response.data.basketCharges );
+         parseMessages(response.data,dispatch,messagesActions);
+         getBasketCharges();
          //console.log("response.data",response.data);
       }
    }; // handleRemoveItem
+
+   let checkLogin = async () => {
+      let result = await isLoggedIn(globalConfig.apiEndpoint);
+      //console.log("isLoggedIn result",result);
+      sst_isLoggedIn(result);
+      dispatch(globalActions.setLogin(result));
+      return result;
+   }
+
+   let saveBasket = async () => {
+      const headers = { 'Content-Type': 'multipart/form-data' };
+      let bodyFormData = new FormData();
+
+      bodyFormData.set( "Screen", "MYREG" );
+      bodyFormData.set( "Action", "SAVEBASK" );
+      bodyFormData.set( "Remove", "1" );
+      bodyFormData.set( "api", "1" );
+
+      //console.log("globalConfig",globalConfig);
+      dispatch(messagesActions.clearMessages());
+      const response = await axios.post( `https://${globalConfig.apiDomain}/mm5/merchant.mvc`, bodyFormData, {
+         headers: headers,
+         withCredentials: true
+      });
+      if ( response.status ) {
+         let messages = parseMessages(response.data,dispatch,messagesActions);
+         if (
+            !messages.errorMessages.length &&
+            !messages.informationMessages.length &&
+            response.data.status === "1"
+         ) {
+            router.push({
+               pathname: `/SavedBasket`
+            });
+         }
+      }
+   }; // saveBasket
+
+   let handleSaveBasket = async (event)=>{
+      event.preventDefault();
+
+      /* 2022-02-18: if they're not logged in, we need to show them
+      * the create-account modal
+      */
+      let isLoggedIn = await checkLogin();
+      if ( isLoggedIn ) {
+         saveBasket();
+      } else {
+         sst_showLoginOrCreate({
+            show: true,
+            onComplete: ()=>{
+               console.log("it's done homie");
+               saveBasket();
+            },
+            onClose: ()=>{
+               sst_showLoginOrCreate({show:false});
+            }
+         });
+      }
+   };
+
+   let basketHelp = (event) => {
+      event.preventDefault();
+      sst_drawer({
+         header:"Having trouble checking out?",
+         body: (
+            <Alert status="info" >
+               <AlertIcon />
+               <AlertDescription>
+                  Call us at <a style={{fontWeight:"bold"}} href="tel:516-986-3285">(516) 986-3285</a>, we&apos;ll be glad to help
+               </AlertDescription>
+            </Alert>
+         )
+      });
+      drawerDisclosure.onOpen();
+
+      // 2022-02-18: this works but redux doesn't like receiving the react component
+      // dispatch(messagesActions.setTitle("Having trouble checking out?"));
+      // dispatch(messagesActions.setInformationMessages([<Fragment>Call us toll-free at <b>(516) 986-3285</b>, we'll be glad to help</Fragment>]));
+   };
 
    //console.log("Basket props",props);
 
    return (
       <Fragment>
+
+         <Drawer
+            isOpen={drawerDisclosure.isOpen}
+            placement='top'
+            onClose={drawerDisclosure.onClose}
+            preserveScrollBarGap={true}
+         >
+            <DrawerOverlay />
+            <DrawerContent>
+               <DrawerCloseButton />
+               <DrawerHeader
+                  style={{borderBottom:"1px solid #ccc"}}
+               >
+                  {st_drawer.header}
+               </DrawerHeader>
+
+               <DrawerBody
+                  style={{paddingTop:"30px",paddingBottom:"20px"}}
+               >
+                  {st_drawer.body}
+               </DrawerBody>
+            </DrawerContent>
+         </Drawer>
+
+         {
+            st_showLoginOrCreate.show && (
+               <LoginOrCreate
+                  onComplete={st_showLoginOrCreate.onComplete}
+                  onClose={st_showLoginOrCreate.onClose}
+                  miscModalDisclosure={props.miscModalDisclosure}
+                  setMiscModal={props.setMiscModal}
+               />
+            )
+         }
+
          {
             state_basketItems && state_basketItems.length ? (
                <Fragment>
                   <Container maxW="100%">
-                     <HStack spacing="25px" className={`darkGrey ${styles.basketTools}`}>
-                        <Link href="/SavedBasket">View Your Saved Basket</Link>
-                        <Link href="/SaveBasket">Save Your Basket</Link>
-                        <span style={{cursor: "pointer"}}>Need Help With Your Order?</span>
+                     <HStack spacing="25px" className={`${styles.basketTools}`}>
+                        <Button
+                           size="sm"
+                           colorScheme='teal'
+                           variant='ghost'
+                        >
+                           <Link href="/SavedBasket">View Your Saved Basket</Link>
+                        </Button>
+                        <Button
+                           size="sm"
+                           colorScheme='teal'
+                           variant='ghost'
+                           onClick={handleSaveBasket}
+                        >
+                           Save Your Basket
+                        </Button>
+                        <Button
+                           size="sm"
+                           colorScheme='teal'
+                           variant='ghost'
+                           onClick={basketHelp}
+                        >
+                           Need Help With Your Order?
+                        </Button>
                      </HStack>
                      <Table className={styles.basketTable}>
                         <Thead>
@@ -275,6 +458,7 @@ const Basket = props => {
                               state_basketItems.map( item => {
                                  return (
                                     <ItemRow
+                                       columns={["thumb","name","price","quantity","total","remove"]}
                                        key={item.lineID}
                                        item={item}
                                        domain={globalConfig.domain}

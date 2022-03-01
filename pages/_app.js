@@ -117,7 +117,6 @@ function MyApp(props) {
                onClose={miscModalDisclosure.onClose}
                size={state_miscModal.size}
                isCentered
-
             >
                <ModalOverlay />
                <ModalContent

@@ -57,7 +57,7 @@ basket:
 - XXXX items with html in title render wrong http://localhost:3001/page/FF/PROD/5863CS_Wed
 - XXXX estimate shipping
 - show mini-cart on header basket click?
-- handle if quantity change or item removal changes misc fees
+- XXXX handle if quantity change or item removal changes misc fees
 - XXXX change remove to not use dialog, confirm right where remove button is
 
 checkout:
@@ -71,13 +71,14 @@ search:
 - XXXX do it
 - XXXX autocomplete terms
 - XXXX if search is product code, return set of like-items
+- html in prod description is screwy, see http://localhost:3001/search/6704ST
 - XXXX ProductList: router.push( url, url, { shallow: true });
 --- this line will remove things like gclid from the query string. Will Google still
 --- track the click? Perhaps best to skip this line on first render, and only run it
 --- on future renders somehow...
 
 saved cart:
-- do it
+- XXXX do it
 
 departments:
 - XXXX 2x5 is good but others need review
