@@ -2,6 +2,7 @@ import {Fragment,useRef,useEffect,useState,useCallback} from "react";
 import { motion,useAnimation } from "framer-motion";
 import { FaCircle,FaEdit,FaCheckCircle,FaTimesCircle } from 'react-icons/fa';
 import axios from "axios";
+import { useSelector } from "react-redux";
 import {
    Icon,
    Tr,
@@ -15,6 +16,7 @@ import {formatPrice} from "../../utilities";
 import baskStyles from "../../styles/basket.module.scss";
 
 const OptionVal = props => {
+
    /* 2021-12-09: not in use for whatever reason... */
    const [state_hover,setState_hover] = useState(false);
 
@@ -30,6 +32,10 @@ const OptionVal = props => {
 };
 
 const OptionRow = props => {
+   let globalConfig = useSelector((state)=>{
+      return state.global;
+   });
+
    const [state_optionWidth,setState_optionWidth] = useState("auto");
    const [state_optionVal,setState_optionVal] = useState(props.option.value);
    const [state_lastOptionVal,setState_lastOptionVal] = useState(props.option.value);
@@ -40,12 +46,12 @@ const OptionRow = props => {
 
    const controls = useAnimation();
 
-   let { basketID,lineID,domain,option,receiveWidth,optionWidth } = props;
+   let { basketID,lineID,option,receiveWidth,optionWidth } = props;
    let { attID,attCode } = option;
    let propsOptionValue = props.option.value
    let collapsing = props.motion.collapsing;
 
-   console.log("option",option);
+   //console.log("option",option);
 
    let spanRef = useRef();
 
@@ -63,7 +69,7 @@ const OptionRow = props => {
 
    let maxLength = 30;
    let prompt = getPrompt( option.prompt );
-   console.log("prompt",prompt);
+   //console.log("prompt",prompt);
    if ( prompt.textLimit ) {
       maxLength = parseInt(prompt.textLimit);
    }
@@ -176,7 +182,7 @@ const OptionRow = props => {
       setState_updating( true );
 
       try {
-         const response = await axios.post( `https://${domain}/pscripts/misc/attEdit.php`, bodyFormData, {
+         const response = await axios.post( `https://${globalConfig.domain}/pscripts/misc/attEdit.php`, bodyFormData, {
             headers: headers,
             withCredentials: true
          });
@@ -204,7 +210,7 @@ const OptionRow = props => {
    },[
       basketID,
       lineID,
-      domain,
+      globalConfig.domain,
       attID,
       state_optionVal,
       state_lastOptionVal,

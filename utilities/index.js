@@ -1,5 +1,28 @@
 import axios from "axios";
 
+// used wherever the cart is displayed
+export const quantityIsValid = item => {
+   //console.log("quantityIsValid, item:", item);
+   if ( item.customFields.minimum && (item.customFields.enforceMinimum === "1" || item.customFields.enforceMinimum === "yes") ) {
+      let quantity = parseInt(item.quantity);
+      // there's a minimum and it's enforced
+      if ( quantity >= parseInt( item.customFields.minimum ) ) {
+         return true;
+      } else {
+         if ( quantity === 1 && !item.customFields.blockSamples.trim() ) {
+            // samples are allowed, we're good
+            return true;
+         } else {
+            // no good
+            return false;
+         }
+      }
+   } else {
+      return true;
+   }
+};
+
+
 // see https://stackoverflow.com/a/46181/1042398
 export const validateEmail = email => {
  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -115,7 +138,8 @@ const openModal = options => {
       title: options.title,
       content: options.content,
       size: options.size,
-      minHeight: options.minHeight || false
+      minHeight: options.minHeight || false,
+      maxHeight: options.maxHeight || false
    });
 }; // openModal
 export const openMiscModal = async (options) => {
@@ -132,7 +156,8 @@ export const openMiscModal = async (options) => {
             title: options.title,
             content: response.data,
             size: options.size,
-            minHeight: options.minHeight || false
+            minHeight: options.minHeight || false,
+            maxHeight: options.maxHeight || false
          });
       } else {
          // boo
@@ -143,7 +168,8 @@ export const openMiscModal = async (options) => {
          title: options.title,
          content: options.content,
          size: options.size,
-         minHeight: options.minHeight || false
+         minHeight: options.minHeight || false,
+         maxHeight: options.maxHeight || false
       });
    }
 }; // openMiscModal

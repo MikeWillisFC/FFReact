@@ -5,7 +5,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import he from "he";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import {
    Box,
    Heading,

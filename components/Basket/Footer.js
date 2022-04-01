@@ -3,6 +3,7 @@ import { Box,Stack } from "@chakra-ui/react";
 
 import Policies from "./Policies";
 import Checkout from "./Checkout";
+import Charges from "./Charges";
 
 import styles from "../../styles/basket.module.scss";
 
@@ -17,7 +18,8 @@ const Footer = props => {
             <Policies />
          </Box>
          <Box width={["100%", "50%","40%"]}>
-            <Checkout
+            <Charges
+               viewType="cart"
                basketCharges={props.basketCharges}
                subtotal={props.subtotal}
                items={props.items}

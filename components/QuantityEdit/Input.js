@@ -121,6 +121,8 @@ const MyInput = props => {
             onMouseOut={event=>setState_quantityFocused(false)}
             onFocus={event=>setState_quantityFocused(true)}
             onBlur={event=>setState_quantityFocused(false)}
+            width={props.width || null}
+            size={props.size || null}
          >
             {
                props.showLabel ? (

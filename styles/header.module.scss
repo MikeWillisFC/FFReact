@@ -58,6 +58,11 @@
    padding-left: 5px;
 
    border-bottom-left-radius: 7px;
+
+   .linkIcon {
+      position: relative;
+      top: 2px;
+   }
 }
 .siteAssistanceNav > div > button {
    font-weight: bold;

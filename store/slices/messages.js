@@ -17,16 +17,30 @@ const messagesSlice = createSlice({
          state.title = action.payload;
       },
       setErrorMessages(state,action) {
-         console.log("running setErrorMessages");
-         console.log("state",state);
-         console.log("action",action);
-         state.errorMessages = action.payload;
+         // console.log("running setErrorMessages");
+         // console.log("state",state);
+         // console.log("action",action);
+         if ( action.payload.title ) {
+            // we received an object
+            state.title = action.payload.title;
+            state.errorMessages = action.payload.messages;
+         } else {
+            // we received an array
+            state.errorMessages = action.payload;
+         }
       },
       setInformationMessages(state,action) {
-         console.log("running setInformationMessages");
-         console.log("state",state);
-         console.log("action",action);
-         state.informationMessages = action.payload;
+         // console.log("running setInformationMessages");
+         // console.log("state",state);
+         // console.log("action",action);
+         if ( action.payload.title ) {
+            // we received an object
+            state.title = action.payload.title;
+            state.informationMessages = action.payload.messages;
+         } else {
+            // we received an array
+            state.informationMessages = action.payload;
+         }
       },
       clearMessages(state) {
          state.errorMessages = [];

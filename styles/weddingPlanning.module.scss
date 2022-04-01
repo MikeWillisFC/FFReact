@@ -1,0 +1,40 @@
+.articleList {
+   width: 100%;
+   padding: 5px;
+   border: 1px solid #ccc;
+   margin: 5px;
+   page-break-inside: avoid;
+   break-inside: avoid-column;
+   display: table;
+   margin-top: 0px;
+   margin-bottom: 5px;
+
+   h1,h2,h3 {
+      margin-bottom: 10px;
+      border-bottom: 1px solid;
+   }
+
+   .article {
+      clear: both;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+
+      a span {
+         padding: 2px !important;
+      }
+
+      a {
+         color: #1874ab;
+      }
+
+      a:hover, a:active {
+         text-decoration: underline;
+      }
+
+      em {
+         font-size: .9em;
+      }
+   }
+}
+

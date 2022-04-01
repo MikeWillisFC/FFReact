@@ -8,7 +8,8 @@ import {
    Box,
    InputRightElement,
    CheckIcon,
-   Button
+   Button,
+   Textarea
 } from "@chakra-ui/react";
 
 import { validateEmail } from "../../utilities";
@@ -27,8 +28,29 @@ const TextInput = props => {
    let {
       name,
       onChange,
-      isRequired
+      isRequired,
+      reset,
+      sendValidity
    } = props;
+
+   useEffect(()=>{
+      if ( reset ) {
+         sst_touched(false);
+         sst_blurry(false);
+         sst_value("");
+         sst_isInvalid(false);
+      }
+   },[reset]);
+
+   useEffect(()=>{
+      if ( sendValidity ) {
+         sendValidity(name,st_isInvalid);
+      }
+   },[
+      sendValidity,
+      st_isInvalid,
+      name
+   ]);
 
    useEffect(()=>{
       let waitASec = setTimeout(()=>{
@@ -103,15 +125,30 @@ const TextInput = props => {
             isInvalid={st_isInvalid}
          >
             <FormLabel htmlFor={props.name}>{props.label}</FormLabel>
-            <Input
-               height="60px"
-               id={props.name}
-               type={st_type}
-               onFocus={handleFocus}
-               onBlur={handleBlur}
-               onChange={handleChange}
-               value={st_value}
-            />
+
+            {
+               props.type !== "textarea" ? (
+                  <Input
+                     height="60px"
+                     id={props.name}
+                     type={st_type}
+                     onFocus={handleFocus}
+                     onBlur={handleBlur}
+                     onChange={handleChange}
+                     value={st_value}
+                  />
+               ) : (
+                  <Textarea
+                     id={props.name}
+                     onFocus={handleFocus}
+                     onBlur={handleBlur}
+                     onChange={handleChange}
+                     value={st_value}
+                     size='md' // 2022-03-07: this doesn't seem to do anything
+                     style={{minHeight:"170px"}}
+                  />
+               )
+            }
 
             {
                (st_value && props.type === "password") && (

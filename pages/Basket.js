@@ -33,12 +33,13 @@ import {
    useDisclosure
 } from "@chakra-ui/react";
 
+import BasketTable from "../components/Basket/BasketTable";
 import ItemRow from "../components/Basket/ItemRow";
 import Footer from "../components/Basket/Footer";
 import LoginOrCreate from "../components/LoginOrCreate";
 import {messagesActions} from "../store/slices/messages";
 import {globalActions} from "../store/slices/global";
-import {parseMessages,isLoggedIn} from "../utilities";
+import {quantityIsValid,parseMessages,isLoggedIn} from "../utilities";
 
 import styles from "../styles/basket.module.scss";
 
@@ -63,27 +64,6 @@ const Basket = props => {
    const [state_singleSupplier,setState_singleSupplier] = useState("");
 
    let {setNavVisibility} = props;
-
-   let quantityIsValid = useCallback(item=>{
-      //console.log("quantityIsValid, item:", item);
-      if ( item.customFields.minimum && (item.customFields.enforceMinimum === "1" || item.customFields.enforceMinimum === "yes") ) {
-         let quantity = parseInt(item.quantity);
-         // there's a minimum and it's enforced
-         if ( quantity >= parseInt( item.customFields.minimum ) ) {
-            return true;
-         } else {
-            if ( quantity === 1 && !item.customFields.blockSamples.trim() ) {
-               // samples are allowed, we're good
-               return true;
-            } else {
-               // no good
-               return false;
-            }
-         }
-      } else {
-         return true;
-      }
-   },[]);
 
    let getBasketCharges = useCallback(async ()=>{
       let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getBasketCharges&action=factnitdn&saction=mf_rcmf`,
@@ -130,7 +110,6 @@ const Basket = props => {
    },[
       globalConfig.apiEndpoint,
       setNavVisibility,
-      quantityIsValid,
       getBasketCharges,
       dispatch
    ]);
@@ -255,7 +234,6 @@ const Basket = props => {
          }
       }
    },[
-      quantityIsValid,
       globalConfig.apiEndpoint,
       state_basketID,
       getBasketCharges,
@@ -442,38 +420,49 @@ const Basket = props => {
                            Need Help With Your Order?
                         </Button>
                      </HStack>
-                     <Table className={styles.basketTable}>
-                        <Thead>
-                           <Tr>
-                              <Th className={styles.thumbColumn}>&nbsp;</Th>
-                              <Th className={styles.nameColumn}>Name</Th>
-                              <Th className={styles.priceColumn}>Price</Th>
-                              <Th className={styles.qtyColumn}>Quantity</Th>
-                              <Th className={styles.totalColumn}>Total</Th>
-                              <Th className={styles.editColumn}>Remove</Th>
-                           </Tr>
-                        </Thead>
-                        <Tbody>
-                           {
-                              state_basketItems.map( item => {
-                                 return (
-                                    <ItemRow
-                                       columns={["thumb","name","price","quantity","total","remove"]}
-                                       key={item.lineID}
-                                       item={item}
-                                       domain={globalConfig.domain}
-                                       editable={true}
-                                       apiEndpoint={globalConfig.apiEndpoint}
-                                       basketID={state_basketID}
-                                       onQuantityChange={handleQuantityChange}
-                                       onRemoveItem={handleRemoveItem}
-                                       quantityIsValid={quantityIsValid}
-                                    />
-                                 )
-                              })
-                           }
-                        </Tbody>
-                     </Table>
+
+                     <BasketTable
+                        items={state_basketItems}
+                        viewType="shoppingCart"
+                        
+                        basketID={state_basketID}
+                        onQuantityChange={handleQuantityChange}
+                        onRemoveItem={handleRemoveItem}
+                     />
+
+                     {
+                        false ? (
+                           <Table className={styles.basketTable}>
+                              <Thead>
+                                 <Tr>
+                                    <Th className={styles.thumbColumn}>&nbsp;</Th>
+                                    <Th className={styles.nameColumn}>Name</Th>
+                                    <Th className={styles.priceColumn}>Price</Th>
+                                    <Th className={styles.qtyColumn}>Quantity</Th>
+                                    <Th className={styles.totalColumn}>Total</Th>
+                                    <Th className={styles.editColumn}>Remove</Th>
+                                 </Tr>
+                              </Thead>
+                              <Tbody>
+                                 {
+                                    state_basketItems.map( item => {
+                                       return (
+                                          <ItemRow
+                                             columns={["thumb","name","price","quantity","total","remove"]}
+                                             key={item.lineID}
+                                             item={item}
+                                             editable={true}
+                                             basketID={state_basketID}
+                                             onQuantityChange={handleQuantityChange}
+                                             onRemoveItem={handleRemoveItem}
+                                          />
+                                       )
+                                    })
+                                 }
+                              </Tbody>
+                           </Table>
+                        ) : ""
+                     }
                   </Container>
 
                   <Footer

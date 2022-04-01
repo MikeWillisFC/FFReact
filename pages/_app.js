@@ -128,6 +128,8 @@ function MyApp(props) {
                   </ModalHeader>
                   <Box
                      minHeight={state_miscModal.minHeight || ""}
+                     maxHeight={state_miscModal.maxHeight || ""}
+                     overflow="auto"
                   >
                      {
                         typeof( state_miscModal.content ) === "object" ? (

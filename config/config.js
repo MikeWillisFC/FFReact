@@ -6,6 +6,10 @@ const config = {
    apiDomain: "www.favorfavor.com",
    siteName: "Favor Favor",
    phoneNumber: "(516) 986-3285",
+   phoneNumberRaw: "5169863285",
+   phonesDown: false,
+   faxNumber: "(516) 781-1036",
+   customerServiceEmail: "customer_service@favorfavor.com",
    phoneStatus:"up", // 2021-06-28: this should be updated to come from the API so we don't have to rebuild on change
    estDelivery: true,
 

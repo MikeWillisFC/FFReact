@@ -25,6 +25,7 @@ import {
    Heading
 } from "@chakra-ui/react";
 
+import BasketTable from "../components/Basket/BasketTable";
 import ItemRow from "../components/Basket/ItemRow";
 import Footer from "../components/Basket/Footer";
 import Login from "../components/Login";
@@ -100,7 +101,7 @@ const SavedBasket = props => {
          });
          if ( response ) {
             let messages = parseMessages(response.data,dispatch,messagesActions);
-            console.log("response",response);
+            console.log("getBasket (saved) response",response);
             if ( response.status ) {
                setState_basketLoading(false);
 
@@ -320,41 +321,57 @@ const SavedBasket = props => {
                               <AlertIcon />
                               <b>Welcome to Your Saved Item List</b>
                            </Alert>
-                           <Table className={styles.basketTable}>
-                              <Thead>
-                                 <Tr>
-                                    <Th className={styles.thumbColumn}>&nbsp;</Th>
-                                    <Th className={styles.nameColumn}>Name</Th>
-                                    <Th className={styles.qtyColumn}>Quantity</Th>
-                                    <Th className={styles.editColumn}>Date Added</Th>
-                                    <Th className={styles.editColumn}>Move To Cart</Th>
-                                    <Th className={styles.editColumn}>Remove</Th>
-                                 </Tr>
-                              </Thead>
-                              <Tbody>
-                                 {
-                                    state_basketItems.map( item => {
-                                       return (
-                                          <ItemRow
-                                             columns={["thumb","name","quantity","dateAdded","moveToCart","remove"]}
-                                             key={item.lineID}
-                                             item={item}
-                                             domain={globalConfig.domain}
-                                             editable={false}
-                                             apiEndpoint={globalConfig.apiEndpoint}
-                                             basketID={false}
-                                             onQuantityChange={handleQuantityChange}
-                                             onRemoveItem={handleRemoveItem}
-                                             quantityIsValid={quantityIsValid}
-                                             isSavedBasketItem={true}
-                                             onMoveToBasket={handleMoveToBasket}
-                                             collapse={item.collapse}
-                                          />
-                                       )
-                                    })
-                                 }
-                              </Tbody>
-                           </Table>
+
+                           <BasketTable
+                              items={state_basketItems}
+                              viewType="savedBasket"
+
+                              basketID={false}
+                              onQuantityChange={handleQuantityChange}
+                              onRemoveItem={handleRemoveItem}
+                              isSavedBasketItem={true}
+                              onMoveToBasket={handleMoveToBasket}
+                           />
+
+                           {
+                              false && (
+                                 <Table className={styles.basketTable}>
+                                    <Thead>
+                                       <Tr>
+                                          <Th className={styles.thumbColumn}>&nbsp;</Th>
+                                          <Th className={styles.nameColumn}>Name</Th>
+                                          <Th className={styles.qtyColumn}>Quantity</Th>
+                                          <Th className={styles.editColumn}>Date Added</Th>
+                                          <Th className={styles.editColumn}>Move To Cart</Th>
+                                          <Th className={styles.editColumn}>Remove</Th>
+                                       </Tr>
+                                    </Thead>
+                                    <Tbody>
+                                       {
+                                          state_basketItems.map( item => {
+                                             return (
+                                                <ItemRow
+                                                   columns={["thumb","name","quantity","dateAdded","moveToCart","remove"]}
+                                                   key={item.lineID}
+                                                   item={item}
+                                                   domain={globalConfig.domain}
+                                                   editable={false}
+                                                   apiEndpoint={globalConfig.apiEndpoint}
+                                                   basketID={false}
+                                                   onQuantityChange={handleQuantityChange}
+                                                   onRemoveItem={handleRemoveItem}
+                                                   quantityIsValid={quantityIsValid}
+                                                   isSavedBasketItem={true}
+                                                   onMoveToBasket={handleMoveToBasket}
+                                                   collapse={item.collapse}
+                                                />
+                                             )
+                                          })
+                                       }
+                                    </Tbody>
+                                 </Table>
+                              )
+                           }
                         </Container>
                      </Fragment>
                   )

@@ -4,6 +4,7 @@ import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import axios from "axios";
 import Link from "next/link";
 import Image from "next/image";
+import { useSelector } from "react-redux";
 import {
    Button,
    Table,
@@ -29,11 +30,15 @@ import OptionRow from "./OptionRow";
 import {default as QuantityInput} from "../QuantityEdit/Input";
 import QuantityDropdown from "../QuantityEdit/QuantityDropdown";
 
-import {formatPrice} from "../../utilities";
+import {quantityIsValid,formatPrice} from "../../utilities";
 
 import styles from "../../styles/basket.module.scss";
 
 const ItemRow = props => {
+   let globalConfig = useSelector((state)=>{
+      return state.global;
+   });
+
    const [state_item,setState_item] = useState(props.item);
    const [state_totalRows,setState_totalRows] = useState( 1 );
    const [state_quantity,setState_quantity] = useState( props.item.quantity );
@@ -50,14 +55,14 @@ const ItemRow = props => {
    const confirmRemoveCancelRef = useRef();
    const controls = useAnimation();
 
-   let {item,onRemoveItem,quantityIsValid,onQuantityChange} = props;
+   let {item,onRemoveItem,onQuantityChange} = props;
 
    let totalRows = 1;
    let optionWidths = useMemo(()=>{
       return [];
    },[]);
 
-   console.log("props.item",props.item);
+   //console.log("props.item",props.item);
 
    let minQuantityNote = useMemo(()=>{
       let result = `The minimum quantity for this item is ${state_minimum.prodMin}`;
@@ -127,17 +132,28 @@ const ItemRow = props => {
 
    useEffect(()=>{
       // let's wait a bit before doing it, in case they're typing
+      console.log("quantity or something changed");
+      console.log("--state_quantity",state_quantity);
+      console.log("--state_item.quantity",state_item.quantity);
+      console.log("--state_item.lineID",state_item.lineID);
       let waitASec = setTimeout(()=>{
          if ( state_quantity !== state_item.quantity ) {
+            console.log("--CALLING onQuantityChange")
             onQuantityChange( state_quantity, state_item.lineID );
          }
       },600);
       return ()=>{clearTimeout(waitASec);}
    },[
       state_quantity,
-      state_item,
+      state_item.quantity,
+      state_item.lineID,
       onQuantityChange
    ]);
+
+   useEffect(()=>{ console.log("state_quantity changed",state_quantity); },[ state_quantity ]);
+   useEffect(()=>{ console.log("state_item.quantity changed",state_item.quantity); },[ state_item.quantity ]);
+   useEffect(()=>{ console.log("state_item.lineID changed",state_item.lineID); },[ state_item.lineID ]);
+   useEffect(()=>{ console.log("onQuantityChange changed"); },[ onQuantityChange ]);
 
    useEffect(()=>{
       let timer = setTimeout(()=>{
@@ -158,7 +174,7 @@ const ItemRow = props => {
    },[optionWidths]);
 
    let renderQuantity = () => {
-      if ( props.editable ) {
+      if ( props.quantityEditable ) {
          if ( state_inputType === "input" ) {
             return (
                <QuantityInput
@@ -167,6 +183,8 @@ const ItemRow = props => {
                   minimum={state_minimum.prodMin}
                   enforceMinimum={state_item.customFields.enforceMinimum}
                   samplesPermitted={state_samplesPermitted}
+                  size="sm"
+                  width="100px"
                />
             );
          } else {
@@ -186,8 +204,8 @@ const ItemRow = props => {
    }; // renderQuantity
 
    let handleQuantityChange = useCallback(eventOrVal => {
+      console.log("handleQuantityChange called");
       let quantity = eventOrVal.target ? eventOrVal.target.value : eventOrVal;
-      setState_quantity(quantity);
       let price = false;
       if ( state_item.volPrices.length ) {
          // console.log("quantity",quantity);
@@ -204,13 +222,14 @@ const ItemRow = props => {
       }
       //console.log("price",price);
       let qValid = quantityIsValid({...state_item,quantity:quantity});
+      setState_quantity(quantity);
       setState_quantityValid( qValid );
       setState_item({
          ...state_item,
          quantityIsValid:qValid,
          price:(price || state_item.price)
-      })
-   },[state_item,quantityIsValid]); // handleQuantityChange
+      });
+   },[state_item]); // handleQuantityChange
 
    let receiveWidth = width => {
       //console.log("receiving width:",width);
@@ -232,20 +251,26 @@ const ItemRow = props => {
       //console.log("removing");
       controls.start("collapsed");
       setState_rowCollapsing(true);
-      //props.onRemoveItem(item.lineID);
+      props.onRemoveItem(item.lineID);
       setState_confirmRemoveIsOpen( false );
    };
    let handleRowHideCompleted = useCallback(() => {
-      onRemoveItem(state_item.lineID);
-   },[onRemoveItem,state_item]);
+      console.log("handleRowHideCompleted called");
+      if ( typeof( onRemoveItem ) === "function" ) {
+         console.log("calling onRemoveItem");
+         onRemoveItem(state_item.lineID);
+      }
+   },[
+      onRemoveItem,
+      state_item
+   ]);
 
-   let {collapse} = props;
    useEffect(()=>{
-      if ( collapse ) {
+      if ( state_item.collapse ) {
          controls.start("collapsed");
          setState_rowCollapsing(true);
       }
-   },[collapse,controls]);
+   },[state_item.collapse,controls]);
 
    let cellVariants = {
       open: { opacity: 1, height: "auto", margin: 0, padding: 0 },
@@ -290,7 +315,7 @@ const ItemRow = props => {
             data-status={state_item.quantityIsValid ? "" : "error"}
          >
             {
-               (props.columns.includes("thumb") && props.columns.includes("name")) && (
+               (props.columns.includes("thumb") && props.columns.includes("Name")) && (
                   <Fragment>
                      <Td rowSpan={state_totalRows} className={`${styles.thumbColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                         <motion.div
@@ -306,7 +331,7 @@ const ItemRow = props => {
                               <Link href={`/page/FF/PROD/${state_item.code}`}>
                                  <a>
                                     <Image
-                                       src={`https://${props.domain}${state_item.images.thumb.path}`}
+                                       src={`https://${globalConfig.domain}${state_item.images.thumb.path}`}
                                        width="100"
                                        height="100"
                                        alt={state_item.name}
@@ -338,7 +363,7 @@ const ItemRow = props => {
                )
             }
             {
-               props.columns.includes("price") && (
+               props.columns.includes("Price") && (
                   <Td className={`${styles.priceColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
@@ -353,7 +378,7 @@ const ItemRow = props => {
                )
             }
             {
-               props.columns.includes("quantity") && (
+               props.columns.includes("Quantity") && (
                   <Td className={`${styles.qtyColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
@@ -369,7 +394,7 @@ const ItemRow = props => {
             }
 
             {
-               props.columns.includes("dateAdded") && (
+               props.columns.includes("Date Added") && (
                   <Td className={`${styles.qtyColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
@@ -384,7 +409,7 @@ const ItemRow = props => {
                )
             }
             {
-               props.columns.includes("total") && (
+               props.columns.includes("Total") && (
                   <Td className={`${styles.totalColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
@@ -399,7 +424,7 @@ const ItemRow = props => {
                )
             }
             {
-               props.columns.includes("moveToCart") && (
+               props.columns.includes("Move To Cart") && (
                   <Td rowSpan={state_totalRows} className={`${styles.editColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
@@ -424,7 +449,7 @@ const ItemRow = props => {
                )
             }
             {
-               ((props.editable || props.isSavedBasketItem) && props.columns.includes("remove")) && (
+               props.columns.includes("Remove") && (
                   <Td rowSpan={state_totalRows} className={`${styles.editColumn} ${(state_rowCollapsing ? styles.collapsing : '')}`}>
                      <motion.div
                         variants={cellVariants}
@@ -480,8 +505,8 @@ const ItemRow = props => {
             state_item.options !== "false" && state_item.options !== "unknown" &&
             <Fragment>
                {
-                  state_item.options.map(option=>{
-                     //console.log("option",option);
+                  state_item.options.map((option,index)=>{
+                     console.log("option",option);
                      return (
                         <OptionRow
                            motion={{
@@ -491,15 +516,15 @@ const ItemRow = props => {
                               exit: "collapsed",
                               collapsing: state_rowCollapsing
                            }}
-                           editable={props.editable}
-                           key={option.code}
+                           editable={props.viewType === "shoppingCart"}
+                           quantityEditable={props.quantityEditable}
+                           key={`${state_item.lineID}|${index}|${option.code}`}
                            option={option}
                            quantity={state_quantity}
                            optionWidth={state_optionWidth}
                            receiveWidth={receiveWidth}
-                           basketID={props.basketID}
+                           basketID={props.basketID || false}
                            lineID={state_item.lineID}
-                           domain={props.domain}
                         />
                      )
                   })

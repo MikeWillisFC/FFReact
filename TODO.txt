@@ -48,6 +48,7 @@ product:
 - XXXX fix "apply labels what's this" attribute: http://localhost:3001/page/FF/PROD/2014000DD
 - XXXX also add tooltip to "rush production" attribute: http://localhost:3001/page/FF/PROD/4166000
 - XXXX remove modal overlay as soon as attribute is chosen: http://localhost:3001/page/FF/PROD/4214000DD
+- handle jquery.prod.specific.js attribute stuff: https://www.favorfavor.com/page/FF/PROD/WS8534
 
 basket:
 - XXXX check result of editable attribute update
@@ -66,6 +67,7 @@ checkout:
 - OSEL + OPAY: the OSEL page saves the basket to local storage / cookie (using the store plugin). If
 --- the basket is not available on OPAY, it crashes. We need a fallback in this scenario, not a crash
 - OSEL: the form is slow and laggy due to re-renders when typing. Must fix this
+- paypal
 
 search:
 - XXXX do it

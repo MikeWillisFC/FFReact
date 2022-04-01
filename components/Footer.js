@@ -116,20 +116,50 @@ const Footer = props => {
                      width={"35%","35%","35%","30%"}
                   >
                      <Center>
-                        <a href="https://www.favorfavor.com/wedding-planning.html">
-                           <Image src="https://www.favorfavor.com/images/misc/weddingResources.png" width="239" height="239" alt="Wedding Resources" />
-                        </a>
+                        <Link href="/wedding-planning.html">
+                           <a>
+                              <Image src="https://www.favorfavor.com/images/misc/weddingResources.png" width="239" height="239" alt="Wedding Resources" />
+                           </a>
+                        </Link>
                      </Center>
                   </Box>
                </Flex>
             </Box>
 
             <Box className={`darkBlue ${styles.nav}`}>
-               <a href="/contact_us.php">Contact Us</a>
-               <span>•</span><a href="/aboutus.html">About Us</a>
-               <span>•</span><a href="/wedding-planning.html">Wedding Resources</a>
-               <span>•</span><a href="/order-favor-samples.php">Samples</a>
-               <span>•</span><a href="/terms_etc.php">Terms &amp; Conditions</a>
+               <Link href="/contact_us.php">
+                  <a>
+                     Contact Us
+                  </a>
+               </Link>
+
+               <span>•</span>
+               <Link href="/aboutus.html">
+                  <a>
+                     About Us
+                  </a>
+               </Link>
+
+               <span>•</span>
+               <Link href="/wedding-planning.html">
+                  <a>
+                     Wedding Resources
+                  </a>
+               </Link>
+
+               <span>•</span>
+               <Link href="/order-favor-samples.php">
+                  <a>
+                     Samples
+                  </a>
+               </Link>
+
+               <span>•</span>
+               <Link href="/terms_etc.php">
+                  <a>
+                     Terms &amp; Conditions
+                  </a>
+               </Link>
 
                {
                   st_isLoggedIn ? (

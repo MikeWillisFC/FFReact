@@ -26,7 +26,7 @@ import SearchForm from "./SearchForm";
 import {globalActions} from "../../store/slices/global";
 import { openMiscModal } from "../../utilities";
 
-import headerStyles from "../../styles/header.module.scss";
+import styles from "../../styles/header.module.scss";
 
 const Header = props => {
    //console.log("Header rendering");
@@ -98,7 +98,7 @@ const Header = props => {
 
    return (
       <Box
-         className={`${headerStyles.header}`}
+         className={`${styles.header}`}
          borderTopRadius={["0px","0px","7px"]}
       >
          <Box
@@ -115,7 +115,7 @@ const Header = props => {
             //border="1px solid #f00"
          >
             <Box
-               className={`${headerStyles.logo}`}
+               className={`${styles.logo}`}
                backgroundImage={[
                   "url('https://www.favorfavor.com/images/misc/responsive/Logo.svg')",
                   "url('https://www.favorfavor.com/images/misc/responsive/Logo.svg')",
@@ -132,43 +132,50 @@ const Header = props => {
             </Box>
 
             <Box
-               className={headerStyles.headerCart}
+               className={styles.headerCart}
                display={["block","block","none"]}
             >
-               <a href="https://www.favorfavor.com/mm5/merchant.mvc?Screen=BASK">
-                  <Icon boxSize={7} as={FaShoppingCart} color="#1874ab" />
-               </a>
+               <Link href="/Basket">
+                  <a>
+                     <Icon boxSize={7} as={FaShoppingCart} color="#1874ab" />
+                  </a>
+               </Link>
             </Box>
 
             <HStack
                spacing={4}
-               style={{position:"absolute",top:"0px",right:"0px",margin:"0px"}}
+               style={{position:"absolute",top:"-2px",right:"0px",margin:"0px"}}
             >
                {
-                  globalConfig.phoneStatus === "up" &&
-                  <Box
-                     display={["none","none","block","block"]}
-                     className={`${headerStyles.phoneNumber} darkBlue`}
-                  >
-                     <Image
-                        src="https://www.favorfavor.com/images/misc/header/phone.png"
-                        height="21"
-                        width="10"
-                        alt="phone number"
-                        loading={breakPoint === "mobile" ? "lazy" : "eager"}
-                     />
-                     {globalConfig.phoneNumber}
-                  </Box>
+                  globalConfig.phoneStatus === "up" && (
+                     <Box
+                        display={["none","none","block","block"]}
+                        className={`${styles.phoneNumber} darkBlue`}
+                     >
+                        <a href={`tel:${globalConfig.phoneNumberRaw}`}>
+                           <Box
+                              style={{display:"inline",position:"relative",top:"3px",marginRight:"3px"}}
+                           >
+                              <Image
+                                 src="https://www.favorfavor.com/images/misc/header/phone.png"
+                                 height="21"
+                                 width="10"
+                                 alt="phone number"
+                                 loading={breakPoint === "mobile" ? "lazy" : "eager"}
+                              />
+                           </Box>
+                           {globalConfig.phoneNumber}
+                        </a>
+                     </Box>
+                  )
                }
 
                <Box
-                  className={`${headerStyles.siteAssistance} nomarg`}
+                  className={`${styles.siteAssistance} nomarg`}
                   display={["none","none","block"]}
                >
                   <div>
-                     <HStack className={headerStyles.siteAssistanceNav} spacing="10px">
-
-
+                     <HStack className={styles.siteAssistanceNav} spacing="10px">
                         {
                            /* 2021-10-27: we're putting an id and isLazy here to stop chakraUI / popover from complaining about IDs not matching.
                            * other than that it serves no purpose, and never will.
@@ -177,26 +184,75 @@ const Header = props => {
                         }
                         <Box>
                            <Menu id="hsaMenu" isLazy>
-                              <MenuButton><Icon as={FaCaretRight} color="#F167A8" />Site Assistance</MenuButton>
-                              <MenuList className={headerStyles.siteAssistanceNavDropdown}>
-                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/aboutus.html">About Us</a></MenuItem>
-                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/contact_us.php">Contact Us</a></MenuItem>
-                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/order-favor-samples.php">Samples</a></MenuItem>
-                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php">Terms & Conditions</a></MenuItem>
-                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#shipping">Shipping</a></MenuItem>
-                                 <MenuItem><Icon as={FaCaretRight} color="#F167A8" /><a href="/terms_etc.php#PrivacyPolicy">Privacy</a></MenuItem>
+                              <MenuButton><Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />Site Assistance</MenuButton>
+                              <MenuList className={styles.siteAssistanceNavDropdown}>
+                                 <MenuItem>
+                                    <Link href="/aboutus.html">
+                                       <a>
+                                          <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                          About Us
+                                       </a>
+                                    </Link>
+                                 </MenuItem>
+                                 <MenuItem>
+                                    <Link href="/contact_us.php">
+                                       <a>
+                                          <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                          Contact Us
+                                       </a>
+                                    </Link>
+                                 </MenuItem>
+                                 <MenuItem>
+                                    <Link href="/order-favor-samples.php">
+                                       <a>
+                                          <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                          Samples
+                                       </a>
+                                    </Link>
+                                 </MenuItem>
+                                 <MenuItem>
+                                    <Link href="/terms_etc.php">
+                                       <a>
+                                          <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                          Terms &amp; Conditions
+                                       </a>
+                                    </Link>
+                                 </MenuItem>
+                                 <MenuItem>
+                                    <Link href="/terms_etc.php#shipping">
+                                       <a>
+                                          <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                          Shipping
+                                       </a>
+                                    </Link>
+                                 </MenuItem>
+                                 <MenuItem>
+                                    <Link href="/terms_etc.php#PrivacyPolicy">
+                                       <a>
+                                          <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                          Privacy
+                                       </a>
+                                    </Link>
+                                 </MenuItem>
                               </MenuList>
                            </Menu>
                         </Box>
 
-                        <Box><a href="/o-status.htm"><Icon as={FaCaretRight} color="#F167A8" />Order Status</a></Box>
+                        <Box>
+                           <Link href="/o-status.htm">
+                              <a>
+                                 <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
+                                 Order Status
+                              </a>
+                           </Link>
+                        </Box>
                         <Box
                            style={{padding:"0px"}}
                            display={["none","none","none","block"]}
                         >
                            <Link href="/SavedBasket">
                               <a>
-                                 <Icon as={FaCaretRight} color="#F167A8" />
+                                 <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
                                  <span className="darkPink">View</span>{" "}
                                  Saved Cart
                               </a>
@@ -205,10 +261,10 @@ const Header = props => {
                         <Box>
                            <Link href="/Basket">
                               <a>
-                                 <Icon as={FaCaretRight} color="#F167A8" />
+                                 <Icon className={styles.linkIcon} as={FaCaretRight} color="#F167A8" />
                                  <span className="darkBlue">
                                     Shopping Cart{" "}
-                                    <Icon style={{position:"relative",top:"-2px"}} as={FaShoppingCart} color="#F167A8" />
+                                    <Icon className={styles.linkIcon} as={FaShoppingCart} color="#F167A8" />
                                  </span>
                               </a>
                            </Link>
@@ -223,7 +279,7 @@ const Header = props => {
             <a
                href={`https://${globalConfig.apiDomain}/includes/ajax/freeShipping.php`}
                onClick={handleCheapShipping}
-               className={headerStyles.headerPromo}
+               className={styles.headerPromo}
             >
                <Box display={["none","none","none","block"]}>
                   $9.99 shipping* on hundreds of items<br />
@@ -233,14 +289,14 @@ const Header = props => {
 
             <Box
                display={["block","block","none"]}
-               className={headerStyles.menuIcon}
+               className={styles.menuIcon}
                onClick={props.toggleMobileNav}
             >
                <Icon boxSize={7} as={FaBars} color="#1874ab" />
             </Box>
 
             <Box
-               className={headerStyles.search}
+               className={styles.search}
                width={["100%","100%","300px"]}
             >
                <SearchForm
@@ -250,7 +306,7 @@ const Header = props => {
 
          <Flex
             display={["none","none","flex"]}
-            className={headerStyles.horizontalNav}
+            className={styles.horizontalNav}
             spacing="5px"
          >
             <Box display={["none","block","none"]} flex="1">
