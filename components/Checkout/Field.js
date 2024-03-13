@@ -12,9 +12,23 @@ const Field = props => {
    const [state_valid,setState_valid] = useState(props.required ? (props.value ? true : false) : true);
    const [state_touched,setState_touched] = useState( false );
 
-   let changeHandled = useRef();
+   let {
+      values,
+      value,
+      onValidityChange,
+      onFieldChange,
+      field,
+      required,
+      cardValidator,
+      addressType
+   } = props;
 
-   let {onValidityChange,field,required,cardValidator} = props;
+   //console.log("state_values",state_values);
+   useEffect(()=>{
+      console.log("values",values);
+   },[values]);
+
+   let changeHandled = useRef();
 
    let checkValidity = useCallback(value => {
       if ( !required ) {
@@ -74,15 +88,27 @@ const Field = props => {
    ]); // checkValidity
 
    useEffect(()=>{
+      let waitASec = setTimeout(()=>{
+         console.log("timeout complete");
+         if ( state_value && onFieldChange ) {
+            console.log("calling onFieldChange");
+            onFieldChange(field,state_value,addressType);
+         }
+      },200);
+
+      return ()=>{clearTimeout(waitASec);};
+   },[state_value,field,onFieldChange,addressType]);
+
+   useEffect(()=>{
       if ( onValidityChange ) {
          onValidityChange(field,state_valid);
       }
    },[state_valid,onValidityChange,field]);
 
    useEffect(()=>{
-      //console.log("props.value changed",props.required,props.value);
-      setState_value(props.value || "");
-   },[props.value]);
+      //console.log("value changed",props.required,value);
+      setState_value(value || "");
+   },[value]);
 
    useEffect(()=>{
       //console.log("state_value changed",props.required,state_value);
@@ -92,11 +118,11 @@ const Field = props => {
          return result;
       });
       checkValidity( state_value );
-   },[state_value,props.required,checkValidity]);
+   },[state_value,checkValidity]);
 
    useEffect(()=>{
-      setState_values(props.values || "");
-   },[props.values]);
+      setState_values(values || "");
+   },[values]);
 
    useEffect(()=>{
       //console.log("state_value useEffect", state_value);
@@ -113,54 +139,64 @@ const Field = props => {
 
          return prevState;
       });
-   },[state_value,props.required,checkValidity]);
+   },[state_value,checkValidity]);
 
    let handleChange = event => {
-      // console.log("handleChange");
-      changeHandled.current = true;
-      setState_value( event.target.value );
-      setState_touched(true);
-      setState_focused(true);
-      checkValidity( event.target.value );
-      if ( props.onFieldChange ) {
-         props.onFieldChange(props.field,event.target.value);
+      if ( props.disabled ) {
+         /* just in case stupid browser autofillers try to fill in the
+         * address fields even when they're disabled
+         */
+         event.preventDefault();
+      } else {
+         // console.log("handleChange");
+         changeHandled.current = true;
+         setState_value( event.target.value );
+         setState_touched(true);
+         setState_focused(true);
+         checkValidity( event.target.value );
       }
+
    }; // handleChange
 
    let handleFocus = event => {
-      setState_focused(true);
+      if ( !props.disabled ) {
+         setState_focused(true);
+      }
    }; // handleFocus
 
    let handleBlur = event => {
-      setState_touched(true);
-      if ( props.onFieldBlur ) {
-         props.onFieldBlur(props.field,event.target.value,props.addressType);
+      if ( !props.disabled ) {
+         setState_touched(true);
+         setState_value( prevState=>{
+            if ( !prevState ) {
+               setState_focused(false);
+            }
+            return prevState;
+         });
       }
-      setState_value( prevState=>{
-         if ( !prevState ) {
-            setState_focused(false);
-         }
-         return prevState;
-      });
    }; // handleBlur
 
    let handleKeyUp = event => {
-      // console.log("keyup");
-      // console.log("event.target.value",event.target.value);
-      // console.log("changeHandled.current",changeHandled.current);
-      if ( !changeHandled.current ) {
-         /* 2021-09-15: this happens when we use Braintree's system for
-         * formatting the card number. Just trigger the change event
-         * manually.
-         */
-         handleChange(event);
+      if ( !props.disabled ) {
+         // console.log("keyup");
+         // console.log("event.target.value",event.target.value);
+         // console.log("changeHandled.current",changeHandled.current);
+         if ( !changeHandled.current ) {
+            /* 2021-09-15: this happens when we use Braintree's system for
+            * formatting the card number. Just trigger the change event
+            * manually.
+            */
+            handleChange(event);
+         }
       }
    };
 
    let handleKeyDown = event => {
-      // console.log("keydown");
-      // console.log("event.target.value",event.target.value);
-      changeHandled.current = false;
+      if ( !props.disabled ) {
+         // console.log("keydown");
+         // console.log("event.target.value",event.target.value);
+         changeHandled.current = false;
+      }
    };
 
    let renderField = () => {
@@ -192,6 +228,7 @@ const Field = props => {
                   onKeyDown={handleKeyDown}
                   ref={props.reff || null}
                   inputMode={props.inputMode || null}
+                  disabled={props.disabled}
                />
                {
                   props.icon && <InputRightElement>{props.icon}</InputRightElement>
@@ -209,11 +246,12 @@ const Field = props => {
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  disabled={props.disabled}
                >
                   <option value=""></option>
                   {
                      state_values.length && state_values.filter(option=>option.name !== "&lt;Select One&gt;").map(option=>{
-                        return <option key={option.code} value={option.code}>{option.name}</option>;
+                        return <option key={`${option.name}|${option.code}`} value={option.code}>{option.name}</option>;
                      })
                   }
                </Select>
@@ -227,6 +265,7 @@ const Field = props => {
                   onFocus={handleFocus}
                   onBlur={handleBlur}
                   onChange={handleChange}
+                  disabled={props.disabled}
                />
             );
             break;

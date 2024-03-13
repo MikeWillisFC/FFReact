@@ -3,6 +3,7 @@ import { useSelector,useDispatch } from "react-redux";
 import axios from "axios";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from 'next/router';
 import { FaAngleDoubleDown,FaCcVisa,FaCcMastercard,FaCcPaypal,FaCcDiscover,FaCcAmex,FaCcAmazonPay } from 'react-icons/fa';
 import { motion,AnimatePresence,useAnimation } from "framer-motion";
 import InnerHTML from 'dangerously-set-html-content';
@@ -25,8 +26,7 @@ const store = require('store'); // https://github.com/marcuswestin/store.js, for
 const cardValidator = require("card-validator"); // https://github.com/braintree/card-validator
 const creditCardType = require("credit-card-type"); // https://github.com/braintree/credit-card-type
 
-import ItemRow from "../../components/Basket/ItemRow";
-import Footer from "../../components/Basket/Footer";
+import BasketTable from "../../components/Basket/BasketTable";
 import Field from "../../components/Checkout/Field";
 import Pay from "../../components/Checkout/Pay";
 
@@ -54,6 +54,11 @@ const Payment = props => {
 
    let cardFieldRef = useRef();
    const dispatch = useDispatch();
+   const router = useRouter();
+
+   let {
+      setNavVisibility
+   } = props;
 
    // clear any existing error messages
    useEffect(()=>{
@@ -61,7 +66,6 @@ const Payment = props => {
       return ()=>{dispatch(messagesActions.setErrorMessages([]));}
    },[dispatch]);
 
-   let {setNavVisibility} = props;
    useEffect(()=>{
       let getPaymentScreen = () => {
          const opay = store.get("opay");
@@ -96,6 +100,8 @@ const Payment = props => {
 
             if ( opay.payment.PaymentMethod.substr(0,7) === "authnet" ) {
                setState_paymentMethod( "authorize" );
+            } else if ( opay.payment.PaymentMethod.substr(0,5) === "mod10" ) {
+               setState_paymentMethod( "simpleCCAuth" );
             }
          }
       }; // getPaymentScreen
@@ -193,31 +199,13 @@ const Payment = props => {
             onAnimationComplete={()=>{}}
          >
             <legend>Order Summary</legend>
-            <Table className={baskStyles.basketTable}>
-               <Thead>
-                  <Tr>
-                     <Th className={baskStyles.thumbColumn}>&nbsp;</Th>
-                     <Th className={baskStyles.nameColumn}>Name</Th>
-                     <Th className={baskStyles.priceColumn}>Price</Th>
-                     <Th className={baskStyles.qtyColumn}>Quantity</Th>
-                     <Th className={baskStyles.totalColumn}>Total</Th>
-                  </Tr>
-               </Thead>
-               <Tbody>
-                  {
-                     state_basketItems.map( item => {
-                        return (
-                           <ItemRow
-                              key={item.lineID}
-                              item={item}
-                              domain={globalConfig.domain}
-                              editable={false}
-                           />
-                        )
-                     })
-                  }
-               </Tbody>
-            </Table>
+
+            <BasketTable
+               items={state_basketItems}
+               viewType="orderStatus"
+            />
+
+
             {
                state_orderSummaryView === "collapsed" && (
                   <Box
@@ -384,7 +372,9 @@ const Payment = props => {
 
    let placeOrder = async () => {
       console.log("placeOrder called, state_paymentMethod:",state_paymentMethod);
-      if ( state_paymentMethod === "authorize" ) {
+      if ( state_paymentMethod === "simpleCCAuth" ) {
+         submitForm();
+      } else if ( state_paymentMethod === "authorize" ) {
          let authData = {
             clientKey: globalConfig.authorize[authorizeServer].publicKey,
             apiLoginID: globalConfig.authorize[authorizeServer].loginID
@@ -423,21 +413,36 @@ const Payment = props => {
       bodyFormData.set( "Action", "AUTH" );
       bodyFormData.set( "Store_Code", "FF" );
       bodyFormData.set( "Screen", "api_invc" );
-      bodyFormData.set( "question1", "aaa" );
-      bodyFormData.set( "question2", "aaa" );
-      bodyFormData.set( "question3", "aaa" );
-      bodyFormData.set( "question4", "aaa" );
-      bodyFormData.set( "question5", "aaa" );
+
+      if ( false ) {
+         /* 2022-04-05: it seems that the opay screen takes no part in the addendum fields..?
+         * it does not pass them back to the INVC screen, yet the variables are available there.
+         * The module must save the data and make it available as global variables on INVC..
+         */
+         bodyFormData.set( "question1", "aaa" ); // expedited shipping - needs by
+         bodyFormData.set( "question2", "aaa" ); // comments
+         //bodyFormData.set( "question3", "aaa" ); // 2022-04-05: not in use..?
+         bodyFormData.set( "question4", "aaa" ); // delivery confirmation signature
+         bodyFormData.set( "question5", "aaa" ); // is residential address
+      }
+
+
       bodyFormData.set( "maxquestions", "5" );
       bodyFormData.set( "PaymentAuthorizationToken", paymentAuthToken );
 
       if ( state_paymentMethod === "authorize" ) {
-         bodyFormData.set( "PaymentMethod", "authnet:Visa" );
+         bodyFormData.set( "PaymentMethod", "authnet:Visa" ); // TODO: what about mastercard / amex etc?
          bodyFormData.set( "AuthorizeNet_Method_Type", "CC" );
          bodyFormData.set( "AuthorizeNet_Data_Descriptor", options.authorize.dataDescriptor );
          bodyFormData.set( "AuthorizeNet_Data_Value", options.authorize.dataValue );
          bodyFormData.set( "AuthorizeNet_First_Name", state_paymentFieldValues["AuthorizeNet_First_Name"] );
          bodyFormData.set( "AuthorizeNet_Last_Name", state_paymentFieldValues["AuthorizeNet_Last_Name"] );
+      } else if ( state_paymentMethod === "simpleCCAuth" ) {
+         bodyFormData.set( "PaymentMethod", "mod10:Visa" );
+         bodyFormData.set( "MOD10_CardName", "Fake Name" );
+         bodyFormData.set( "MOD10_CardNumber", "4111111111111111" );
+         bodyFormData.set( "MOD10_CardExp_Month", "12" );
+         bodyFormData.set( "MOD10_CardExp_Year", "2040" );
       }
       // Object.keys(state_paymentFieldValues).forEach(key => {
       //    if ( key === "AuthorizeNet_Card_Num" ) {
@@ -467,6 +472,13 @@ const Payment = props => {
             console.log("dispatching setErrorMessages");
             store.set( 'opay', response.data );
             setState_opay( response.data );
+         } else {
+            router.push({
+               pathname: '/checkout/Invoice',
+               query: {
+                  orderID: response.data.orderID
+               }
+            })
          }
 
       }

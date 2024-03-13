@@ -49,10 +49,12 @@ const Shipping = props => {
    const [state_rateAddress,setState_rateAddress] = useState(false);
    const [state_shippingMethods,setState_shippingMethods] = useState([]);
    const [state_paymentMethods,setState_paymentMethods] = useState([]);
+   const [state_paymentMethod,setState_paymentMethod] = useState("");
    const [state_shippingMethod,setState_shippingMethod] = useState("");
    const [state_mainFormValid,setState_mainFormValid] = useState(false);
    const [state_expeditedShippingInfo,setState_expeditedShippingInfo] = useState(false);
    const [state_additionalInfo,setState_additionalInfo] = useState({
+      paymentMethod:"",
       residentialAddress: "",
       confirmationSignature: "",
       comments: ""
@@ -92,8 +94,9 @@ const Shipping = props => {
          }
       );
       //console.log("response",response);
-      if ( status ) {
+      if ( response ) {
          parseMessages(response.data,dispatch,messagesActions);
+         //console.log("response.data",response.data);
          if ( response.status ) {
             setState_states( response.data.states );
             setState_countries( response.data.countries );
@@ -109,6 +112,7 @@ const Shipping = props => {
    },[getAddresses,getStates,setNavVisibility]);
 
    useEffect(()=>{
+      console.log("shippingAddressControls",shippingAddressControls);
       if ( state_showShipping ) {
          shippingAddressControls.start("open");
       } else {
@@ -117,19 +121,27 @@ const Shipping = props => {
    },[state_showShipping,shippingAddressControls]);
 
    useEffect(()=>{
-      console.log("ADDRESS VALIDITY CHANGE",state_billingAddressValid,state_shippingAddressValid);
-      setState_shippingMethod("");
-      if ( state_showShipping && state_shippingAddressValid ) {
-         console.log("using shipping address",state_shippingAddress);
-         setState_rateAddress("shipping");
-      } else if ( state_billingAddressValid ) {
-         console.log("using billing address",state_billingAddress);
-         setState_rateAddress("billing");
-      } else {
-         console.log("no valid address available");
-         setState_rateAddress(false);
-         setState_shippingMethods([]);
-      }
+      let waitASec = setTimeout(()=>{
+         console.log("ADDRESS VALIDITY CHANGE");
+         console.log("state_billingAddressValid",state_billingAddressValid);
+         console.log("state_shippingAddressValid",state_shippingAddressValid);
+         console.log("state_billingAddress",state_billingAddress);
+         console.log("state_shippingAddress",state_shippingAddress);
+         setState_shippingMethod("");
+         if ( state_showShipping && state_shippingAddressValid ) {
+            //console.log("using shipping address",state_shippingAddress);
+            setState_rateAddress("shipping");
+         } else if ( state_billingAddressValid ) {
+            //console.log("using billing address",state_billingAddress);
+            setState_rateAddress("billing");
+         } else {
+            //console.log("no valid address available");
+            setState_rateAddress(false);
+            setState_shippingMethods([]);
+         }
+      },200);
+
+      return ()=>{clearTimeout(waitASec);};
 
    },[
       state_billingAddressValid,
@@ -140,13 +152,13 @@ const Shipping = props => {
    ]);
 
    useEffect(()=>{
-      console.log("MAIN FORM VALIDITY CHANGED");
-      console.log("state_billingAddressValid",state_billingAddressValid);
-      console.log("state_showShipping",state_showShipping);
-      console.log("state_shippingAddressValid",state_shippingAddressValid);
-      console.log("state_shippingMethod",state_shippingMethod);
-      console.log("state_additionalInfo.residentialAddress",state_additionalInfo.residentialAddress);
-      console.log("state_additionalInfo.confirmationSignature",state_additionalInfo.confirmationSignature);
+      // console.log("MAIN FORM VALIDITY CHANGED");
+      // console.log("state_billingAddressValid",state_billingAddressValid);
+      // console.log("state_showShipping",state_showShipping);
+      // console.log("state_shippingAddressValid",state_shippingAddressValid);
+      // console.log("state_shippingMethod",state_shippingMethod);
+      // console.log("state_additionalInfo.residentialAddress",state_additionalInfo.residentialAddress);
+      // console.log("state_additionalInfo.confirmationSignature",state_additionalInfo.confirmationSignature);
       let valid = true;
       if (
          !state_billingAddressValid ||
@@ -158,7 +170,7 @@ const Shipping = props => {
          valid = false;
       }
       setState_mainFormValid( valid );
-      console.log("valid:",valid);
+      //console.log("valid:",valid);
    },[
       state_billingAddressValid,
       state_shippingAddressValid,
@@ -232,7 +244,11 @@ const Shipping = props => {
                      setState_shippingMethods(response.data.shippingMethods);
                   }
                   if ( response.data.paymentMethods ) {
-                     setState_paymentMethods(response.data.paymentMethods);
+                     setState_paymentMethods(
+                        response.data.paymentMethods.map(method=>{
+                           return {...method,code:`${method.module}:${method.code}`}
+                        })
+                     );
                   }
                   shippingLoadingControls.start("collapsed");
                }
@@ -280,8 +296,11 @@ const Shipping = props => {
       }
    },[state_getRatesAddressType]);
 
-   let handleAddressFieldBlur = (field, value, addressType) => {
-      //console.log("handleAddressFieldBlur called");
+   let handleAddressFieldChange = useCallback((field, value, addressType) => {
+      console.log("handleAddressFieldChange called");
+      console.log("--field",field);
+      console.log("--value",value);
+      console.log("--addressType",addressType);
 
       if ( addressType === "billing" ) {
          setState_billingAddress( prevState=>{
@@ -295,14 +314,14 @@ const Shipping = props => {
             return {...prevState};
          });
       }
-   }; // handleAddressFieldBlur
+   },[]); // handleAddressFieldChange
 
-   let handleAdditionalInfoChange = (field,value) => {
+   let handleAdditionalInfoChange = useCallback((field,value) => {
       setState_additionalInfo( prevState=>{
          prevState[field] = value;
          return {...prevState};
       });
-   }
+   },[]);
 
    let handleValidityChange = (form,status) => {
       if ( form === "billing" ) {
@@ -336,11 +355,20 @@ const Shipping = props => {
          bodyFormData.set( "Store_Code", "FF" );
          bodyFormData.set( "AdvShipping", "0" );
          bodyFormData.set( "ShippingMethod", state_shippingMethod.split("|")[1] );
+
          bodyFormData.set( "question1", (state_expeditedShippingInfo ? state_expeditedShippingInfo.needsBy : "") );
          bodyFormData.set( "question5", state_additionalInfo.residentialAddress );
-         bodyFormData.set( "question4", state_additionalInfo.confirmationSignature );
+         bodyFormData.set( "question4", state_additionalInfo.confirmationSignature === "Yes" ? "1" : "" );
          bodyFormData.set( "question2", state_additionalInfo.comments );
-         bodyFormData.set( "PaymentMethod", "authnet:MasterCard" );
+
+         if ( state_additionalInfo.paymentMethod ) {
+            // 2022-04-04: this can only happen if it's me, maybe I'm doing a test order
+            console.log("state_additionalInfo.paymentMethod",state_additionalInfo.paymentMethod);
+            bodyFormData.set( "PaymentMethod", state_additionalInfo.paymentMethod );
+         } else {
+            bodyFormData.set( "PaymentMethod", "authnet:MasterCard" );
+         }
+
          if ( state_paymentMethods.length ) {
             state_paymentMethods.forEach((method,index)=>{
                let count = index + 1;
@@ -359,6 +387,9 @@ const Shipping = props => {
                console.log("response.data",response.data);
                if ( !response.data.errorMessages ) {
                   store.set( 'opay', response.data );
+                  console.log("state_billingAddress",state_billingAddress);
+                  store.set( "email", state_billingAddress.email );
+                  store.set( "zip", state_billingAddress.zip );
                   router.push(`/checkout/Payment`);
                } else {
                   alert("error detected, cannot proceed");
@@ -366,7 +397,7 @@ const Shipping = props => {
             }
          }
       }
-   };
+   }; // proceedToPayment
 
    let checkStyle = {
       backgroundColor:"#fff",
@@ -384,6 +415,7 @@ const Shipping = props => {
       {name:"No",code:"No",value:"No"}
    ];
 
+   console.log("state_paymentMethods",state_paymentMethods);
    return (
       <Box
          width={["95%","90%","80%"]}
@@ -397,8 +429,9 @@ const Shipping = props => {
             addressType="billing"
             title="Billing Address"
             address={state_billingAddress}
-            onFieldBlur={handleAddressFieldBlur}
+            onFieldChange={handleAddressFieldChange}
             onValidityChange={handleValidityChange}
+            isVisible={true}
          />
 
          <Center style={{margin: "0px 0px 10px 0px"}}>
@@ -430,8 +463,9 @@ const Shipping = props => {
                addressType="shipping"
                title="Shipping Address"
                address={state_shippingAddress}
-               onFieldBlur={handleAddressFieldBlur}
+               onFieldChange={handleAddressFieldChange}
                onValidityChange={handleValidityChange}
+               isVisible={state_showShipping}
             />
          </motion.div>
 
@@ -524,6 +558,24 @@ const Shipping = props => {
                         gap={2}
                         className={styles.additionalInfo}
                      >
+                        {
+                           state_paymentMethods.filter(method=>{
+                              return method.name.toLowerCase().indexOf("test") !== -1
+                           }).length ? (
+                              <GridItem colSpan={2}>
+                                 <Field
+                                    type="select"
+                                    onFieldChange={handleAdditionalInfoChange}
+                                    title="Payment Method"
+                                    required={true}
+                                    field="paymentMethod"
+                                    values={state_paymentMethods.map(method=>{ return {...method,name: `${method.module}: ${method.name}`} })}
+                                    value={state_additionalInfo.paymentMethod}
+                                 />
+                              </GridItem>
+                           ) : ""
+                        }
+
                         <GridItem colSpan={[2,2,1]}><Field type="select" onFieldChange={handleAdditionalInfoChange} title="Is this a residential address?" required={true} field="residentialAddress" values={residentialAddressValues} value={state_additionalInfo.residentialAddress} /></GridItem>
                         <GridItem colSpan={[2,2,1]}><Field type="select" onFieldChange={handleAdditionalInfoChange} title="Delivery confirmation signature?" required={true} field="confirmationSignature" values={confirmationSignatureValues} value={state_additionalInfo.confirmationSignature} /></GridItem>
                         <GridItem colSpan={2}><Field type="textarea" onFieldChange={handleAdditionalInfoChange} title="Order comments / notes" required={false} field="comments" value={state_additionalInfo.comments} /></GridItem>

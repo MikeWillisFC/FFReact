@@ -6,7 +6,7 @@ import Field from "./Field";
 import styles from "../../styles/checkout.module.scss";
 
 const AddressForm = props => {
-   //console.log("AddressForm props",props);
+   console.log("AddressForm props",props);
    const [state_valid,setState_valid] = useState(false);
 
    const [state_fieldValidities_firstName,setState_fieldValidities_firstName] = useState(false);
@@ -101,11 +101,11 @@ const AddressForm = props => {
    },[state_valid,addressType,onValidityChange]);
 
    let handleValidityChange = (field,status) => {
-      console.log("handling validity change",field,status);
+      //console.log("handling validity change",field,status);
       if ( false ) {
          setState_fieldValidities( prevState=>{
             prevState[field] = status;
-            console.log("returning",prevState);
+            //console.log("returning",prevState);
             return prevState;
          });
       } else {
@@ -136,17 +136,17 @@ const AddressForm = props => {
                //templateColumns="repeat(5, 1fr)"
                gap={2}
             >
-               <GridItem colSpan={[2,2,1]}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="First Name" required={true} field="firstName" value={props.address.firstName} /></GridItem>
-               <GridItem colSpan={[2,2,1]}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Last Name" required={true} field="lastName" value={props.address.lastName} /></GridItem>
-               <GridItem colSpan={2}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Address Line 1" required={true} field="address1" value={props.address.address1} /></GridItem>
-               <GridItem colSpan={2}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Address Line 2" required={false} field="address2" value={props.address.address2} /></GridItem>
-               <GridItem colSpan={[2,2,1]}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Zip" required={true} field="zip" value={props.address.zip} /></GridItem>
-               <GridItem colSpan={[2,2,1]}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} type="select" values={props.states} title="State" required={true} field="state" value={props.address.state} /></GridItem>
-               <GridItem colSpan={2}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="City" required={true} field="city" value={props.address.city} /></GridItem>
-               <GridItem colSpan={[2,2,1]}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} type="select" values={props.countries} title="Country" required={true} field="country" value={props.address.country} /></GridItem>
-               <GridItem colSpan={[2,2,1]}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Phone" required={true} field="phone" value={props.address.phone} /></GridItem>
-               <GridItem colSpan={2}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Email" required={true} field="email" value={props.address.email} /></GridItem>
-               <GridItem colSpan={2}><Field onValidityChange={handleValidityChange} addressType={props.addressType} onFieldBlur={props.onFieldBlur} title="Company" required={false} field="company" value={props.address.company} /></GridItem>
+               <GridItem colSpan={[2,2,1]}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="First Name" required={true} field="firstName" value={props.address.firstName} /></GridItem>
+               <GridItem colSpan={[2,2,1]}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Last Name" required={true} field="lastName" value={props.address.lastName} /></GridItem>
+               <GridItem colSpan={2}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Address Line 1" required={true} field="address1" value={props.address.address1} /></GridItem>
+               <GridItem colSpan={2}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Address Line 2" required={false} field="address2" value={props.address.address2} /></GridItem>
+               <GridItem colSpan={[2,2,1]}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Zip" required={true} field="zip" value={props.address.zip} /></GridItem>
+               <GridItem colSpan={[2,2,1]}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} type="select" values={props.states} title="State" required={true} field="state" value={props.address.state} /></GridItem>
+               <GridItem colSpan={2}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="City" required={true} field="city" value={props.address.city} /></GridItem>
+               <GridItem colSpan={[2,2,1]}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} type="select" values={props.countries} title="Country" required={true} field="country" value={props.address.country} /></GridItem>
+               <GridItem colSpan={[2,2,1]}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Phone" required={true} field="phone" value={props.address.phone} /></GridItem>
+               <GridItem colSpan={2}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Email" required={true} field="email" value={props.address.email} /></GridItem>
+               <GridItem colSpan={2}><Field disabled={!props.isVisible} onValidityChange={handleValidityChange} addressType={props.addressType} onFieldChange={props.onFieldChange} title="Company" required={false} field="company" value={props.address.company} /></GridItem>
             </Grid>
          </fieldset>
       </div>

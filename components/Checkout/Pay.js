@@ -108,6 +108,14 @@ const Pay = props => {
       );
    }; // renderAuthNet
 
+   let renderSimpleCCAuth = () => {
+      return (
+         <p style={{textAlign: "center"}}>
+            Your TEST payment credentials are set. This order will be placed as a TEST and will not be processed or shipped.
+         </p>
+      );
+   }; // renderSimpleCCAuth
+
    let renderPayment_CC = (fields,additional=false) => {
       return (
          <Fragment>
@@ -264,13 +272,13 @@ const Pay = props => {
       console.log("props.opay.paymentFieldsLoad.data", (props.opay.paymentFieldsLoad.data ? "true": "false"));
       console.log("props.opay.paymentFieldsLoad.success === 1", (props.opay.paymentFieldsLoad.success === 1 ? "true": "false"));
       console.log("props.opay.paymentFieldsLoad.success",props.opay.paymentFieldsLoad.success);
+      console.log("props.paymentMethod",props.paymentMethod);
       return (
          <fieldset className={checkoutStyles.fieldset}>
             <legend>Payment</legend>
             <form>
-               {
-                  props.paymentMethod === "authorize" && renderAuthNet()
-               }
+               { props.paymentMethod === "authorize" && renderAuthNet() }
+               { props.paymentMethod === "simpleCCAuth" && renderSimpleCCAuth() }
             </form>
          </fieldset>
       );
