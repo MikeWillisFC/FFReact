@@ -209,6 +209,19 @@ const Shipping = props => {
             } else {
                rateAddress = state_shippingAddress;
                fieldNamePrefix = "Ship";
+
+					// we still need to send the billing address or miva will complain
+					bodyFormData.set( `BillFirstName`, state_billingAddress.firstName );
+					bodyFormData.set( `BillLastName`, state_billingAddress.lastName );
+					bodyFormData.set( `BillAddress1`, state_billingAddress.address1 );
+					bodyFormData.set( `BillAddress2`, state_billingAddress.address2 );
+					bodyFormData.set( `BillZip`, state_billingAddress.zip );
+					bodyFormData.set( `BillStateSelect`, state_billingAddress.state );
+					bodyFormData.set( `BillCity`, state_billingAddress.city );
+					bodyFormData.set( `BillCountry`, state_billingAddress.country );
+					bodyFormData.set( `BillPhone`, state_billingAddress.phone );
+					bodyFormData.set( `BillEmail`, state_billingAddress.email );
+					bodyFormData.set( `BillCompany`, state_billingAddress.company );
             }
 
             bodyFormData.set( `${fieldNamePrefix}FirstName`, rateAddress.firstName );
