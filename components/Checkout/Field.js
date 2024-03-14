@@ -25,7 +25,7 @@ const Field = props => {
 
    //console.log("state_values",state_values);
    useEffect(()=>{
-      console.log("values",values);
+      // console.log("values",values);
    },[values]);
 
    let changeHandled = useRef();
@@ -89,12 +89,12 @@ const Field = props => {
 
    useEffect(()=>{
       let waitASec = setTimeout(()=>{
-         console.log("timeout complete");
+         // console.log("timeout complete");
          if ( state_value && onFieldChange ) {
-            console.log("calling onFieldChange");
+            // console.log("calling onFieldChange");
             onFieldChange(field,state_value,addressType);
          }
-      },200);
+      },300);
 
       return ()=>{clearTimeout(waitASec);};
    },[state_value,field,onFieldChange,addressType]);

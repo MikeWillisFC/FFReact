@@ -69,14 +69,14 @@ const Shipping = props => {
    const expeditedShippingModal = useDisclosure();
 
    let getAddresses = useCallback(async () => {
-      console.log("getAddresses called");
+      // console.log("getAddresses called");
       dispatch(messagesActions.clearMessages());
       let response = await axios.get(`${globalConfig.apiEndpoint}&cAction=getAddresses`,
          {
             withCredentials: true
          }
       );
-      console.log("getAddresses response",response);
+      // console.log("getAddresses response",response);
       if ( response ) {
          parseMessages(response.data,dispatch,messagesActions);
          if ( response.status ) {
@@ -112,7 +112,7 @@ const Shipping = props => {
    },[getAddresses,getStates,setNavVisibility]);
 
    useEffect(()=>{
-      console.log("shippingAddressControls",shippingAddressControls);
+      // console.log("shippingAddressControls",shippingAddressControls);
       if ( state_showShipping ) {
          shippingAddressControls.start("open");
       } else {
@@ -123,26 +123,25 @@ const Shipping = props => {
    useEffect(()=>{
       let waitASec = setTimeout(()=>{
          console.log("ADDRESS VALIDITY CHANGE");
-         console.log("state_billingAddressValid",state_billingAddressValid);
-         console.log("state_shippingAddressValid",state_shippingAddressValid);
-         console.log("state_billingAddress",state_billingAddress);
-         console.log("state_shippingAddress",state_shippingAddress);
+         // console.log("- state_billingAddressValid",state_billingAddressValid);
+         // console.log("- state_shippingAddressValid",state_shippingAddressValid);
+         // console.log("- state_billingAddress",state_billingAddress);
+         // console.log("- state_shippingAddress",state_shippingAddress);
          setState_shippingMethod("");
          if ( state_showShipping && state_shippingAddressValid ) {
-            //console.log("using shipping address",state_shippingAddress);
+            // console.log("- using shipping address",state_shippingAddress);
             setState_rateAddress("shipping");
          } else if ( state_billingAddressValid ) {
-            //console.log("using billing address",state_billingAddress);
+            // console.log("- using billing address",state_billingAddress);
             setState_rateAddress("billing");
          } else {
-            //console.log("no valid address available");
+            // console.log("- no valid address available");
             setState_rateAddress(false);
             setState_shippingMethods([]);
          }
       },200);
 
       return ()=>{clearTimeout(waitASec);};
-
    },[
       state_billingAddressValid,
       state_shippingAddressValid,
@@ -189,17 +188,131 @@ const Shipping = props => {
       }
    },[state_shippingMethod,expeditedShippingModal]);
 
-   useEffect(()=>{
+	// using axios
+   // useEffect(()=>{
+	// 	console.log("getRates useEffect triggered")
+   //    if ( state_rateAddress ) {
+   //       const cancelToken = axios.CancelToken;
+   //       const source = cancelToken.source();
+	// 		console.log("address is available, proceeding with source:",source);
+
+   //       let getRates = async () => {
+	// 			console.log("getRates running");
+   //          const headers = { 'Content-Type': 'multipart/form-data' };
+   //          let bodyFormData = new FormData();
+   //          bodyFormData.set( "Action", "ORDR" );
+   //          bodyFormData.set( "Store_Code", "FF" );
+   //          bodyFormData.set( "responseType", "json" );
+
+   //          let rateAddress;
+   //          let fieldNamePrefix;
+   //          if ( state_rateAddress === "billing" ) {
+   //             rateAddress = state_billingAddress;
+   //             fieldNamePrefix = "Bill";
+   //          } else {
+   //             rateAddress = state_shippingAddress;
+   //             fieldNamePrefix = "Ship";
+
+	// 				// we still need to send the billing address or miva will complain
+	// 				bodyFormData.set( `BillFirstName`, state_billingAddress.firstName );
+	// 				bodyFormData.set( `BillLastName`, state_billingAddress.lastName );
+	// 				bodyFormData.set( `BillAddress1`, state_billingAddress.address1 );
+	// 				bodyFormData.set( `BillAddress2`, state_billingAddress.address2 );
+	// 				bodyFormData.set( `BillZip`, state_billingAddress.zip );
+	// 				bodyFormData.set( `BillStateSelect`, state_billingAddress.state );
+	// 				bodyFormData.set( `BillCity`, state_billingAddress.city );
+	// 				bodyFormData.set( `BillCountry`, state_billingAddress.country );
+	// 				bodyFormData.set( `BillPhone`, state_billingAddress.phone );
+	// 				bodyFormData.set( `BillEmail`, state_billingAddress.email );
+	// 				bodyFormData.set( `BillCompany`, state_billingAddress.company );
+   //          }
+
+   //          bodyFormData.set( `${fieldNamePrefix}FirstName`, rateAddress.firstName );
+   //          bodyFormData.set( `${fieldNamePrefix}LastName`, rateAddress.lastName );
+   //          bodyFormData.set( `${fieldNamePrefix}Address1`, rateAddress.address1 );
+   //          bodyFormData.set( `${fieldNamePrefix}Address2`, rateAddress.address2 );
+   //          bodyFormData.set( `${fieldNamePrefix}Zip`, rateAddress.zip );
+   //          bodyFormData.set( `${fieldNamePrefix}StateSelect`, rateAddress.state );
+   //          bodyFormData.set( `${fieldNamePrefix}City`, rateAddress.city );
+   //          bodyFormData.set( `${fieldNamePrefix}Country`, rateAddress.country );
+   //          bodyFormData.set( `${fieldNamePrefix}Phone`, rateAddress.phone );
+   //          bodyFormData.set( `${fieldNamePrefix}Email`, rateAddress.email );
+   //          bodyFormData.set( `${fieldNamePrefix}Company`, rateAddress.company );
+   //          bodyFormData.set( "AllItems_AllowUSPSFlatRate", "false" );
+
+   //          //bodyFormData.set( `${fieldNamePrefix}asdf`, rateAddress.asdf );
+   //          // AllItems_AllowUSPSFlatRate: false
+   //          // blockSampleShipping: undefined
+   //          // showSampleShipping: undefined
+
+   //          //console.log("globalConfig",globalConfig);
+   //          //`${globalConfig.apiEndpoint}&cAction=getBasePrices`
+   //          dispatch(messagesActions.clearMessages());
+   //          const response = await axios.post( `https://${globalConfig.domain}/mm5/merchant.mvc?Screen=OSEL_AJAX`, bodyFormData, {
+   //             headers: headers,
+   //             withCredentials: true
+   //          });
+   //          if ( response ) {
+   //             parseMessages(response.data,dispatch,messagesActions);
+   //             if ( response.status ) {
+   //                console.log("response.data",response.data);
+   //                if ( response.data.shippingMethods ) {
+   //                   setState_shippingMethods(response.data.shippingMethods);
+   //                }
+   //                if ( response.data.paymentMethods ) {
+   //                   setState_paymentMethods(
+   //                      response.data.paymentMethods.map(method=>{
+   //                         return {...method,code:`${method.module}:${method.code}`}
+   //                      })
+   //                   );
+   //                }
+   //                shippingLoadingControls.start("collapsed");
+   //             }
+   //          }
+   //       }; // getRates
+
+   //       shippingLoadingControls.start("open");
+   //       shippingProceedControls.start("collapsed");
+   //       setState_shippingMethods([]);
+
+	// 		console.log("calling getRates");
+   //       getRates();
+
+   //       return ()=>{
+	// 			console.log("getRates useEffect cancelling source:",source);
+   //          source.cancel();
+   //       };
+   //    } else {
+   //       shippingLoadingControls.start("collapsed");
+   //       shippingProceedControls.start("open");
+   //    }
+   // },[
+   //    globalConfig.domain,
+   //    state_rateAddress,
+   //    shippingLoadingControls,
+   //    shippingProceedControls,
+   //    state_billingAddress,
+   //    state_shippingAddress,
+   //    dispatch
+   // ]);
+
+	// using fetch
+	useEffect(()=>{
+		// console.log("getRates useEffect triggered");
       if ( state_rateAddress ) {
-         const cancelToken = axios.CancelToken;
-         const source = cancelToken.source();
+         const controller = new AbortController();
+			const signal = controller.signal;
+			// console.log("address is available, proceeding with signal:",signal);
 
          let getRates = async () => {
+				// console.log("getRates running");
+
             const headers = { 'Content-Type': 'multipart/form-data' };
-            let bodyFormData = new FormData();
-            bodyFormData.set( "Action", "ORDR" );
-            bodyFormData.set( "Store_Code", "FF" );
-            bodyFormData.set( "responseType", "json" );
+
+				const formData = new URLSearchParams();
+            formData.append( "Action", "ORDR" );
+            formData.append( "Store_Code", "FF" );
+            formData.append( "responseType", "json" );
 
             let rateAddress;
             let fieldNamePrefix;
@@ -211,33 +324,33 @@ const Shipping = props => {
                fieldNamePrefix = "Ship";
 
 					// we still need to send the billing address or miva will complain
-					bodyFormData.set( `BillFirstName`, state_billingAddress.firstName );
-					bodyFormData.set( `BillLastName`, state_billingAddress.lastName );
-					bodyFormData.set( `BillAddress1`, state_billingAddress.address1 );
-					bodyFormData.set( `BillAddress2`, state_billingAddress.address2 );
-					bodyFormData.set( `BillZip`, state_billingAddress.zip );
-					bodyFormData.set( `BillStateSelect`, state_billingAddress.state );
-					bodyFormData.set( `BillCity`, state_billingAddress.city );
-					bodyFormData.set( `BillCountry`, state_billingAddress.country );
-					bodyFormData.set( `BillPhone`, state_billingAddress.phone );
-					bodyFormData.set( `BillEmail`, state_billingAddress.email );
-					bodyFormData.set( `BillCompany`, state_billingAddress.company );
+					formData.append( `BillFirstName`, state_billingAddress.firstName );
+					formData.append( `BillLastName`, state_billingAddress.lastName );
+					formData.append( `BillAddress1`, state_billingAddress.address1 );
+					formData.append( `BillAddress2`, state_billingAddress.address2 );
+					formData.append( `BillZip`, state_billingAddress.zip );
+					formData.append( `BillStateSelect`, state_billingAddress.state );
+					formData.append( `BillCity`, state_billingAddress.city );
+					formData.append( `BillCountry`, state_billingAddress.country );
+					formData.append( `BillPhone`, state_billingAddress.phone );
+					formData.append( `BillEmail`, state_billingAddress.email );
+					formData.append( `BillCompany`, state_billingAddress.company );
             }
 
-            bodyFormData.set( `${fieldNamePrefix}FirstName`, rateAddress.firstName );
-            bodyFormData.set( `${fieldNamePrefix}LastName`, rateAddress.lastName );
-            bodyFormData.set( `${fieldNamePrefix}Address1`, rateAddress.address1 );
-            bodyFormData.set( `${fieldNamePrefix}Address2`, rateAddress.address2 );
-            bodyFormData.set( `${fieldNamePrefix}Zip`, rateAddress.zip );
-            bodyFormData.set( `${fieldNamePrefix}StateSelect`, rateAddress.state );
-            bodyFormData.set( `${fieldNamePrefix}City`, rateAddress.city );
-            bodyFormData.set( `${fieldNamePrefix}Country`, rateAddress.country );
-            bodyFormData.set( `${fieldNamePrefix}Phone`, rateAddress.phone );
-            bodyFormData.set( `${fieldNamePrefix}Email`, rateAddress.email );
-            bodyFormData.set( `${fieldNamePrefix}Company`, rateAddress.company );
-            bodyFormData.set( "AllItems_AllowUSPSFlatRate", "false" );
+            formData.append( `${fieldNamePrefix}FirstName`, rateAddress.firstName );
+            formData.append( `${fieldNamePrefix}LastName`, rateAddress.lastName );
+            formData.append( `${fieldNamePrefix}Address1`, rateAddress.address1 );
+            formData.append( `${fieldNamePrefix}Address2`, rateAddress.address2 );
+            formData.append( `${fieldNamePrefix}Zip`, rateAddress.zip );
+            formData.append( `${fieldNamePrefix}StateSelect`, rateAddress.state );
+            formData.append( `${fieldNamePrefix}City`, rateAddress.city );
+            formData.append( `${fieldNamePrefix}Country`, rateAddress.country );
+            formData.append( `${fieldNamePrefix}Phone`, rateAddress.phone );
+            formData.append( `${fieldNamePrefix}Email`, rateAddress.email );
+            formData.append( `${fieldNamePrefix}Company`, rateAddress.company );
+            formData.append( "AllItems_AllowUSPSFlatRate", "false" );
 
-            //bodyFormData.set( `${fieldNamePrefix}asdf`, rateAddress.asdf );
+            //formData.append( `${fieldNamePrefix}asdf`, rateAddress.asdf );
             // AllItems_AllowUSPSFlatRate: false
             // blockSampleShipping: undefined
             // showSampleShipping: undefined
@@ -245,20 +358,25 @@ const Shipping = props => {
             //console.log("globalConfig",globalConfig);
             //`${globalConfig.apiEndpoint}&cAction=getBasePrices`
             dispatch(messagesActions.clearMessages());
-            const response = await axios.post( `https://${globalConfig.domain}/mm5/merchant.mvc?Screen=OSEL_AJAX`, bodyFormData, {
-               headers: headers,
-               withCredentials: true
-            });
-            if ( response ) {
-               parseMessages(response.data,dispatch,messagesActions);
-               if ( response.status ) {
-                  console.log("response.data",response.data);
-                  if ( response.data.shippingMethods ) {
-                     setState_shippingMethods(response.data.shippingMethods);
+
+				const response = await fetch( `https://${globalConfig.domain}/mm5/merchant.mvc?Screen=OSEL_AJAX`, {
+					method: 'post',
+					body: formData,
+					credentials: 'include',
+					signal: signal,
+				});
+				// console.log("fetch response:",response);
+            if ( response.ok ) {
+					const json = await response.json();
+					// console.log("json",json);
+               parseMessages(json,dispatch,messagesActions);
+               if ( true ) {
+                  if ( json.shippingMethods ) {
+                     setState_shippingMethods(json.shippingMethods.filter(method=>method.module!=='asdf'));
                   }
-                  if ( response.data.paymentMethods ) {
+                  if ( json.paymentMethods ) {
                      setState_paymentMethods(
-                        response.data.paymentMethods.map(method=>{
+                        json.paymentMethods.map(method=>{
                            return {...method,code:`${method.module}:${method.code}`}
                         })
                      );
@@ -266,16 +384,18 @@ const Shipping = props => {
                   shippingLoadingControls.start("collapsed");
                }
             }
-         };
+         }; // getRates
 
          shippingLoadingControls.start("open");
          shippingProceedControls.start("collapsed");
          setState_shippingMethods([]);
 
+			// console.log("calling getRates");
          getRates();
 
          return ()=>{
-            source.cancel();
+				// console.log("getRates useEffect cancelling signal:",signal);
+            controller.abort();
          };
       } else {
          shippingLoadingControls.start("collapsed");
@@ -310,10 +430,10 @@ const Shipping = props => {
    },[state_getRatesAddressType]);
 
    let handleAddressFieldChange = useCallback((field, value, addressType) => {
-      console.log("handleAddressFieldChange called");
-      console.log("--field",field);
-      console.log("--value",value);
-      console.log("--addressType",addressType);
+      // console.log("handleAddressFieldChange called");
+      // console.log("--field",field);
+      // console.log("--value",value);
+      // console.log("--addressType",addressType);
 
       if ( addressType === "billing" ) {
          setState_billingAddress( prevState=>{
@@ -353,11 +473,11 @@ const Shipping = props => {
    }; // proceedToShipping
 
    let proceedToPayment = async () => {
-      console.log("proceedToPayment clicked");
+      // console.log("proceedToPayment clicked");
       if ( !state_mainFormValid ) {
          alert("form not valid");
       } else {
-         console.log("posting");
+         // console.log("posting");
 
          const headers = { 'Content-Type': 'multipart/form-data' };
          let bodyFormData = new FormData();
@@ -376,7 +496,7 @@ const Shipping = props => {
 
          if ( state_additionalInfo.paymentMethod ) {
             // 2022-04-04: this can only happen if it's me, maybe I'm doing a test order
-            console.log("state_additionalInfo.paymentMethod",state_additionalInfo.paymentMethod);
+            // console.log("state_additionalInfo.paymentMethod",state_additionalInfo.paymentMethod);
             bodyFormData.set( "PaymentMethod", state_additionalInfo.paymentMethod );
          } else {
             bodyFormData.set( "PaymentMethod", "authnet:MasterCard" );
@@ -397,10 +517,10 @@ const Shipping = props => {
          if ( response ) {
             parseMessages(response.data,dispatch,messagesActions);
             if ( response.status ) {
-               console.log("response.data",response.data);
+               // console.log("response.data",response.data);
                if ( !response.data.errorMessages ) {
                   store.set( 'opay', response.data );
-                  console.log("state_billingAddress",state_billingAddress);
+                  // console.log("state_billingAddress",state_billingAddress);
                   store.set( "email", state_billingAddress.email );
                   store.set( "zip", state_billingAddress.zip );
                   router.push(`/checkout/Payment`);
@@ -428,7 +548,7 @@ const Shipping = props => {
       {name:"No",code:"No",value:"No"}
    ];
 
-   console.log("state_paymentMethods",state_paymentMethods);
+   // console.log("state_paymentMethods",state_paymentMethods);
    return (
       <Box
          width={["95%","90%","80%"]}
@@ -543,7 +663,7 @@ const Shipping = props => {
                               state_shippingMethods.map(method=>{
                                  let value = `${method.name}|${method.module}:${method.code}`;
                                  let className = state_shippingMethod === value ? `${styles.radioSelected} ${styles.radioContainer}` : styles.radioContainer;
-                                 console.log("className",className);
+                                 // console.log("className",className);
                                  return (
                                     <Box
                                        key={`${method.module}:${method.code}`}

@@ -6,7 +6,7 @@ import Field from "./Field";
 import styles from "../../styles/checkout.module.scss";
 
 const AddressForm = props => {
-   console.log("AddressForm props",props);
+   // console.log("AddressForm props",props);
    const [state_valid,setState_valid] = useState(false);
 
    const [state_fieldValidities_firstName,setState_fieldValidities_firstName] = useState(false);
@@ -75,10 +75,10 @@ const AddressForm = props => {
          state_fieldValidities_email &&
          state_fieldValidities_company
       ) {
-         console.log("setting state_valid to true");
+         // console.log("setting state_valid to true");
          setState_valid( true );
       } else {
-         console.log("setting state_valid to false");
+         // console.log("setting state_valid to false");
          setState_valid( false );
       }
    },[
