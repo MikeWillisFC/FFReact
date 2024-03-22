@@ -149,6 +149,7 @@ const Attribute = props => {
 					"www.favorfavor.com",
 					"www.nicepricefavors.com",
 					"localhost",
+					"ffr.vercel.app",
 				];
 				
 				if ( !safeList.includes( window.location.hostname ) ) {
