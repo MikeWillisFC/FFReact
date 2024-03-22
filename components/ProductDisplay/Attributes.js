@@ -149,7 +149,8 @@ const Attributes = props => {
                      tagPrompt: prompt.tagPrompt || false,
                      scripts: prompt.scripts || false,
                      iframeModal: prompt.iframeModal || false,
-                     FCDesignTool: prompt.FCDesignTool || false
+                     FCDesignTool: prompt.FCDesignTool || false,
+                     FCReactDesignTool: prompt.FCReactDesignTool || false
                   });
                });
             } else {
@@ -184,6 +185,7 @@ const Attributes = props => {
       let attributeScripts = [];
       let hideRemainingOptions = false;
       newAttributes.forEach(att=>{
+			console.log("att",att);
          if ( att.scripts ) {
             att.scripts.forEach(scrpt=>{
                attributeScripts.push(scrpt);
@@ -342,6 +344,12 @@ const Attributes = props => {
                      // console.log("isOpen",isOpen);
 
                      if ( attribute.type === "checkbox" && attribute.code.substr( 0, 13 ) === "ScriptInclude" ) {
+								/* we're building our own version of NPF's FCRDConf.js, because that one uses jQuery etc and is not
+								* meant to be embedded in a react app. Our functions will be in FCReactDesignToolPrompt.js
+								*/
+								if ( attribute.prompt !== "//www.nicepricefavors.com/includes/bundles/dist/FCRDConf.js" ) {
+									addScript(attribute.prompt,`attScript|${attribute.prompt}`);
+								}
                         return null; // TODO: handle this
                      } else {
                         return (

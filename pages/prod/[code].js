@@ -76,6 +76,8 @@ const Product = (props) => {
       }
       setState_minimum( minimum );
       setState_product( product );
+		
+		window.prodID = product.code;
 
       setState_samplesPermitted(()=>{
          if (
