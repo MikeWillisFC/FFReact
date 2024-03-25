@@ -12,9 +12,9 @@ const FCReactDesignToolPrompt = props => {
    };
 
 	const ref_designID = useRef();
-	window.fashioncraftFormFields = {
-		designID: ref_designID.current
-	};
+	
+	if ( !window.fashioncraftFormFields ) { window.fashioncraftFormFields = {}; }
+	window.fashioncraftFormFields.designID = ref_designID.current;
 
 	let waitingForAddOnPrices = setInterval(()=>{
 		// console.log("int");

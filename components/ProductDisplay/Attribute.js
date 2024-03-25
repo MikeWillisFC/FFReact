@@ -120,7 +120,7 @@ const Attribute = props => {
 
 					setState_iframeSource( href );
 				}
-			};
+			}; // openFashioncraftDesignToolModal
 
 			window.openFashioncraftDesignToolModal_proxied = (href,preload=false) => {
 				/* 2022-12-20: this almost works. It gets some minor CORS errors, and FC needs to
@@ -163,6 +163,10 @@ const Attribute = props => {
 					setState_iframeSource( proxyURL );
 				}
 			}; // openFashioncraftDesignToolModal_proxied
+
+			window.closeFashioncraftDesignToolModal = ()=>{
+				setState_iframeSource(false);
+			}; // closeFashioncraftDesignToolModal
 		}
 
 		return ()=>{
@@ -403,6 +407,22 @@ const Attribute = props => {
 			if ( attribute.required ) {
 				defaultStyle.fontWeight = "bold" ;
 			}
+
+			switch( attribute.code ) {
+			case "GiftBox":
+				if ( !window.fashioncraftFormFields ) { window.fashioncraftFormFields = {}; }
+				window.fashioncraftFormFields.boxes = elRef.current;
+				break;
+			case "TagsOrStickers":
+				if ( !window.fashioncraftFormFields ) { window.fashioncraftFormFields = {}; }
+				window.fashioncraftFormFields.tagsOrStickers = elRef.current;
+				break;
+			case "DesignType":
+				if ( !window.fashioncraftFormFields ) { window.fashioncraftFormFields = {}; }
+				window.fashioncraftFormFields.designType = elRef.current;
+				break;
+			}
+
 			return (
 				<Box>
 					{ attribute.prePrompt || "" }

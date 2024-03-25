@@ -1,4 +1,4 @@
-import {useState,useEffect,useCallback,useMemo} from "react";
+import {useState,useEffect,useCallback,useMemo,useRef} from "react";
 import {
    Fragment,
    InputGroup,
@@ -21,6 +21,14 @@ const MyInput = props => {
    const [state_quantityFocused,setState_quantityFocused] = useState(false);
 
    let {onValidityChange,quantity,touched,samplesPermitted,minimum,enforceMinimum,onChange} = props;
+
+	const quantityFieldRef = useRef();
+
+	useEffect(()=>{
+		// why the useEffect? because window might not be defined outside the useEffect in NextJS
+		if ( !window.fashioncraftFormFields ) { window.fashioncraftFormFields = {}; }
+		window.fashioncraftFormFields.quantity = quantityFieldRef.current;
+	},[]);
 
    if ( typeof( enforceMinimum ) !== "boolean" ) {
       enforceMinimum = enforceMinimum.trim() === "yes" || enforceMinimum.trim() === "1";
@@ -130,6 +138,7 @@ const MyInput = props => {
                      <InputLeftAddon>Quantity</InputLeftAddon>
                      <NumberInputField
                         placeholder="Quantity"
+								ref={quantityFieldRef}
                      />
                      <NumberInputStepper>
                         <NumberIncrementStepper />
@@ -140,6 +149,7 @@ const MyInput = props => {
                   <Box>
                      <NumberInputField
                         placeholder="Quantity"
+								ref={quantityFieldRef}
                      />
                      <NumberInputStepper>
                         <NumberIncrementStepper />

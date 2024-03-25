@@ -1,4 +1,4 @@
-import {useState,useEffect} from "react";
+import {useState,useEffect,useRef} from "react";
 import { Select } from "@chakra-ui/react"
 
 const QuantityDropdown = props => {
@@ -6,6 +6,14 @@ const QuantityDropdown = props => {
    const [state_touched,setState_touched] = useState(props.touched || false);
    const [state_valid,setState_valid] = useState(true);
 
+	const quantityFieldRef = useRef();
+
+	useEffect(()=>{
+		// why the useEffect? because window might not be defined outside the useEffect in NextJS
+		if ( !window.fashioncraftFormFields ) { window.fashioncraftFormFields = {}; }
+		window.fashioncraftFormFields.quantity = quantityFieldRef.current;
+	},[]);
+	
    let {isValid,touched,samplesPermitted} = props;
    useEffect(()=>{
       if ( !isValid ) {
@@ -45,6 +53,7 @@ const QuantityDropdown = props => {
          onChange={props.onChange}
          onBlur={event=>setState_touched(true)}
          isInvalid={!state_valid}
+			ref={quantityFieldRef}
       >
          { samplesPermitted && <option value="1">1 - Sample Orders Only</option> }
          {
