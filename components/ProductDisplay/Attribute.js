@@ -155,7 +155,7 @@ const Attribute = props => {
 				if ( !safeList.includes( window.location.hostname ) ) {
 					// hmph
 				} else {
-					let domain = window.location.hostname === "localhost" ? "www.favorfavor.com" : window.location.hostname;
+					let domain = window.location.hostname === "localhost" || window.location.hostname === "ffr.vercel.app" ? "www.favorfavor.com" : window.location.hostname;
 					let proxyURL = `https://${domain}/pscripts/FCConnect/proxy.php${queryString}`;
 			
 					let viewportSize = getViewportSize();
