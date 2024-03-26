@@ -129,7 +129,7 @@ const Form = memo(props => {
 	}; // runFormSubmit
 
 	let checkValidity = useCallback(() => {
-		// console.log("checkValidity called, productForm.attributes:",productForm.attributes);
+		console.log("checkValidity called, productForm.attributes:",productForm.attributes);
 		let highlightInvalids = false;
 		productForm.attributes.forEach(attribute=>{
 			if ( !highlightInvalids && !attribute.isValid ) {
@@ -137,18 +137,18 @@ const Form = memo(props => {
 			}
 		});
 
-		// console.log("highlightInvalids",highlightInvalids);
-		setState_highlightInvalids(highlightInvalids);
+		console.log("highlightInvalids",highlightInvalids);
+		// setState_highlightInvalids(highlightInvalids);
 		return !highlightInvalids;
 	},[productForm.attributes]);
 
 	let handleSubmit = (event,goToBasket=true,quantityOverride=false,returnResult=false) => {
 		event.preventDefault();
-		// console.log("form submitted");
+		console.log("form submitted");
 		// console.log("form submitted, attributeValuesRef.current:",attributeValuesRef.current);
 
 		if ( !checkValidity() ) {
-			// console.log("not valid");
+			console.log("not valid");
 		} else {
 			let bodyFormData = prepFormSubmit(quantityOverride);
 
@@ -172,7 +172,7 @@ const Form = memo(props => {
 					}
 				});
 			}
-			//console.log("bodyFormData",bodyFormData);
+			console.log("bodyFormData",bodyFormData);
 
 			return runFormSubmit(bodyFormData,goToBasket,returnResult);
 		}
