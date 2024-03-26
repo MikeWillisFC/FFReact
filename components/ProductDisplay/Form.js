@@ -20,7 +20,7 @@ const Form = memo(props => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
-	console.log("Form rendering");
+	console.log("Form rendering, product:",product);
 
 	const [state_highlightInvalids,setState_highlightInvalids] = useState(false);
 	const [state_attributeValidity,setState_attributeValidity] = useState([]);
