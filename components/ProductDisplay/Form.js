@@ -21,6 +21,8 @@ const Form = memo(props => {
 	const router = useRouter();
 
 	console.log("Form rendering, product:",product);
+	useEffect(()=>{console.log("globalConfig changed:", globalConfig);},[globalConfig]);
+	useEffect(()=>{console.log("product changed:", product);},[product]);
 
 	const [state_highlightInvalids,setState_highlightInvalids] = useState(false);
 	const [state_attributeValidity,setState_attributeValidity] = useState([]);
