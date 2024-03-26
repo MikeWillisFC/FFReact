@@ -20,7 +20,7 @@ const Form = memo(props => {
 	const dispatch = useDispatch();
 	const router = useRouter();
 
-	console.log("Form rendering, product:",product);
+	console.log("Form rendering, props",props);
 	useEffect(()=>{console.log("globalConfig changed:", globalConfig);},[globalConfig]);
 	useEffect(()=>{console.log("product changed:", product);},[product]);
 
