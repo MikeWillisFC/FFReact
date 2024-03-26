@@ -164,9 +164,9 @@ const Attribute = props => {
 				}
 			}; // openFashioncraftDesignToolModal_proxied
 
-			window.closeFashioncraftDesignToolModal = ()=>{
-				setState_iframeSource(false);
-			}; // closeFashioncraftDesignToolModal
+			// window.closeFashioncraftDesignToolModal = ()=>{
+			// 	setState_iframeSource(false);
+			// }; // closeFashioncraftDesignToolModal
 		}
 
 		return ()=>{
