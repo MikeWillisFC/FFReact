@@ -14,7 +14,12 @@ import styles from "../../styles/product.module.scss";
 const Form = memo(props => {
 	let {
 		globalConfig,
-		product
+		product,
+		minimum,
+		miscModalDisclosure,
+		renderSpinner,
+		samplesPermitted,
+		setMiscModal,
 	} = props;
 
 	const dispatch = useDispatch();
@@ -22,7 +27,11 @@ const Form = memo(props => {
 
 	console.log("Form rendering, props",props);
 	useEffect(()=>{console.log("globalConfig changed:", globalConfig);},[globalConfig]);
-	useEffect(()=>{console.log("product changed:", product);},[product]);
+	useEffect(()=>{console.log("minimum changed:", minimum);},[minimum]);
+	useEffect(()=>{console.log("miscModalDisclosure changed:", miscModalDisclosure);},[miscModalDisclosure]);
+	useEffect(()=>{console.log("renderSpinner changed:", renderSpinner);},[renderSpinner]);
+	useEffect(()=>{console.log("samplesPermitted changed:", samplesPermitted);},[samplesPermitted]);
+	useEffect(()=>{console.log("setMiscModal changed:", setMiscModal);},[setMiscModal]);
 
 	const [state_highlightInvalids,setState_highlightInvalids] = useState(false);
 	const [state_attributeValidity,setState_attributeValidity] = useState([]);
