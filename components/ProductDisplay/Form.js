@@ -231,6 +231,10 @@ const Form = memo(props => {
 			/>
 		</form>
 	);
+}, (prevProps, currentProps)=>{
+	let isEqual = JSON.stringify(prevProps) === JSON.stringify(currentProps);
+	console.log("isEqual",isEqual);
+	return isEqual;
 });
 
 Form.displayName = "Form";
