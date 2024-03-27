@@ -26,7 +26,7 @@ let animationDuration = 0.4;
 
 const IframeModal = props => {
 	console.log("IframeModal props",props);
-	const modalDisclosure = useDisclosure();
+	const modalDisclosure = useDisclosure({ defaultIsOpen: false });
 	const [state_animate,setState_animate] = useState( {} );
 	const [state_animationDuration,setState_animationDuration] = useState( 0.4 );
 	const [state_iframeSource,setState_iframeSource] = useState( false );
@@ -93,32 +93,38 @@ const IframeModal = props => {
 	},[state_animate,modalDisclosure,state_animationDuration]);
 
 	return (
-		<Modal
-			isOpen={modalDisclosure.isOpen}
-			onClose={window.closeFashioncraftDesignToolModal}
-			size="6xl"
-		>
-			<ModalOverlay />
-			<MotionModalContent
-				className={props.styles.optionModal}
+		<Fragment>
+			{
+				props.source ? (
+					<Modal
+						isOpen={modalDisclosure.isOpen}
+						onClose={window.closeFashioncraftDesignToolModal}
+						size="6xl"
+					>
+						<ModalOverlay />
+						<MotionModalContent
+							className={props.styles.optionModal}
 
-				animate={state_animate}
-				transition={{ ease: "easeOut", duration: state_animationDuration }}
-				ref={modalRef}
-				style={{overflow:"hidden",height:"95%",margin:"10px 0px 0px 0px"}}
-			>
-				<ModalHeader className="blueHeader">
-					{props.title}
-					<ModalCloseButton />
-				</ModalHeader>
-				<ModalBody style={{height:"100%",padding:"0px"}}>
-					<iframe
-						src={props.source}
-						style={{margin:"0px",padding:"0px",height:"100%",width:"100%"}}
-					/>
-				</ModalBody>
-			</MotionModalContent>
-		</Modal>
+							animate={state_animate}
+							transition={{ ease: "easeOut", duration: state_animationDuration }}
+							ref={modalRef}
+							style={{overflow:"hidden",height:"95%",margin:"10px 0px 0px 0px"}}
+						>
+							<ModalHeader className="blueHeader">
+								{props.title}
+								<ModalCloseButton />
+							</ModalHeader>
+							<ModalBody style={{height:"100%",padding:"0px"}}>
+								<iframe
+									src={props.source}
+									style={{margin:"0px",padding:"0px",height:"100%",width:"100%"}}
+								/>
+							</ModalBody>
+						</MotionModalContent>
+					</Modal>
+				) : ""
+			}
+		</Fragment>
 	);
 }; // IframeModal
 
