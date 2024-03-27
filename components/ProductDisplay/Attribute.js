@@ -11,7 +11,7 @@ import TagPrompt from "./TagPrompt";
 import CheckboxAttribute from "./AttributeFields/CheckboxAttribute";
 import FCDesignToolPrompt from "./FCDesignToolPrompt";
 import FCReactDesignToolPrompt from "./FCReactDesignToolPrompt";
-import { openMiscModal, getViewportSize } from "../../utilities";
+import { openMiscModal } from "../../utilities";
 
 const Attribute = memo(props => {
 	const [state_modal,setState_modal] = useState(false);

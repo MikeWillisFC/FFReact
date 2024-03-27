@@ -20,6 +20,8 @@ import {
 	useDisclosure
 } from "@chakra-ui/react";
 
+import { getViewportSize } from "../../utilities";
+
 const MotionModalContent = motion(ModalContent);
 
 let animationDuration = 0.4;
