@@ -547,4 +547,6 @@ const Attribute = memo(props => {
 	return isEqual;
 }); // Attribute
 
+Attribute.displayName = "Attribute";
+
 export default Attribute;
