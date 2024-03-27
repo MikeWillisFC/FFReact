@@ -60,7 +60,7 @@ const IframeModal = props => {
 			console.log("animateTo",animateTo);
 			let dt = new Date();
 			console.log("setting state",dt.getTime());
-			setState_animate(animateTo);
+			// setState_animate(animateTo);
 			console.log("closeFashioncraftDesignToolModal complete");
 		}
 
