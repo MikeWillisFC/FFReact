@@ -65,7 +65,7 @@ const IframeModal = props => {
 			console.log("setting state",dt.getTime());
 			
 			setState_animate(animateTo);
-
+			
 			console.log("closeFashioncraftDesignToolModal complete");
 		}
 
@@ -74,23 +74,23 @@ const IframeModal = props => {
 		}
 	},[modalDisclosure]);
 
-	// useEffect(()=>{
-	// 	if ( state_animate && Object.keys(state_animate).length === 0 && state_animate.constructor === Object ) {
-	// 		// do nothing, it's empty
-	// 	} else {
-	// 		console.log("state_animate useEffect running");
-	// 		let dt = new Date();
-	// 		//console.log("starting timeout",dt.getTime());
-	// 		let timeout = setTimeout(()=>{
-	// 			let dtB = new Date();
-	// 			//console.log("firing timeout",dtB.getTime());
-	// 			modalDisclosure.onClose();
-	// 			console.log("state_animate useEffect complete");
-	// 		},state_animationDuration * 1000);
+	useEffect(()=>{
+		if ( state_animate && Object.keys(state_animate).length === 0 && state_animate.constructor === Object ) {
+			// do nothing, it's empty
+		} else {
+			console.log("state_animate useEffect running");
+			let dt = new Date();
+			//console.log("starting timeout",dt.getTime());
+			let timeout = setTimeout(()=>{
+				let dtB = new Date();
+				//console.log("firing timeout",dtB.getTime());
+				modalDisclosure.onClose();
+				console.log("state_animate useEffect complete");
+			},state_animationDuration * 1000);
 
-	// 		return ()=>{clearTimeout(timeout);};
-	// 	}
-	// },[state_animate,modalDisclosure,state_animationDuration]);
+			return ()=>{clearTimeout(timeout);};
+		}
+	},[state_animate,modalDisclosure,state_animationDuration]);
 
 	return (
 		<Modal
