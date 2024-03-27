@@ -517,6 +517,7 @@ const Attribute = memo(props => {
 	return (
 		<Fragment>
 			{renderAttribute()}
+
 			{
 				state_modal !== false &&
 				<OptionModal
@@ -528,17 +529,13 @@ const Attribute = memo(props => {
 					elRef={elRef}
 				/>
 			}
-			{
-				state_iframeSource && (
-					<IframeModal
-						source={state_iframeSource}
-						setSource={setState_iframeSource}
-						globalConfig={props.globalConfig}
-						styles={props.styles}
-						title="Design Your Item"
-					/>
-				)
-			}
+
+			<IframeModal
+				source={state_iframeSource}
+				globalConfig={props.globalConfig}
+				styles={props.styles}
+				title="Design Your Item"
+			/>
 		</Fragment>
 	);
 }, (prevProps,currentProps)=>{
