@@ -1,4 +1,4 @@
-import {Fragment,useState,useEffect,useRef,useCallback} from "react";
+import {Fragment,useState,useEffect,useRef,useCallback,memo} from "react";
 import { Box,Button,Select,Icon,HStack,Input,Checkbox,Tag,TagLeftIcon,TagLabel,Textarea } from "@chakra-ui/react";
 import { FaRegCheckCircle,FaAngleDown,FaInfoCircle } from 'react-icons/fa';
 import axios from "axios";
