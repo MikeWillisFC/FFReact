@@ -28,7 +28,9 @@ let animationDuration = 0.4;
 
 const IframeModal = props => {
 	console.log("IframeModal props",props);
+
 	const modalDisclosure = useDisclosure({ defaultIsOpen: false });
+
 	const [state_animate,setState_animate] = useState( {} );
 	const [state_animationDuration,setState_animationDuration] = useState( 0.4 );
 	const [state_iframeSource,setState_iframeSource] = useState( false );
@@ -71,6 +73,7 @@ const IframeModal = props => {
 					}
 
 					setState_iframeSource( href );
+					modalDisclosure.onOpen();
 				}
 			}; // openFashioncraftDesignToolModal
 
@@ -113,6 +116,7 @@ const IframeModal = props => {
 					let viewportSize = getViewportSize();
 			
 					setState_iframeSource( proxyURL );
+					modalDisclosure.onOpen();
 				}
 			}; // openFashioncraftDesignToolModal_proxied
 
@@ -124,12 +128,13 @@ const IframeModal = props => {
 		return ()=>{
 			window.openFashioncraftDesignToolModal = null;
 		}
-	},[manufacturer]);
+	},[
+		manufacturer,
+		modalDisclosure,
+	]);
 
 
 	useEffect(()=>{
-		modalDisclosure.onOpen();
-
 		window.modalDisclosure = modalDisclosure;
 		window.closeFashioncraftDesignToolModal = () => {
 			/* the modal wants to be centered. If we just change the x value (left), it
@@ -187,42 +192,36 @@ const IframeModal = props => {
 	},[state_animate,modalDisclosure,state_animationDuration]);
 
 	return (
-		<Fragment>
-			{
-				props.source ? (
-					<Modal
-						isOpen={modalDisclosure.isOpen}
-						onClose={window.closeFashioncraftDesignToolModal}
-						size="6xl"
-					>
-						<ModalOverlay />
-						<MotionModalContent
-							className={props.styles.optionModal}
+		<Modal
+			isOpen={modalDisclosure.isOpen}
+			onClose={window.closeFashioncraftDesignToolModal}
+			size="6xl"
+		>
+			<ModalOverlay />
+			<MotionModalContent
+				className={props.styles.optionModal}
 
-							animate={state_animate}
-							transition={{ ease: "easeOut", duration: state_animationDuration }}
-							ref={modalRef}
-							style={{overflow:"hidden",height:"95%",margin:"10px 0px 0px 0px"}}
-						>
-							<ModalHeader className="blueHeader">
-								{props.title}
-								<ModalCloseButton />
-							</ModalHeader>
-							<ModalBody style={{height:"100%",padding:"0px"}}>
-								{
-									state_iframeSource ? (
-										<iframe
-											src={state_iframeSource}
-											style={{margin:"0px",padding:"0px",height:"100%",width:"100%"}}
-										/>
-									) : ""
-								}
-							</ModalBody>
-						</MotionModalContent>
-					</Modal>
-				) : ""
-			}
-		</Fragment>
+				animate={state_animate}
+				transition={{ ease: "easeOut", duration: state_animationDuration }}
+				ref={modalRef}
+				style={{overflow:"hidden",height:"95%",margin:"10px 0px 0px 0px"}}
+			>
+				<ModalHeader className="blueHeader">
+					{props.title}
+					<ModalCloseButton />
+				</ModalHeader>
+				<ModalBody style={{height:"100%",padding:"0px"}}>
+					{
+						state_iframeSource ? (
+							<iframe
+								src={state_iframeSource}
+								style={{margin:"0px",padding:"0px",height:"100%",width:"100%"}}
+							/>
+						) : ""
+					}
+				</ModalBody>
+			</MotionModalContent>
+		</Modal>
 	);
 }; // IframeModal
 
