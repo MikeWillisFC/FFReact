@@ -36,6 +36,8 @@ const IframeModal = props => {
 	useEffect(()=>{
 		modalDisclosure.onOpen();
 
+		window.modalDisclosure = modalDisclosure;
+		window.setSource = setSource;
 		window.closeFashioncraftDesignToolModal = () => {
 			/* the modal wants to be centered. If we just change the x value (left), it
 			* moves to where we want. But when we decrease the width at the same time, it wants to shift
@@ -71,7 +73,7 @@ const IframeModal = props => {
 		return ()=>{
 			window.closeFashioncraftDesignToolModal = null;
 		}
-	},[modalDisclosure]);
+	},[modalDisclosure,setSource]);
 
 	let {setSource} = props;
 	// useEffect(()=>{
