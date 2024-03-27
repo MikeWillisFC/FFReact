@@ -22,6 +22,8 @@ import {
 
 const MotionModalContent = motion(ModalContent);
 
+let animationDuration = 0.4;
+
 const IframeModal = props => {
 	console.log("IframeModal props",props);
 	const modalDisclosure = useDisclosure();
@@ -60,14 +62,28 @@ const IframeModal = props => {
 			console.log("animateTo",animateTo);
 			let dt = new Date();
 			console.log("setting state",dt.getTime());
-			setState_animate(animateTo);
+			
+
+			if ( false ) {
+				setState_animate(animateTo);
+			} else {
+				let dt = new Date();
+				//console.log("starting timeout",dt.getTime());
+				let timeout = setTimeout(()=>{
+					let dtB = new Date();
+					//console.log("firing timeout",dtB.getTime());
+					modalDisclosure.onClose();
+					setSource(false);
+					console.log("state_animate useEffect complete");
+				},animationDuration * 1000);
+			}
 			console.log("closeFashioncraftDesignToolModal complete");
 		}
 
 		return ()=>{
 			window.closeFashioncraftDesignToolModal = null;
 		}
-	},[modalDisclosure]);
+	},[modalDisclosure,setSource]);
 
 	let {setSource} = props;
 	useEffect(()=>{
