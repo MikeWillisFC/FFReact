@@ -60,7 +60,7 @@ const IframeModal = props => {
 			console.log("animateTo",animateTo);
 			let dt = new Date();
 			console.log("setting state",dt.getTime());
-			// setState_animate(animateTo);
+			setState_animate(animateTo);
 			console.log("closeFashioncraftDesignToolModal complete");
 		}
 
@@ -81,7 +81,7 @@ const IframeModal = props => {
 				let dtB = new Date();
 				//console.log("firing timeout",dtB.getTime());
 				modalDisclosure.onClose();
-				setSource(false);
+				// setSource(false);
 				console.log("state_animate useEffect complete");
 			},state_animationDuration * 1000);
 

@@ -138,7 +138,7 @@ const Form = memo(props => {
 		});
 
 		console.log("highlightInvalids",highlightInvalids);
-		// setState_highlightInvalids(highlightInvalids);
+		setState_highlightInvalids(highlightInvalids);
 		return !highlightInvalids;
 	},[productForm.attributes]);
 
