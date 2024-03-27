@@ -19,7 +19,6 @@ const Attribute = memo(props => {
 	const [state_textValue,setState_textValue] = useState("");
 	const [state_selectIcon,setState_selectIcon] = useState(null);
 	const [state_disabled,setState_disabled] = useState(false);
-	const [state_iframeSource,setState_iframeSource] = useState( false );
 
 	console.log("Attribute rendering, props:",props);
 	const elRef = useRef();
@@ -87,92 +86,6 @@ const Attribute = memo(props => {
 			setState_disabled( props.attribute.disabled === "true" );
 		}
 	},[props.attribute.disabled]);
-
-	useEffect(()=>{
-		// allow iframe modal for whatever reasons we want
-		if ( props.product.customFields.MANUFACTURER === "Fashioncraft" ) {
-			let permittedSources = [
-				"//www.fashioncraft.com"
-			];
-
-			window.openFashioncraftDesignToolModal = href => {
-				//console.log("href",href);
-
-				/* IMPORTANT: only use links that point to trusted sources!
-				*/
-				let proceed = false;
-				permittedSources.forEach(source=>{
-					//console.log("source",source);
-					//console.log("href.substr(0,source.length - 1)",href.substr(0,source.length - 1));
-					if ( !proceed && href.substr(0,source.length) === source ) {
-						proceed = true;
-					}
-				});
-
-				//console.log("proceed",proceed);
-
-				if ( proceed ) {
-					if ( href.substr(0,5) === "http:" ) {
-						href = `https:${href.substring(5,href.length - 1)}`;
-					} else if ( href.substr(0,2) === "//" ) {
-						href = `https:${href}`;
-					}
-
-					setState_iframeSource( href );
-				}
-			}; // openFashioncraftDesignToolModal
-
-			window.openFashioncraftDesignToolModal_proxied = (href,preload=false) => {
-				/* 2022-12-20: this almost works. It gets some minor CORS errors, and FC needs to
-				* use it in their init script instead of us hacking our way into it.
-				* Also the iframe message is ignored because the origin is NPF instead of FC, so
-				* FC needs to check if we're proxying, and if so, allow the source domain to be
-				* in the origin list as well.
-				* Also this all needs thorough security review.
-				*/
-				console.log("openFashioncraftDesignToolModal_proxied called");
-				if ( preload ) {
-					console.log("preloading");
-				}
-				let url = new URL('https:' + href);
-				let queryString = "?";
-				for (const [key, value] of url.searchParams) {
-					queryString = `${queryString}${key}=${value}&`;
-			
-					if ( key === "i" && value.substr(0,5).toLowerCase() === "6795s" ) {
-						queryString = `${queryString}showOnly=Glassware&`;
-					}
-				}
-			
-				// 2024-03-19: probably unnecessary but doesn't hurt
-				let safeList = [
-					"www.favorfavor.com",
-					"www.nicepricefavors.com",
-					"localhost",
-					"ffr.vercel.app",
-				];
-				
-				if ( !safeList.includes( window.location.hostname ) ) {
-					// hmph
-				} else {
-					let domain = window.location.hostname === "localhost" || window.location.hostname === "ffr.vercel.app" ? "www.favorfavor.com" : window.location.hostname;
-					let proxyURL = `https://${domain}/pscripts/FCConnect/proxy.php${queryString}`;
-			
-					let viewportSize = getViewportSize();
-			
-					setState_iframeSource( proxyURL );
-				}
-			}; // openFashioncraftDesignToolModal_proxied
-
-			// window.closeFashioncraftDesignToolModal = ()=>{
-			// 	setState_iframeSource(false);
-			// }; // closeFashioncraftDesignToolModal
-		}
-
-		return ()=>{
-			window.openFashioncraftDesignToolModal = null;
-		}
-	},[props.product.customFields.MANUFACTURER]);
 
 	// console.log("attribute.prompt",attribute.prompt);
 	// console.log("attribute.prompt.substr(0,1)",attribute.prompt.substr(0,1));
@@ -531,10 +444,10 @@ const Attribute = memo(props => {
 			}
 
 			<IframeModal
-				source={state_iframeSource}
 				globalConfig={props.globalConfig}
 				styles={props.styles}
 				title="Design Your Item"
+				manufacturer={props.product.customFields.MANUFACTURER}
 			/>
 		</Fragment>
 	);
