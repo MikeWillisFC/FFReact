@@ -233,7 +233,7 @@ const Form = memo(props => {
 	);
 }, (prevProps, currentProps)=>{
 	let isEqual = JSON.stringify(prevProps) === JSON.stringify(currentProps);
-	console.log("isEqual",isEqual);
+	console.log("Form isEqual",isEqual);
 	return isEqual;
 });
 

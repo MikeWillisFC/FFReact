@@ -13,7 +13,7 @@ import FCDesignToolPrompt from "./FCDesignToolPrompt";
 import FCReactDesignToolPrompt from "./FCReactDesignToolPrompt";
 import { openMiscModal, getViewportSize } from "../../utilities";
 
-const Attribute = props => {
+const Attribute = memo(props => {
 	const [state_modal,setState_modal] = useState(false);
 	const [state_value,setState_value] = useState("");
 	const [state_textValue,setState_textValue] = useState("");
@@ -21,7 +21,7 @@ const Attribute = props => {
 	const [state_disabled,setState_disabled] = useState(false);
 	const [state_iframeSource,setState_iframeSource] = useState( false );
 
-	//console.log("Attribute rendering, props:",props);
+	console.log("Attribute rendering, props:",props);
 	const elRef = useRef();
 	const buttonRef = useRef();
 
@@ -541,6 +541,10 @@ const Attribute = props => {
 			}
 		</Fragment>
 	);
-}; // Attribute
+}, (prevProps,currentProps)=>{
+	let isEqual = JSON.stringify(prevProps) === JSON.stringify(currentProps);
+	console.log("Attribute isEqual",isEqual);
+	return isEqual;
+}); // Attribute
 
 export default Attribute;
