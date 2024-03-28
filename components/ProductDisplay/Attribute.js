@@ -171,13 +171,13 @@ const Attribute = memo(props => {
 			if ( !window.fashioncraftChangeHandlers ) {
 				window.fashioncraftChangeHandlers = {};
 			}
-			window.fashioncraftChangeHandlers.designID = handleChange;
+			window.fashioncraftChangeHandlers.designID = (value)=>{handleChange(null,value)};
 			break;
 		case "GiftBox":
 			if ( !window.fashioncraftChangeHandlers ) {
 				window.fashioncraftChangeHandlers = {};
 			}
-			window.fashioncraftChangeHandlers.giftBox = handleChange;
+			window.fashioncraftChangeHandlers.giftBox = (value)=>{handleChange(null,value)};
 			break;
 		}
 	},[
