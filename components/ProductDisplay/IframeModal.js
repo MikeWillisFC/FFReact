@@ -196,7 +196,6 @@ const IframeModal = props => {
 
 		return ()=>{
 			if ( interval !== false ) { clearInterval( interval ); }
-			window.closeFashioncraftDesignToolModal = null;
 		}
 	},[
 		modalDisclosure
