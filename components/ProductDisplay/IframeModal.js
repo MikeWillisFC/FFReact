@@ -36,6 +36,7 @@ const IframeModal = props => {
 	const [state_iframeSource,setState_iframeSource] = useState( false );
 
 	const modalRef = useRef();
+	const modalRef2 = useRef();
 
 	let  {
 		manufacturer
@@ -138,9 +139,9 @@ const IframeModal = props => {
 	},[modalDisclosure]);
 
 	useEffect(()=>{
-		console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef:",modalRef);
+		console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef, modalRef2:",modalRef, modalRef2);
 		if ( modalDisclosure.isOpen ) {
-			console.log("closeFashioncraftDesignToolModal useEffect: modal is open, modalRef:",modalRef);
+			console.log("closeFashioncraftDesignToolModal useEffect: modal is open, modalRef, modalRef2:",modalRef, modalRef2);
 			window.closeFashioncraftDesignToolModal = () => {
 				/* the modal wants to be centered. If we just change the x value (left), it
 				* moves to where we want. But when we decrease the width at the same time, it wants to shift
@@ -173,8 +174,19 @@ const IframeModal = props => {
 				
 				console.log("closeFashioncraftDesignToolModal complete");
 			}
+			setTimeout(()=>{
+				console.log("closeFashioncraftDesignToolModal 2 second timeout, modalRef, modalRef2:",modalRef, modalRef2);
+			}, 2000);
+			
+			setTimeout(()=>{
+				console.log("closeFashioncraftDesignToolModal 5 second timeout, modalRef, modalRef2:",modalRef, modalRef2);
+			}, 2000);
+			
+			setTimeout(()=>{
+				console.log("closeFashioncraftDesignToolModal 9 second timeout, modalRef, modalRef2:",modalRef, modalRef2);
+			}, 2000);
 		} else {
-			console.log("closeFashioncraftDesignToolModal useEffect: modal is NOT open, modalRef:",modalRef);
+			console.log("closeFashioncraftDesignToolModal useEffect: modal is NOT open, modalRef, modalRef2:",modalRef, modalRef2);
 		}
 
 		return ()=>{
@@ -220,14 +232,16 @@ const IframeModal = props => {
 					<ModalCloseButton />
 				</ModalHeader>
 				<ModalBody style={{height:"100%",padding:"0px"}}>
-					{
-						state_iframeSource ? (
-							<iframe
-								src={state_iframeSource}
-								style={{margin:"0px",padding:"0px",height:"100%",width:"100%"}}
-							/>
-						) : ""
-					}
+					<div style={{margin:"0px",padding:"0px"}} ref={modalRef2}>
+						{
+							state_iframeSource ? (
+								<iframe
+									src={state_iframeSource}
+									style={{margin:"0px",padding:"0px",height:"100%",width:"100%"}}
+								/>
+							) : ""
+						}
+					</div>
 				</ModalBody>
 			</MotionModalContent>
 		</Modal>
