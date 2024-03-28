@@ -165,6 +165,26 @@ const Attribute = memo(props => {
 		rowIndex
 	]);
 
+	useEffect(()=>{
+		switch( attribute.code ) {
+		case "DesignID":
+			if ( !window.fashioncraftChangeHandlers ) {
+				window.fashioncraftChangeHandlers = {};
+			}
+			window.fashioncraftChangeHandlers.designID = handleChange;
+			break;
+		case "GiftBox":
+			if ( !window.fashioncraftChangeHandlers ) {
+				window.fashioncraftChangeHandlers = {};
+			}
+			window.fashioncraftChangeHandlers.giftBox = handleChange;
+			break;
+		}
+	},[
+		handleChange,
+		attribute.code,
+	]);
+
 	let handleSelectClick = useCallback(event => {
 		//console.log("handleSelectClick called");
 		if ( !state_disabled ) {

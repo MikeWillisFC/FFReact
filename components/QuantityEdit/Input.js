@@ -104,7 +104,10 @@ const MyInput = props => {
    },[checkQuantity,onChange]);
 	
 	useEffect(()=>{
-		window.fashioncraftQuantityChange = handleChange;
+		if ( !window.fashioncraftChangeHandlers ) {
+			window.fashioncraftChangeHandlers = {};
+		}
+		window.fashioncraftChangeHandlers.quantity = handleChange;
 	},[handleChange]);
 
    useEffect(()=>{
