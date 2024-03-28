@@ -17,7 +17,7 @@ const Attributes = props => {
 
    let hidingOptions = useRef();
    hidingOptions.current = false;
-   // console.log("Attributes props",props);
+   console.log("Attributes rendering, props:",props);
 
    // destructuring to make useEffect's happy
    let {
