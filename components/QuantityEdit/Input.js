@@ -97,10 +97,12 @@ const MyInput = props => {
    },[onValidityChange,state_quantityValid]);
 
    let handleChange = useCallback(value => {
+		console.log("quantity handleChange called");
       checkQuantity(value);
       setState_quantity(value);
       onChange(value);
    },[checkQuantity,onChange]);
+	window.fashioncraftQuantityChange = handleChange;
 
    useEffect(()=>{
       if ( typeof(state_quantity) === "undefined" ) {
