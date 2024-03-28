@@ -133,57 +133,54 @@ const IframeModal = props => {
 		modalDisclosure,
 	]);
 
-
 	useEffect(()=>{
 		window.modalDisclosure = modalDisclosure;
-		console.log("closeFashioncraftDesignToolModal defining, modalRef:",modalRef);
-		window.closeFashioncraftDesignToolModal = () => {
-			/* the modal wants to be centered. If we just change the x value (left), it
-			* moves to where we want. But when we decrease the width at the same time, it wants to shift
-			* itself further to the right to compensate for the smaller width.
-			* So we have to compensate for that compensation.
-			*/
-			console.log("closeFashioncraftDesignToolModal called");
-			let elRect = document.getElementById("basketAdd").getBoundingClientRect();
-			console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
-			let modalRect = modalRef.current.getBoundingClientRect();
-			let newX = elRect.x - modalRect.x;
+	},[modalDisclosure]);
 
-			// ok great but since we're decreasing the width as well, we have to compensate for that shift
-			let offsetDiff = (modalRect.width - elRect.width) / 2;
-			newX -= offsetDiff;
-
-			let animateTo = {
-				height: elRect.height + "px",
-				width: elRect.width + "px",
-				margin: 0,
-				x: newX,
-				y: elRect.y,
-				opacity: 0
-			};
-			console.log("animateTo",animateTo);
-			let dt = new Date();
-			console.log("setting state",dt.getTime());
-			
-			setState_animate(animateTo);
-			
-			console.log("closeFashioncraftDesignToolModal complete");
+	useEffect(()=>{
+		console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef:",modalRef);
+		if ( modalDisclosure.isOpen ) {
+			console.log("closeFashioncraftDesignToolModal useEffect: modal is open, modalRef:",modalRef);
+			window.closeFashioncraftDesignToolModal = () => {
+				/* the modal wants to be centered. If we just change the x value (left), it
+				* moves to where we want. But when we decrease the width at the same time, it wants to shift
+				* itself further to the right to compensate for the smaller width.
+				* So we have to compensate for that compensation.
+				*/
+				console.log("closeFashioncraftDesignToolModal called");
+				let elRect = document.getElementById("basketAdd").getBoundingClientRect();
+				console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
+				let modalRect = modalRef.current.getBoundingClientRect();
+				let newX = elRect.x - modalRect.x;
+	
+				// ok great but since we're decreasing the width as well, we have to compensate for that shift
+				let offsetDiff = (modalRect.width - elRect.width) / 2;
+				newX -= offsetDiff;
+	
+				let animateTo = {
+					height: elRect.height + "px",
+					width: elRect.width + "px",
+					margin: 0,
+					x: newX,
+					y: elRect.y,
+					opacity: 0
+				};
+				console.log("animateTo",animateTo);
+				let dt = new Date();
+				console.log("setting state",dt.getTime());
+				
+				setState_animate(animateTo);
+				
+				console.log("closeFashioncraftDesignToolModal complete");
+			}
+		} else {
+			console.log("closeFashioncraftDesignToolModal useEffect: modal is NOT open, modalRef:",modalRef);
 		}
-
-		setTimeout(()=>{
-			console.log("closeFashioncraftDesignToolModal 2 second wait, modalRef:",modalRef);
-		},[2000]);
-		setTimeout(()=>{
-			console.log("closeFashioncraftDesignToolModal 5 second wait, modalRef:",modalRef);
-		},[5000]);
-		setTimeout(()=>{
-			console.log("closeFashioncraftDesignToolModal 10 second wait, modalRef:",modalRef);
-		},[10000]);
 
 		return ()=>{
 			window.closeFashioncraftDesignToolModal = null;
 		}
-	},[modalDisclosure]);
+	},[modalDisclosure.isOpen]);
 
 	useEffect(()=>{
 		if ( state_animate && Object.keys(state_animate).length === 0 && state_animate.constructor === Object ) {
