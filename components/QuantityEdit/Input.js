@@ -102,7 +102,10 @@ const MyInput = props => {
       setState_quantity(value);
       onChange(value);
    },[checkQuantity,onChange]);
-	window.fashioncraftQuantityChange = handleChange;
+	
+	useEffect(()=>{
+		window.fashioncraftQuantityChange = handleChange;
+	},[handleChange]);
 
    useEffect(()=>{
       if ( typeof(state_quantity) === "undefined" ) {
