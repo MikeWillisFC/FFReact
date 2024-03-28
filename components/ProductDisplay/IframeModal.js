@@ -136,6 +136,7 @@ const IframeModal = props => {
 
 	useEffect(()=>{
 		window.modalDisclosure = modalDisclosure;
+		console.log("closeFashioncraftDesignToolModal defining, modalRef:",modalRef);
 		window.closeFashioncraftDesignToolModal = () => {
 			/* the modal wants to be centered. If we just change the x value (left), it
 			* moves to where we want. But when we decrease the width at the same time, it wants to shift
@@ -144,6 +145,7 @@ const IframeModal = props => {
 			*/
 			console.log("closeFashioncraftDesignToolModal called");
 			let elRect = document.getElementById("basketAdd").getBoundingClientRect();
+			console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
 			let modalRect = modalRef.current.getBoundingClientRect();
 			let newX = elRect.x - modalRect.x;
 
@@ -167,6 +169,16 @@ const IframeModal = props => {
 			
 			console.log("closeFashioncraftDesignToolModal complete");
 		}
+
+		setTimeout(()=>{
+			console.log("closeFashioncraftDesignToolModal 2 second wait, modalRef:",modalRef);
+		},[2000]);
+		setTimeout(()=>{
+			console.log("closeFashioncraftDesignToolModal 5 second wait, modalRef:",modalRef);
+		},[5000]);
+		setTimeout(()=>{
+			console.log("closeFashioncraftDesignToolModal 10 second wait, modalRef:",modalRef);
+		},[10000]);
 
 		return ()=>{
 			window.closeFashioncraftDesignToolModal = null;
