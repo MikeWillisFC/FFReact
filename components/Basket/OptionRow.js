@@ -401,6 +401,7 @@ const OptionRow = props => {
 			setIframeMFR("Fashioncraft");
 			window.fashioncraftOnComplete = ()=>{
 				sst_fcReactDesignToolChoices([]); // this should trigger a re-retrieve of the customer's options
+				retrieveFCReactDesignToolChoices(option.value);
 			}
 		}
 	},[
