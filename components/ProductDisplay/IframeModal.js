@@ -161,31 +161,38 @@ const IframeModal = props => {
 							// just forget the animation then
 							modalDisclosure.onClose();
 						} else {
-							console.log("closeFashioncraftDesignToolModal called");
-							let elRect = document.getElementById("basketAdd").getBoundingClientRect();
-							console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
-							let modalRect = modalRef.current.getBoundingClientRect();
-							let newX = elRect.x - modalRect.x;
-				
-							// ok great but since we're decreasing the width as well, we have to compensate for that shift
-							let offsetDiff = (modalRect.width - elRect.width) / 2;
-							newX -= offsetDiff;
-				
-							let animateTo = {
-								height: elRect.height + "px",
-								width: elRect.width + "px",
-								margin: 0,
-								x: newX,
-								y: elRect.y,
-								opacity: 0
-							};
-							console.log("animateTo",animateTo);
-							let dt = new Date();
-							console.log("setting state",dt.getTime());
-							
-							setState_animate(animateTo);
-							
-							console.log("closeFashioncraftDesignToolModal complete");
+							let basketAdd = document.getElementById("basketAdd");
+
+							if ( !basketAdd ) {
+								// just forget the animation then
+								modalDisclosure.onClose();
+							} else {
+								console.log("closeFashioncraftDesignToolModal called");
+								let elRect = basketAdd.getBoundingClientRect();
+								console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
+								let modalRect = modalRef.current.getBoundingClientRect();
+								let newX = elRect.x - modalRect.x;
+					
+								// ok great but since we're decreasing the width as well, we have to compensate for that shift
+								let offsetDiff = (modalRect.width - elRect.width) / 2;
+								newX -= offsetDiff;
+					
+								let animateTo = {
+									height: elRect.height + "px",
+									width: elRect.width + "px",
+									margin: 0,
+									x: newX,
+									y: elRect.y,
+									opacity: 0
+								};
+								console.log("animateTo",animateTo);
+								let dt = new Date();
+								console.log("setting state",dt.getTime());
+								
+								setState_animate(animateTo);
+								
+								console.log("closeFashioncraftDesignToolModal complete");
+							}
 						}
 					}
 				}

@@ -1,3 +1,4 @@
+import { Fragment, useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import {
    HStack,
@@ -28,19 +29,33 @@ import {
 } from "@chakra-ui/react";
 
 import ItemRow from "./ItemRow";
+import IframeModal from "../ProductDisplay/IframeModal";
+
+import { loadScript } from "../../utilities/";
 
 import styles from "../../styles/basket.module.scss";
+import prodStyles from "../../styles/product.module.scss";
 
 const BasketTable = props => {
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
 
+	const [st_iframeMFR,sst_iframeMFR] = useState(null);
+	const [st_FCInitScript,sst_FCInitScript] = useState(false);
+
    /* props.viewType:
    *  -- shoppingCart: interactions = quantity, remove
    *  -- savedBasket: interactions = move to cart / remove
    *  -- orderStatus: interactions = none
    */
+	useEffect(()=>{
+		if ( st_FCInitScript && !document.getElementById("FCRDInit") ) {
+			loadScript(st_FCInitScript,"FCRDInit");
+		}
+	},[
+		st_FCInitScript
+	]);
 
    let columns = [];
    let quantityEditable;
@@ -62,42 +77,53 @@ const BasketTable = props => {
    console.log("columns",columns);
 
    return (
-      <Table className={styles.basketTable}>
-         <Thead>
-            <Tr>
-               <Th className={styles.thumbColumn}>&nbsp;</Th>
-               <Th className={styles.nameColumn}>Name</Th>
+		<Fragment>
+			<Table className={styles.basketTable}>
+				<Thead>
+					<Tr>
+						<Th className={styles.thumbColumn}>&nbsp;</Th>
+						<Th className={styles.nameColumn}>Name</Th>
 
-               { columns.includes("Price") && <Th className={styles.priceColumn}>Price</Th> }
-               { columns.includes("Quantity") && <Th className={styles.qtyColumn}>Quantity</Th> }
-               { columns.includes("Total") && <Th className={styles.qtyColumn}>Total</Th> }
-               { columns.includes("Date Added") && <Th className={styles.qtyColumn}>Date Added</Th> }
-               { columns.includes("Move To Cart") && <Th className={styles.qtyColumn}>Move To Cart</Th> }
-               { columns.includes("Remove") && <Th className={styles.qtyColumn}>Remove</Th> }
+						{ columns.includes("Price") && <Th className={styles.priceColumn}>Price</Th> }
+						{ columns.includes("Quantity") && <Th className={styles.qtyColumn}>Quantity</Th> }
+						{ columns.includes("Total") && <Th className={styles.qtyColumn}>Total</Th> }
+						{ columns.includes("Date Added") && <Th className={styles.qtyColumn}>Date Added</Th> }
+						{ columns.includes("Move To Cart") && <Th className={styles.qtyColumn}>Move To Cart</Th> }
+						{ columns.includes("Remove") && <Th className={styles.qtyColumn}>Remove</Th> }
 
-            </Tr>
-         </Thead>
-         <Tbody>
-            {
-               props.items.map( item => {
-                  return (
-                     <ItemRow
-                        columns={columns}
-                        key={item.lineID}
-                        item={item}
+					</Tr>
+				</Thead>
+				<Tbody>
+					{
+						props.items.map( item => {
+							return (
+								<ItemRow
+									columns={columns}
+									key={item.lineID}
+									item={item}
 
-                        quantityEditable={quantityEditable}
-                        viewType={props.viewType}
-                        basketID={props.basketID}
-                        onQuantityChange={props.onQuantityChange}
-                        onRemoveItem={props.onRemoveItem}
-                        onMoveToBasket={props.onMoveToBasket}
-                     />
-                  )
-               })
-            }
-         </Tbody>
-      </Table>
+									quantityEditable={quantityEditable}
+									viewType={props.viewType}
+									basketID={props.basketID}
+									onQuantityChange={props.onQuantityChange}
+									onRemoveItem={props.onRemoveItem}
+									onMoveToBasket={props.onMoveToBasket}
+									setIframeMFR={sst_iframeMFR}
+									setFCInitScript={sst_FCInitScript}
+								/>
+							)
+						})
+					}
+				</Tbody>
+			</Table>
+
+			<IframeModal
+				globalConfig={props.globalConfig}
+				styles={prodStyles}
+				title="Design Your Item"
+				manufacturer={st_iframeMFR}
+			/>
+		</Fragment>
    );
 };
 

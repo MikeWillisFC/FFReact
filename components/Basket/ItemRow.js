@@ -39,6 +39,11 @@ const ItemRow = props => {
       return state.global;
    });
 
+	let {
+		setIframeMFR,
+		setFCInitScript,
+	} = props;
+
    const [state_item,setState_item] = useState(props.item);
    const [state_totalRows,setState_totalRows] = useState( 1 );
    const [state_quantity,setState_quantity] = useState( props.item.quantity );
@@ -525,6 +530,10 @@ const ItemRow = props => {
                            receiveWidth={receiveWidth}
                            basketID={props.basketID || false}
                            lineID={state_item.lineID}
+									totalOptions={state_item.options.length}
+									setTotalRows={setState_totalRows}
+									setIframeMFR={setIframeMFR}
+									setFCInitScript={setFCInitScript}
                         />
                      )
                   })
