@@ -401,7 +401,9 @@ const OptionRow = props => {
 			setIframeMFR("Fashioncraft");
 			window.fashioncraftOnComplete = ()=>{
 				sst_fcReactDesignToolChoices([]);
-				retrieveFCReactDesignToolChoices(option.value,true);
+				setTimeout(()=>{
+					retrieveFCReactDesignToolChoices(option.value,true);
+				},1000);
 			}
 		}
 	},[
