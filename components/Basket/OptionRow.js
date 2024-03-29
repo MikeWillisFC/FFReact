@@ -400,8 +400,8 @@ const OptionRow = props => {
 			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/init.js");
 			setIframeMFR("Fashioncraft");
 			window.fashioncraftOnComplete = ()=>{
-				sst_fcReactDesignToolChoices([]); // this should trigger a re-retrieve of the customer's options
-				retrieveFCReactDesignToolChoices(option.value);
+				sst_fcReactDesignToolChoices([]);
+				retrieveFCReactDesignToolChoices(option.value,true);
 			}
 		}
 	},[
@@ -426,8 +426,8 @@ const OptionRow = props => {
 		return "";
 	}; // checkFCReactDesignToolChoices
 
-	let retrieveFCReactDesignToolChoices = useCallback( async (designID)=>{
-		if ( st_fcReactDesignToolChoices !== false && !st_fcReactDesignToolChoices.length ) {
+	let retrieveFCReactDesignToolChoices = useCallback( async (designID,force=false)=>{
+		if ( force || ( st_fcReactDesignToolChoices !== false && !st_fcReactDesignToolChoices.length ) ) {
 			console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
 			let formData = new FormData();
 			formData.append( "id", designID );
