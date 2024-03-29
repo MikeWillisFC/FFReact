@@ -399,6 +399,9 @@ const OptionRow = props => {
 			retrieveFCReactDesignToolChoices(option.value);
 			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/init.js");
 			setIframeMFR("Fashioncraft");
+			window.fashioncraftOnComplete = ()=>{
+				sst_fcReactDesignToolChoices([]); // this should trigger a re-retrieve of the customer's options
+			}
 		}
 	},[
 		prompt,
