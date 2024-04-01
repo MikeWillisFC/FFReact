@@ -137,6 +137,12 @@ const IframeModal = props => {
 		window.modalDisclosure = modalDisclosure;
 	},[modalDisclosure]);
 
+	let handleClose = ()=>{
+		if ( typeof( window.closeFashioncraftDesignToolModal ) === "function" ) {
+			window.closeFashioncraftDesignToolModal();
+		}
+	};
+
 	useEffect(()=>{
 		console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef:",modalRef);
 
@@ -230,7 +236,7 @@ const IframeModal = props => {
 	return (
 		<Modal
 			isOpen={modalDisclosure.isOpen}
-			onClose={window.closeFashioncraftDesignToolModal}
+			onClose={handleClose}
 			size="6xl"
 		>
 			<ModalOverlay />
