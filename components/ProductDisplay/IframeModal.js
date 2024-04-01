@@ -157,6 +157,7 @@ const IframeModal = props => {
 						* itself further to the right to compensate for the smaller width.
 						* So we have to compensate for that compensation.
 						*/
+						console.log("window.closeFashioncraftDesignToolModal called. modalRef, modalDisclosure:", modalRef, modalDisclosure);
 						if ( !modalRef.current ) {
 							// just forget the animation then
 							modalDisclosure.onClose();

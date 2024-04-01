@@ -397,7 +397,7 @@ const OptionRow = props => {
 	useEffect(()=>{
 		if ( prompt.FCReactDesignTool ) {
 			retrieveFCReactDesignToolChoices(option.value);
-			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/init.js");
+			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/editDesign.js");
 			setIframeMFR("Fashioncraft");
 			window.fashioncraftOnComplete = ()=>{
 				sst_fcReactDesignToolChoices([]);
