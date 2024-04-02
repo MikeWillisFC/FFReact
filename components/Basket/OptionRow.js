@@ -400,10 +400,9 @@ const OptionRow = props => {
 			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/editDesign.js");
 			setIframeMFR("Fashioncraft");
 			window.fashioncraftOnComplete = ()=>{
+				console.log("window.fashioncraftOnComplete called");
 				sst_fcReactDesignToolChoices([]);
-				setTimeout(()=>{
-					retrieveFCReactDesignToolChoices(option.value,true);
-				},1000);
+				
 			}
 		}
 	},[
