@@ -428,7 +428,7 @@ const OptionRow = props => {
 	}; // checkFCReactDesignToolChoices
 
 	let retrieveFCReactDesignToolChoices = useCallback( async (designID,force=false)=>{
-		if ( force || ( st_fcReactDesignToolChoices !== false && !st_fcReactDesignToolChoices.length ) ) {
+		if ( force || !st_fcReactDesignToolChoices.length ) {
 			console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
 			let formData = new FormData();
 			formData.append( "id", designID );
@@ -440,7 +440,7 @@ const OptionRow = props => {
 			console.log("response",response);
 
 			if ( !response.ok ) {
-				sst_fcReactDesignToolChoices(false);
+				sst_fcReactDesignToolChoices([]);
 			} else {
 				let jsonResponse = await response.json();
 				console.log("jsonResponse",jsonResponse);
@@ -465,15 +465,20 @@ const OptionRow = props => {
 	]); // retrieveFCReactDesignToolChoices
 
 	useEffect(()=>{
-		if ( st_fcReactDesignToolChoices !== false && st_fcReactDesignToolChoices.length ) {
+		if ( st_fcReactDesignToolChoices.length ) {
 			setTotalRows(totalOptions + 1 + st_fcReactDesignToolChoices.length);
+		} else {
+			setTotalRows(totalOptions + 1);
 		}
 	},[
 		st_fcReactDesignToolChoices,
 		setTotalRows,
 		totalOptions,
-	])
+	]);
+
 	let renderFCReactDesignChoices = useCallback(()=>{
+		console.log("renderFCReactDesignChoices running, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
+		
 		return st_fcReactDesignToolChoices.map(choice=>{
 			console.log("choice",choice);
 			choice.FCReactDesignTool = false;
