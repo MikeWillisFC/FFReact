@@ -181,6 +181,7 @@ const OptionRow = props => {
 		totalOptions,
 		setIframeMFR,
 		setFCInitScript,
+		key,
 	} = props;
 
 	console.log("OptionRow rendering, props:",props);
@@ -427,7 +428,7 @@ const OptionRow = props => {
 
 	let renderRow = useCallback(rowSettings=>{
 		return (
-			<Tr key={rowSettings.code} className={baskStyles.optionRow}>
+			<Tr key={rowSettings.key} className={baskStyles.optionRow}>
 				<Td colSpan={(rowSettings.price ? 1 : (props.editable ? 4 : 3))} className={(state_rowCollapsing ? baskStyles.collapsing : '')}>
 					<motion.div
 						variants={props.motion.variants}
@@ -567,8 +568,9 @@ const OptionRow = props => {
 	}; // checkFCReactDesignToolChoices
 
 	let retrieveFCReactDesignToolChoices = useCallback( async (designID,force=false)=>{
+		console.log("retrieveFCReactDesignToolChoices called, designID:",designID);
 		if ( force || !st_fcReactDesignToolChoices.length ) {
-
+			console.log("proceeding");
 			// first check if a design is stored, if so use that
 			let storedDesign;
 			if ( storedDesign = window.fashioncraftDT?.store?.get(designID) ) {
@@ -630,11 +632,12 @@ const OptionRow = props => {
 		return st_fcReactDesignToolChoices.map(choice=>{
 			console.log("choice",choice);
 			choice.FCReactDesignTool = false;
-			return renderRow(choice);
+			return renderRow({...choice,key:key});
 		});
 	},[
 		st_fcReactDesignToolChoices,
 		renderRow,
+		key,
 	]);
 
 	return (
@@ -646,7 +649,8 @@ const OptionRow = props => {
 					editable: option.editable,
 					price: option.price,
 					maxLength: maxLength,
-					FCReactDesignTool: prompt.FCReactDesignTool
+					FCReactDesignTool: prompt.FCReactDesignTool,
+					key: props.key,
 				})
 			}
 			{
