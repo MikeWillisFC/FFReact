@@ -434,17 +434,17 @@ const OptionRow = props => {
 			let storedDesign;
 			if ( storedDesign = window.fashioncraftDT?.store?.get(designID) ) {
 				console.log("storedDesign",storedDesign);
-					let options = [];
-					Object.keys(storedDesign.design).forEach(function(key) {
-						options.push({
-							code: key,
-							value: chosenDesign[key],
-							editable: false,
-							price: false,
-							maxLength: 9999,
-						})
-					});
-					sst_fcReactDesignToolChoices( options );
+				let options = [];
+				Object.keys(storedDesign.design).forEach(function(key) {
+					options.push({
+						code: key,
+						value: storedDesign.design[key],
+						editable: false,
+						price: false,
+						maxLength: 9999,
+					})
+				});
+				sst_fcReactDesignToolChoices( options );
 			} else {
 				console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
 				let formData = new FormData();
