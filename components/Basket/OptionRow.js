@@ -429,33 +429,40 @@ const OptionRow = props => {
 
 	let retrieveFCReactDesignToolChoices = useCallback( async (designID,force=false)=>{
 		if ( force || !st_fcReactDesignToolChoices.length ) {
-			console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
-			let formData = new FormData();
-			formData.append( "id", designID );
-			let response = await fetch("https://www.fashioncraft.com/rDesigner/api/retrieveDesigns.php",{
-				method: "post",
-				body: formData
-			});
-			
-			console.log("response",response);
 
-			if ( !response.ok ) {
-				sst_fcReactDesignToolChoices([]);
+			// first check if a design is stored, if so use that
+			let storedDesign;
+			if ( storedDesign = window.fashioncraftDT?.store?.get(designID) ) {
+				console.log("storedDesign",storedDesign);
 			} else {
-				let jsonResponse = await response.json();
-				console.log("jsonResponse",jsonResponse);
-				let chosenDesign = jsonResponse.chosenDesign;
-				let options = [];
-				Object.keys(chosenDesign).forEach(function(key) {
-					options.push({
-						code: key,
-						value: chosenDesign[key],
-						editable: false,
-						price: false,
-						maxLength: 9999,
-					})
+				console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
+				let formData = new FormData();
+				formData.append( "id", designID );
+				let response = await fetch("https://www.fashioncraft.com/rDesigner/api/retrieveDesigns.php",{
+					method: "post",
+					body: formData
 				});
-				sst_fcReactDesignToolChoices( options );
+				
+				console.log("response",response);
+
+				if ( !response.ok ) {
+					sst_fcReactDesignToolChoices([]);
+				} else {
+					let jsonResponse = await response.json();
+					console.log("jsonResponse",jsonResponse);
+					let chosenDesign = jsonResponse.chosenDesign;
+					let options = [];
+					Object.keys(chosenDesign).forEach(function(key) {
+						options.push({
+							code: key,
+							value: chosenDesign[key],
+							editable: false,
+							price: false,
+							maxLength: 9999,
+						})
+					});
+					sst_fcReactDesignToolChoices( options );
+				}
 			}
 		}
 
@@ -478,7 +485,7 @@ const OptionRow = props => {
 
 	let renderFCReactDesignChoices = useCallback(()=>{
 		console.log("renderFCReactDesignChoices running, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
-		
+
 		return st_fcReactDesignToolChoices.map(choice=>{
 			console.log("choice",choice);
 			choice.FCReactDesignTool = false;
