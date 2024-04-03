@@ -32,6 +32,145 @@ const OptionVal = props => {
 	);
 };
 
+let parseStoredFCDesign = design => {
+	let greekMonogram = [];
+	let monogram = [];
+	let clipart = false;
+	let rowsAdded = 0;
+	let options = [];
+	
+	for( let [key, value] of Object.entries(design) ) {
+		//console.log(`${key}: ${value}`);
+		let displayPrompt = false;
+		let displayValue = false;
+		switch( key ) {
+		case "design":
+			displayPrompt = "Design";
+			displayValue = `${value.graphicName} - ${value.colorName}`;
+			break;
+		case "backgroundColor":
+			displayPrompt = "Background Color";
+			displayValue = value.colorName;
+			break;
+		case "borderColor":
+			displayPrompt = "Border Color";
+			displayValue = value.colorName;
+			break;
+		case "pattern":
+			displayPrompt = "Pattern";
+			displayValue = value.patternName;
+			break;
+		case "patternColor":
+			displayPrompt = "Pattern Color";
+			displayValue = value.name;
+			break;
+		case "clipArt":
+			displayPrompt = "Clip Art";
+			displayValue = value.graphicName;
+			clipart = value;
+			break;
+		case "designText":
+			displayPrompt = "Design Text";
+			displayValue = value;
+			break;
+		case "foilColor":
+			displayPrompt = "Foil Color";
+			displayValue = value.colorName;
+			break;
+		case "color":
+			displayPrompt = "Color";
+			displayValue = value.colorName;
+			break;
+		case "font":
+			displayPrompt = "Font";
+			displayValue = value.name;
+			break;
+		case "Headline Color":
+			displayPrompt = "Headline Color";
+			displayValue = value[0];
+			break;
+		case "textColor":
+			displayPrompt = "Text Color";
+			displayValue = value[0];
+			break;
+		case "designText":
+			displayPrompt = "Design Text";
+			displayValue = value;
+			break;
+		case "textLine1":
+			displayPrompt = "Text Line 1";
+			displayValue = value;
+			break;
+		case "textLine2":
+			displayPrompt = "Text Line 2";
+			displayValue = value;
+			break;
+		case "textLine3":
+			displayPrompt = "Text Line 3";
+			displayValue = value;
+			break;
+		case "greekLetter1":
+			greekMonogram[0] = value;
+			break;
+		case "greekLetter2":
+			greekMonogram[1] = value;
+			break;
+		case "greekLetter3":
+			greekMonogram[2] = value;
+			break;
+		case "monogramLetter1":
+			monogram[0] = value;
+			break;
+		case "monogramLetter2":
+			monogram[1] = value;
+			break;
+		case "monogramLetter3":
+			monogram[2] = value;
+			break;
+		}
+		// console.log("displayPrompt",displayPrompt);
+		// console.log("displayValue",displayValue);
+		if ( displayPrompt && displayValue ) {
+			options.push({
+				code: displayPrompt,
+				value: displayValue,
+				editable: false,
+				price: false,
+				maxLength: 9999,
+			});
+		}
+	}
+
+	if ( clipart ) {
+		if ( greekMonogram.length && clipart.graphicID === "MGM014" ) {
+			options.push({
+				code: "Greek Monogram",
+				value: greekMonogram.join(""),
+				editable: false,
+				price: false,
+				maxLength: 9999,
+			});
+		}
+
+		if ( monogram.length ) {
+			switch( clipart.graphicID ) {
+			case "MGM010":
+			case "MGM011":
+				options.push({
+					code: "Monogram",
+					value: monogram.join(""),
+					editable: false,
+					price: false,
+					maxLength: 9999,
+				});
+				break;
+			}
+		}
+	}
+
+	return options;
+}; // parseStoredFCDesign
+
 const OptionRow = props => {
 	let globalConfig = useSelector((state)=>{
 		return state.global;
@@ -434,16 +573,7 @@ const OptionRow = props => {
 			let storedDesign;
 			if ( storedDesign = window.fashioncraftDT?.store?.get(designID) ) {
 				console.log("storedDesign",storedDesign);
-				let options = [];
-				Object.keys(storedDesign.design).forEach(function(key) {
-					options.push({
-						code: key,
-						value: storedDesign.design[key],
-						editable: false,
-						price: false,
-						maxLength: 9999,
-					})
-				});
+				let options = parseStoredFCDesign(storedDesign.design);
 				sst_fcReactDesignToolChoices( options );
 			} else {
 				console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
