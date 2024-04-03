@@ -181,7 +181,7 @@ const OptionRow = props => {
 		totalOptions,
 		setIframeMFR,
 		setFCInitScript,
-		key,
+		optionKey,
 	} = props;
 
 	console.log("OptionRow rendering, props:",props);
@@ -629,15 +629,15 @@ const OptionRow = props => {
 	let renderFCReactDesignChoices = useCallback(()=>{
 		console.log("renderFCReactDesignChoices running, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
 
-		return st_fcReactDesignToolChoices.map(choice=>{
+		return st_fcReactDesignToolChoices.map((choice,index)=>{
 			console.log("choice",choice);
 			choice.FCReactDesignTool = false;
-			return renderRow({...choice,key:key});
+			return renderRow({...choice,key:`${optionKey}|c${index}`});
 		});
 	},[
 		st_fcReactDesignToolChoices,
 		renderRow,
-		key,
+		optionKey,
 	]);
 
 	return (
@@ -650,7 +650,7 @@ const OptionRow = props => {
 					price: option.price,
 					maxLength: maxLength,
 					FCReactDesignTool: prompt.FCReactDesignTool,
-					key: props.key,
+					key: `${optionKey}|p`,
 				})
 			}
 			{

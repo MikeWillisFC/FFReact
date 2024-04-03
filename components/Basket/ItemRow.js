@@ -524,6 +524,7 @@ const ItemRow = props => {
                            editable={props.viewType === "shoppingCart"}
                            quantityEditable={props.quantityEditable}
                            key={`${state_item.lineID}|${index}|${option.code}`}
+                           optionKey={`${state_item.lineID}|${index}|${option.code}`}
                            option={option}
                            quantity={state_quantity}
                            optionWidth={state_optionWidth}
