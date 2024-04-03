@@ -141,7 +141,7 @@ const IframeModal = props => {
 		if ( typeof( window.closeFashioncraftDesignToolModal ) === "function" ) {
 			window.closeFashioncraftDesignToolModal();
 		}
-	};
+	}; // handleClose
 
 	useEffect(()=>{
 		console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef:",modalRef);

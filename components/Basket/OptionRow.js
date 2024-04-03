@@ -400,7 +400,7 @@ const OptionRow = props => {
 				<a
 					className={"fashioncraftDesigner"}
 					href={`${prompt.promptTarget}&edit=1&id=${settings.value}`}
-					style={{display:"inline-block",margin:"2px auto"}}
+					style={{display:"inline-block",margin:"2px auto",opacity:"0",pointerEvents:"none"}}
 					onClick={event=>{
 						event.preventDefault();
 						// handleClick

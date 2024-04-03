@@ -85,7 +85,7 @@ const FCReactDesignToolPrompt = props => {
          <a
             className={"fashioncraftDesigner"}
             href={props.attribute.promptTarget}
-            style={{display:"block",width:"90%",margin:"5px auto"}}
+            style={{display:"block",width:"90%",margin:"5px auto",opacity:"0",pointerEvents:"none"}}
             onClick={handleClick}
          >
             <Button
