@@ -540,7 +540,7 @@ const OptionRow = memo(props => {
 			retrieveFCReactDesignToolChoices(option.value);
 			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/editDesign.js");
 			setIframeMFR("Fashioncraft");
-			if ( window.fashioncraftOnComplete ) {
+			if ( !window.fashioncraftOnComplete ) {
 				window.fashioncraftOnComplete = {};
 			}
 			window.fashioncraftOnComplete[option.value] = ()=>{
