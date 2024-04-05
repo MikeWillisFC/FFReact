@@ -1,4 +1,4 @@
-import {Fragment,useRef,useEffect,useState,useCallback} from "react";
+import {Fragment,useRef,useEffect,useState,useCallback,memo} from "react";
 import { motion,useAnimation } from "framer-motion";
 import { FaCircle,FaEdit,FaCheckCircle,FaTimesCircle } from 'react-icons/fa';
 import axios from "axios";
@@ -171,7 +171,7 @@ let parseStoredFCDesign = design => {
 	return options;
 }; // parseStoredFCDesign
 
-const OptionRow = props => {
+const OptionRow = memo(props => {
 	let globalConfig = useSelector((state)=>{
 		return state.global;
 	});
@@ -185,6 +185,7 @@ const OptionRow = props => {
 	} = props;
 
 	console.log("OptionRow rendering, props:",props);
+	console.log("OptionRow rendering, optionKey:",optionKey);
 	console.log("OptionRow prompt:",JSON.parse( props.option.prompt ));
 
 	const [state_optionWidth,setState_optionWidth] = useState("auto");
@@ -660,6 +661,8 @@ const OptionRow = props => {
 			}
 		</Fragment>
 	);
-};
+});
+
+OptionRow.displayName = "OptionRow";
 
 export default OptionRow;
