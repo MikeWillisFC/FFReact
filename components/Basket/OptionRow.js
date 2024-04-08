@@ -539,7 +539,7 @@ const OptionRow = memo(props => {
 	useEffect(()=>{
 		if ( prompt.FCReactDesignTool ) {
 			retrieveFCReactDesignToolChoices(option.value);
-			window.fashioncraftDTAllowNullOnUnload = false;
+			window.fashioncraftDTEditorAllowNullOnUnload = false;
 			
 			/* be careful when setting this piece of state! It defaults to false, and when you
 			* set it to a new Object, it triggers a re-render, which causes this to run again and
@@ -551,8 +551,8 @@ const OptionRow = memo(props => {
 					return {
 						script: "https://www.fashioncraft.com/rDesigner/init/editDesign.js",
 						rerun: ()=>{
-							if ( window.fashioncraftDT?.init && typeof ( window.fashioncraftDT.init ) === "function" ) {
-								window.fashioncraftDT.init();
+							if ( window.fashioncraftDTEditor?.init && typeof ( window.fashioncraftDTEditor.init ) === "function" ) {
+								window.fashioncraftDTEditor.init();
 							}
 						}
 					};
