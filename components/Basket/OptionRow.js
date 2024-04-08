@@ -538,7 +538,7 @@ const OptionRow = memo(props => {
 	useEffect(()=>{
 		if ( prompt.FCReactDesignTool ) {
 			retrieveFCReactDesignToolChoices(option.value);
-			window.fashioncraftDTAllowUnload = false;
+			window.fashioncraftDTAllowNullOnUnload = false;
 			setFCInitScript({
 				script: "https://www.fashioncraft.com/rDesigner/init/editDesign.js",
 				rerun: ()=>{
