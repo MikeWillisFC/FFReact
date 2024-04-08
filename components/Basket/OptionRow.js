@@ -557,6 +557,9 @@ const OptionRow = memo(props => {
 						}
 					};
 				} else {
+					if ( prev.rerun && typeof( prev.rerun ) === "function" ) {
+						prev.rerun();
+					}
 					return prev;
 				}
 			});
