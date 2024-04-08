@@ -538,9 +538,12 @@ const OptionRow = memo(props => {
 	useEffect(()=>{
 		if ( prompt.FCReactDesignTool ) {
 			retrieveFCReactDesignToolChoices(option.value);
-			setFCInitScript("https://www.fashioncraft.com/rDesigner/init/editDesign.js");
+			setFCInitScript({
+				script: "https://www.fashioncraft.com/rDesigner/init/editDesign.js",
+				rerun: true
+			});
 			setIframeMFR("Fashioncraft");
-			if ( !window.fashioncraftOnComplete ) {
+			if ( !window.fashioncraftOnComplete || typeof( window.fashioncraftOnComplete ) === "function" ) {
 				window.fashioncraftOnComplete = {};
 			}
 			window.fashioncraftOnComplete[option.value] = ()=>{

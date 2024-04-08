@@ -347,7 +347,7 @@ loadScript(cdnSource)
     .catch(loadScript.bind(null, localSource))
     .then(successCallback, failureCallback);
 */
-export const loadScript = (src,id=false) => {
+export const loadScript = (src,id=false,rerun=false) => {
    return new Promise(function (resolve, reject) {
       let js;
       let add = true;
@@ -360,7 +360,11 @@ export const loadScript = (src,id=false) => {
          js.id = id;
          let existing = document.getElementById(id);
          if ( existing ) {
-            add = false;
+				if ( !rerun ) {
+            	add = false;
+				} else {
+					existing.remove();
+				}
          }
       }
       if ( add ) {

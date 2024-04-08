@@ -51,7 +51,7 @@ const BasketTable = props => {
    */
 	useEffect(()=>{
 		if ( st_FCInitScript && !document.getElementById("FCRDInit") ) {
-			loadScript(st_FCInitScript,"FCRDInit");
+			loadScript(st_FCInitScript.script,"FCRDInit",(st_FCInitScript.rerun || false));
 		}
 	},[
 		st_FCInitScript
