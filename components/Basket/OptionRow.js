@@ -172,6 +172,8 @@ let parseStoredFCDesign = design => {
 }; // parseStoredFCDesign
 
 const OptionRow = memo(props => {
+	console.log("OptionRow rendering, props:",props);
+
 	let globalConfig = useSelector((state)=>{
 		return state.global;
 	});
@@ -184,9 +186,8 @@ const OptionRow = memo(props => {
 		optionKey,
 	} = props;
 
-	console.log("OptionRow rendering, props:",props);
-	console.log("OptionRow rendering, optionKey:",optionKey);
-	console.log("OptionRow prompt:",JSON.parse( props.option.prompt ));
+	// console.log("OptionRow rendering, optionKey:",optionKey);
+	// console.log("OptionRow prompt:",JSON.parse( props.option.prompt ));
 
 	const [state_optionWidth,setState_optionWidth] = useState("auto");
 	const [state_optionVal,setState_optionVal] = useState(props.option.value);
@@ -392,7 +393,7 @@ const OptionRow = memo(props => {
 	}; // handleKeyUp
 
 	let printValue = useCallback((settings)=>{
-		console.log("printValue called, settings:",settings);
+		// console.log("printValue called, settings:",settings);
 		if ( !settings.FCReactDesignTool ) {
 			return (
 				<b>{settings.value}</b>
@@ -539,12 +540,24 @@ const OptionRow = memo(props => {
 		if ( prompt.FCReactDesignTool ) {
 			retrieveFCReactDesignToolChoices(option.value);
 			window.fashioncraftDTAllowNullOnUnload = false;
-			setFCInitScript({
-				script: "https://www.fashioncraft.com/rDesigner/init/editDesign.js",
-				rerun: ()=>{
-					if ( window.fashioncraftDT?.init && typeof ( window.fashioncraftDT.init ) === "function" ) {
-						window.fashioncraftDT.init();
-					}
+			
+			/* be careful when setting this piece of state! It defaults to false, and when you
+			* set it to a new Object, it triggers a re-render, which causes this to run again and
+			* set it again, so you'll have an infinite loop. So, only set it if it's false, that means
+			* it has not been set yet. If it's anything other than false, return the previous object.
+			*/
+			setFCInitScript(prev=>{
+				if ( prev === false ) {
+					return {
+						script: "https://www.fashioncraft.com/rDesigner/init/editDesign.js",
+						rerun: ()=>{
+							if ( window.fashioncraftDT?.init && typeof ( window.fashioncraftDT.init ) === "function" ) {
+								window.fashioncraftDT.init();
+							}
+						}
+					};
+				} else {
+					return prev;
 				}
 			});
 			setIframeMFR("Fashioncraft");
@@ -552,7 +565,7 @@ const OptionRow = memo(props => {
 				window.fashioncraftOnComplete = {};
 			}
 			window.fashioncraftOnComplete[option.value] = ()=>{
-				console.log("window.fashioncraftOnComplete called");
+				// console.log("window.fashioncraftOnComplete called");
 				sst_fcReactDesignToolChoices([]);
 			}
 		}
@@ -579,17 +592,17 @@ const OptionRow = memo(props => {
 	}; // checkFCReactDesignToolChoices
 
 	let retrieveFCReactDesignToolChoices = useCallback( async (designID,force=false)=>{
-		console.log("retrieveFCReactDesignToolChoices called, designID:",designID);
+		// console.log("retrieveFCReactDesignToolChoices called, designID:",designID);
 		if ( force || !st_fcReactDesignToolChoices.length ) {
-			console.log("proceeding");
+			// console.log("proceeding");
 			// first check if a design is stored, if so use that
 			let storedDesign;
 			if ( storedDesign = window.fashioncraftDT?.store?.get(designID) ) {
-				console.log("storedDesign",storedDesign);
+				// console.log("storedDesign",storedDesign);
 				let options = parseStoredFCDesign(storedDesign.design);
 				sst_fcReactDesignToolChoices( options );
 			} else {
-				console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
+				// console.log("fetching, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
 				let formData = new FormData();
 				formData.append( "id", designID );
 				let response = await fetch("https://www.fashioncraft.com/rDesigner/api/retrieveDesigns.php",{
@@ -597,13 +610,13 @@ const OptionRow = memo(props => {
 					body: formData
 				});
 				
-				console.log("response",response);
+				// console.log("response",response);
 
 				if ( !response.ok ) {
 					sst_fcReactDesignToolChoices([]);
 				} else {
 					let jsonResponse = await response.json();
-					console.log("jsonResponse",jsonResponse);
+					// console.log("jsonResponse",jsonResponse);
 					let chosenDesign = jsonResponse.chosenDesign;
 					let options = [];
 					Object.keys(chosenDesign).forEach(function(key) {
@@ -638,10 +651,10 @@ const OptionRow = memo(props => {
 	]);
 
 	let renderFCReactDesignChoices = useCallback(()=>{
-		console.log("renderFCReactDesignChoices running, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
+		// console.log("renderFCReactDesignChoices running, st_fcReactDesignToolChoices:",st_fcReactDesignToolChoices);
 
 		return st_fcReactDesignToolChoices.map((choice,index)=>{
-			console.log("choice",choice);
+			// console.log("choice",choice);
 			choice.FCReactDesignTool = false;
 			return renderRow({...choice,key:`${optionKey}|c${index}`});
 		});

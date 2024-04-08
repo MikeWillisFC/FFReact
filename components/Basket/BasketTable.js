@@ -37,6 +37,8 @@ import styles from "../../styles/basket.module.scss";
 import prodStyles from "../../styles/product.module.scss";
 
 const BasketTable = props => {
+	console.log("BasketTable rendering, props:",props);
+
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
@@ -51,7 +53,7 @@ const BasketTable = props => {
    */
 	useEffect(()=>{
 		if ( st_FCInitScript && !document.getElementById("FCRDInit") ) {
-			loadScript(st_FCInitScript.script,"FCRDInit",(st_FCInitScript.rerun || false));
+			loadScript(st_FCInitScript.script,"FCRDInit",false);
 		}
 	},[
 		st_FCInitScript
@@ -74,7 +76,7 @@ const BasketTable = props => {
       break;
    }
 
-   console.log("columns",columns);
+   // console.log("columns",columns);
 
    return (
 		<Fragment>

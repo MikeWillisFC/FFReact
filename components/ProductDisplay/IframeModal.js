@@ -27,7 +27,7 @@ const MotionModalContent = motion(ModalContent);
 let animationDuration = 0.4;
 
 const IframeModal = props => {
-	console.log("IframeModal props",props);
+	console.log("IframeModal rndering, props",props);
 
 	const modalDisclosure = useDisclosure({ defaultIsOpen: false });
 
@@ -85,9 +85,9 @@ const IframeModal = props => {
 				* in the origin list as well.
 				* Also this all needs thorough security review.
 				*/
-				console.log("openFashioncraftDesignToolModal_proxied called");
+				// console.log("openFashioncraftDesignToolModal_proxied called");
 				if ( preload ) {
-					console.log("preloading");
+					// console.log("preloading");
 				}
 				let url = new URL('https:' + href);
 				let queryString = "?";
@@ -144,11 +144,11 @@ const IframeModal = props => {
 	}; // handleClose
 
 	useEffect(()=>{
-		console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef:",modalRef);
+		// console.log("closeFashioncraftDesignToolModal useEffect running: modal is open, modalRef:",modalRef);
 
 		let interval = false;
 		if ( modalDisclosure.isOpen ) {
-			console.log("closeFashioncraftDesignToolModal useEffect: modal is open, modalRef:",modalRef);
+			// console.log("closeFashioncraftDesignToolModal useEffect: modal is open, modalRef:",modalRef);
 
 			let waits = 0;
 			let maxWaits = 200;
@@ -156,14 +156,14 @@ const IframeModal = props => {
 				waits++;
 				if ( waits <= maxWaits || modalRef.current ) {
 					clearInterval(interval);
-					console.log("closeFashioncraftDesignToolModal done waiting, modalRef:",modalRef);
+					// console.log("closeFashioncraftDesignToolModal done waiting, modalRef:",modalRef);
 					window.closeFashioncraftDesignToolModal = () => {
 						/* the modal wants to be centered. If we just change the x value (left), it
 						* moves to where we want. But when we decrease the width at the same time, it wants to shift
 						* itself further to the right to compensate for the smaller width.
 						* So we have to compensate for that compensation.
 						*/
-						console.log("window.closeFashioncraftDesignToolModal called. modalRef, modalDisclosure:", modalRef, modalDisclosure);
+						// console.log("window.closeFashioncraftDesignToolModal called. modalRef, modalDisclosure:", modalRef, modalDisclosure);
 						if ( !modalRef.current ) {
 							// just forget the animation then
 							modalDisclosure.onClose();
@@ -174,9 +174,9 @@ const IframeModal = props => {
 								// just forget the animation then
 								modalDisclosure.onClose();
 							} else {
-								console.log("closeFashioncraftDesignToolModal called");
+								// console.log("closeFashioncraftDesignToolModal called");
 								let elRect = basketAdd.getBoundingClientRect();
-								console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
+								// console.log("closeFashioncraftDesignToolModal running, modalRef:",modalRef);
 								let modalRect = modalRef.current.getBoundingClientRect();
 								let newX = elRect.x - modalRect.x;
 					
@@ -192,20 +192,20 @@ const IframeModal = props => {
 									y: elRect.y,
 									opacity: 0
 								};
-								console.log("animateTo",animateTo);
+								// console.log("animateTo",animateTo);
 								let dt = new Date();
-								console.log("setting state",dt.getTime());
+								// console.log("setting state",dt.getTime());
 								
 								setState_animate(animateTo);
 								
-								console.log("closeFashioncraftDesignToolModal complete");
+								// console.log("closeFashioncraftDesignToolModal complete");
 							}
 						}
 					}
 				}
 			},50);
 		} else {
-			console.log("closeFashioncraftDesignToolModal useEffect: modal is NOT open, modalRef:",modalRef);
+			// console.log("closeFashioncraftDesignToolModal useEffect: modal is NOT open, modalRef:",modalRef);
 		}
 
 		return ()=>{
@@ -219,14 +219,14 @@ const IframeModal = props => {
 		if ( state_animate && Object.keys(state_animate).length === 0 && state_animate.constructor === Object ) {
 			// do nothing, it's empty
 		} else {
-			console.log("state_animate useEffect running");
+			// console.log("state_animate useEffect running");
 			let dt = new Date();
 			//console.log("starting timeout",dt.getTime());
 			let timeout = setTimeout(()=>{
 				let dtB = new Date();
 				//console.log("firing timeout",dtB.getTime());
 				modalDisclosure.onClose();
-				console.log("state_animate useEffect complete");
+				// console.log("state_animate useEffect complete");
 			},state_animationDuration * 1000);
 
 			return ()=>{clearTimeout(timeout);};

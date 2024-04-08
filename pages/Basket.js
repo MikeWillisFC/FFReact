@@ -44,6 +44,9 @@ import {quantityIsValid,parseMessages,isLoggedIn} from "../utilities";
 import styles from "../styles/basket.module.scss";
 
 const Basket = props => {
+
+	console.log("Basket rendering, props:",props);
+
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
@@ -72,7 +75,7 @@ const Basket = props => {
          }
       );
 
-      console.log("getBasketCharges response",response);
+      // console.log("getBasketCharges response",response);
       if ( response.status && response.data.basketCharges ) {
          setState_basketCharges( response.data.basketCharges );
       }
@@ -90,7 +93,7 @@ const Basket = props => {
                withCredentials: true
             }
          );
-         console.log("getBasket response",response);
+         // console.log("getBasket response",response);
          if ( response.status ) {
             parseMessages(response.data,dispatch,messagesActions);
             setState_basketLoading(false);
@@ -322,7 +325,7 @@ const Basket = props => {
          sst_showLoginOrCreate({
             show: true,
             onComplete: ()=>{
-               console.log("it's done homie");
+               // console.log("it's done homie");
                saveBasket();
             },
             onClose: ()=>{

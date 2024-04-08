@@ -366,7 +366,7 @@ export const loadScript = (src,id=false,rerun=false) => {
       if ( add ) {
          console.log("LOADSCRIPT adding id '" + id + "'", js);
          document.head.appendChild(js);
-      } else if ( rerun ) {
+      } else if ( rerun && typeof( rerun ) === "function" ) {
 			rerun();
 		}
    });

@@ -35,6 +35,8 @@ import {quantityIsValid,formatPrice} from "../../utilities";
 import styles from "../../styles/basket.module.scss";
 
 const ItemRow = props => {
+	console.log("ItemRow running, props:", props);
+
    let globalConfig = useSelector((state)=>{
       return state.global;
    });
@@ -137,13 +139,13 @@ const ItemRow = props => {
 
    useEffect(()=>{
       // let's wait a bit before doing it, in case they're typing
-      console.log("quantity or something changed");
-      console.log("--state_quantity",state_quantity);
-      console.log("--state_item.quantity",state_item.quantity);
-      console.log("--state_item.lineID",state_item.lineID);
+      // console.log("quantity or something changed");
+      // console.log("--state_quantity",state_quantity);
+      // console.log("--state_item.quantity",state_item.quantity);
+      // console.log("--state_item.lineID",state_item.lineID);
       let waitASec = setTimeout(()=>{
          if ( state_quantity !== state_item.quantity ) {
-            console.log("--CALLING onQuantityChange")
+            // console.log("--CALLING onQuantityChange")
             onQuantityChange( state_quantity, state_item.lineID );
          }
       },600);
@@ -155,10 +157,10 @@ const ItemRow = props => {
       onQuantityChange
    ]);
 
-   useEffect(()=>{ console.log("state_quantity changed",state_quantity); },[ state_quantity ]);
-   useEffect(()=>{ console.log("state_item.quantity changed",state_item.quantity); },[ state_item.quantity ]);
-   useEffect(()=>{ console.log("state_item.lineID changed",state_item.lineID); },[ state_item.lineID ]);
-   useEffect(()=>{ console.log("onQuantityChange changed"); },[ onQuantityChange ]);
+   // useEffect(()=>{ console.log("state_quantity changed",state_quantity); },[ state_quantity ]);
+   // useEffect(()=>{ console.log("state_item.quantity changed",state_item.quantity); },[ state_item.quantity ]);
+   // useEffect(()=>{ console.log("state_item.lineID changed",state_item.lineID); },[ state_item.lineID ]);
+   // useEffect(()=>{ console.log("onQuantityChange changed"); },[ onQuantityChange ]);
 
    useEffect(()=>{
       let timer = setTimeout(()=>{
@@ -209,7 +211,7 @@ const ItemRow = props => {
    }; // renderQuantity
 
    let handleQuantityChange = useCallback(eventOrVal => {
-      console.log("handleQuantityChange called");
+      // console.log("handleQuantityChange called");
       let quantity = eventOrVal.target ? eventOrVal.target.value : eventOrVal;
       let price = false;
       if ( state_item.volPrices.length ) {
@@ -260,9 +262,9 @@ const ItemRow = props => {
       setState_confirmRemoveIsOpen( false );
    };
    let handleRowHideCompleted = useCallback(() => {
-      console.log("handleRowHideCompleted called");
+      // console.log("handleRowHideCompleted called");
       if ( typeof( onRemoveItem ) === "function" ) {
-         console.log("calling onRemoveItem");
+         // console.log("calling onRemoveItem");
          onRemoveItem(state_item.lineID);
       }
    },[
@@ -511,7 +513,7 @@ const ItemRow = props => {
             <Fragment>
                {
                   state_item.options.map((option,index)=>{
-                     console.log("option",option);
+                     // console.log("option",option);
                      return (
                         <OptionRow
                            motion={{
