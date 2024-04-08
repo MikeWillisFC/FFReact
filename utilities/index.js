@@ -360,17 +360,15 @@ export const loadScript = (src,id=false,rerun=false) => {
          js.id = id;
          let existing = document.getElementById(id);
          if ( existing ) {
-				if ( !rerun ) {
-            	add = false;
-				} else {
-					existing.remove();
-				}
+            add = false;
          }
       }
       if ( add ) {
          console.log("LOADSCRIPT adding id '" + id + "'", js);
          document.head.appendChild(js);
-      }
+      } else if ( rerun ) {
+			rerun();
+		}
    });
 }
 
